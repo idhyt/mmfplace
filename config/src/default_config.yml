@@ -101,6 +101,11 @@ stripes:
     strptimes:
       - fmt: "%Y-%m-%dT%H:%M:%S%:z"
         test: "2012-05-22T15:52:27+01:00"
+  - name: "] GPS Date Stamp = "
+    regex: "GPS Date Stamp = (.*)"
+    strptimes:
+        - fmt: "%Y:%m:%d"
+          test: "2010:06:24"
 
 blacklist:
   - ":  :     :  :"   # [Exif SubIFD] Date/Time Original =     :  :     :  :
