@@ -1,0 +1,115 @@
+# duplicate file count max
+dup_max: 999
+
+# strips of metadata-extractor tag name
+# directory.getName() tag.getTagName() tag.getDescription()
+# [FileFile Modified Date = Wed Nov 30 05:58:56 +08:00 2022
+# striptime format https://docs.rs/chrono/latest/chrono/format/strftime/index.html
+stripes:
+  - name: "] Date/Time = "
+    regex: "Date/Time = (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S"
+        test: "2017:08:16 12:18:36"
+  - name: "] Date/Time Original = "
+    regex: "Date/Time Original = (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S"
+        test: "2002:07:13 15:58:28"
+      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
+        test: "2019:05:23 06:10:21.000 UTC"
+  - name: "] File Modified Date = "
+    regex: "File Modified Date = (.*)"
+    strptimes:
+      - fmt: "%a %b %d %H:%M:%S %:z %Y"
+        test: "Wed Nov 30 05:58:56 %:z 2022"
+  - name: "] Modification Time = "
+    regex: "Modification Time = (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
+        test: "2019:05:23 06:10:21.000 UTC"
+  - name: "] Creation Time = "
+    regex: "Creation Time = (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
+        test: "2019:05:23 06:10:21.000 UTC"
+  - name: "] Last Modification Time = "
+    regex: "Last Modification Time = (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S"
+        test: "2013:01:01 04:08:30"
+      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
+        test: "2019:05:23 06:10:21.000 UTC"
+  - name: "] Date/Time Digitized = "
+    regex: "Date/Time Digitized = (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S"
+        test: "2002:07:13 15:58:28"
+  - name: "] date:create: = "
+    regex: "date:create: (.*)"
+    strptimes:
+      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
+        test: "2019:05:23 06:10:21.000 UTC"
+  - name: "] photoshop:DateCreated = "
+    regex: "photoshop:DateCreated = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S %z"
+        test: "2015-01-22T00:00:00 +00:00"
+      - fmt: "%Y-%m-%d"
+        test: "2002-06-20"
+  - name: "] xmp:CreateDate = "
+    regex: "xmp:CreateDate = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
+        test: "2012-05-22T15:52:27+01:00"
+      - fmt: "%Y-%m-%dT%H:%M:%S"
+        test: "2013-01-01T02:13:24"
+      - fmt: "%Y-%m-%dT%H:%M:%SZ"
+        test: "2012-12-31T04:35:10Z"
+  - name: "] xmp:MetadataDate = "
+    regex: "xmp:MetadataDate = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
+        test: "2012-05-22T15:52:27+01:00"
+      - fmt: "%Y-%m-%dT%H:%M:%S"
+        test: "2013-01-01T02:13:24"
+      - fmt: "%Y-%m-%dT%H:%M:%SZ"
+        test: "2012-12-31T04:35:10Z"
+  - name: "] xmp:ModifyDate = "
+    regex: "xmp:ModifyDate = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
+        test: "2012-05-22T15:52:27+01:00"
+      - fmt: "%Y-%m-%dT%H:%M:%S"
+        test: "2013-01-01T02:13:24"
+      - fmt: "%Y-%m-%dT%H:%M:%SZ"
+        test: "2012-12-31T04:35:10Z"
+  - name: "] Date Created = "
+    regex: "Date Created = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%d"
+        test: "2015-01-22"
+      - fmt: "%Y:%m:%d"
+        test: "2002:06:20"
+  - name: "] Aufnahmedatum : "
+    regex: "Aufnahmedatum : (.*)"
+    strptimes:
+      - fmt: "%Y/%m/%d %H:%M:%S"
+        test: "2002/08/29 17:31:40"
+  - name: "] xmpMM:History[1]/stEvt:when = "
+    regex: "stEvt:when = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
+        test: "2012-05-22T15:52:27+01:00"
+
+blacklist:
+  - ":  :     :  :"   # [Exif SubIFD] Date/Time Original =     :  :     :  :
+
+
+# some experimental extend trait
+additionals:
+  - name: "filename" 
+    regex: (\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})_.*
+    strptimes:
+      - fmt: "%Y-%m-%d_%H-%M-%S"
+        test: "2018-05-02_13-13-39_dcf485515fb4c7611a704ff7f745abd3.jpg"

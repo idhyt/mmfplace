@@ -1,0 +1,17 @@
+[package]
+name = "extractor"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-process = "1.6.0"
+chrono = "0.4.23"
+futures-lite = "1.12.0"
+log = "0.4.17"
+anyhow = "1.0.68"
+filetime = "0.2.19"
+
+config = { path = "../config" }
+regex = "1.7.1"
