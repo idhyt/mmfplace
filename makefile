@@ -19,3 +19,6 @@ docker-tests:
 	docker run -it --rm -v $(ROOT_DIR)/tests:/opt/tests -v $(ROOT_DIR)/tests_output:/opt/tests_output -e RUST_LOG=DEBUG $(BUILD_NAME) --input=/opt/tests --output=/opt/tests_output --logfile=/opt/tests_output/tests.log
 	tree tests_output
 	cat tests_output/tests.log | grep ERROR
+
+host-tests:
+	RUST_LOG=DEBUG cargo run -- -i ./tests --test
