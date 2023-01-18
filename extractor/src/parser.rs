@@ -112,11 +112,6 @@ impl FileMeta {
     where
         T: AsRef<Path>,
     {
-        log::info!(
-            "copy {} to {}",
-            self.file_path.display(),
-            dst.as_ref().display()
-        );
         std::fs::copy(&self.file_path, &dst)?;
 
         let metadata = std::fs::metadata(&self.file_path)?;
