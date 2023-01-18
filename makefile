@@ -9,16 +9,22 @@ host-build-linux:
 
 docker-build-linux:
 	# default musl in alpine, rustup show
-	docker run -it --rm -v $(BUILD_CACHE) -v $(ROOT_DIR):/opt/splits4mf -w /opt/splits4mf $(BUILD_IMAGE) sh -c "apk add --no-cache musl-dev make && make host-build-linux"
+	docker run -it --rm -v $(BUILD_CACHE) -v $(ROOT_DIR):/opt/mmfplace -w /opt/mmfplace $(BUILD_IMAGE) sh -c "apk add --no-cache musl-dev make && make host-build-linux"
 
 image-build:
 	# [ -f openlogic-openjdk-8u352-b08-linux-x64.tar.gz ] || wget https://builds.openlogic.com/downloadJDK/openlogic-openjdk/8u352-b08/openlogic-openjdk-8u352-b08-linux-x64.tar.gz
 	docker build -f Dockerfile -t $(BUILD_NAME) .
 
 docker-tests:
+	[ -d tests_output ] && rm -rf tests_output
 	docker run -it --rm -v $(ROOT_DIR)/tests:/opt/tests -v $(ROOT_DIR)/tests_output:/opt/tests_output -e RUST_LOG=DEBUG $(BUILD_NAME) --input=/opt/tests --output=/opt/tests_output --logfile=/opt/tests_output/tests.log
-	tree tests_output
-	cat tests_output/tests.log | grep ERROR
+	@tree tests_output
+	@echo "\n---------------- ERROR ----------------\n"
+	@cat tests_output/tests.log | grep ERROR
+	@echo "\n---------------- SUCCESS ----------------\n"
+	@cat tests_output/tests.log | grep Success
+	@echo "\n---------------- DUPLICATE ----------------\n"
+	@cat tests_output/tests.log | grep Duplicate
 
 host-tests:
 	RUST_LOG=DEBUG cargo run -- -i ./tests --test
