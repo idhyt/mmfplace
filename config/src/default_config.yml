@@ -39,6 +39,11 @@ stripes:
         test: "Wed Jan 18 13:10:27 CST 2023"
       - fmt: "%a %b %d %H:%M:%S %:z %Y"
         test: "Wed Nov 30 05:58:56 +01:00 2022"
+  - name: "] Modification Date = "
+    regex: "Modification Date = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S%z"
+        test: "2022-01-31T23:59:15+0800"
   - name: "] Creation Time = "
     regex: "Creation Time = (.*)"
     strptimes:
@@ -46,6 +51,11 @@ stripes:
         test: "2019:05:23 06:10:21.000 UTC"
       - fmt: "%a %b %d %H:%M:%S %Z %Y"
         test: "Wed Jan 18 13:10:27 CST 2023"
+  - name: "] Creation Date = "
+    regex: "Creation Date = (.*)"
+    strptimes:
+      - fmt: "%Y-%m-%dT%H:%M:%S%z"
+        test: "2022-01-31T23:59:15+0800"
   - name: "] Last Modification Time = "
     regex: "Last Modification Time = (.*)"
     strptimes:
@@ -66,8 +76,10 @@ stripes:
   - name: "] photoshop:DateCreated = "
     regex: "photoshop:DateCreated = (.*)"
     strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S %z"
+      - fmt: "%Y-%m-%dT%H:%M:%S %:z"
         test: "2015-01-22T00:00:00 +00:00"
+      - fmt: "%Y-%m-%dT%H:%M:%S"
+        test: "2022-04-02T08:20:27"
       - fmt: "%Y-%m-%d"
         test: "2002-06-20"
   - name: "] xmp:CreateDate = "
