@@ -1,6 +1,9 @@
 FROM alpine:3.17
 
-RUN apk add --no-cache openjdk8
+RUN apk add --no-cache openjdk8 tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Europe/Moscow" > /etc/timezone && echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata
 
 WORKDIR /opt/mmfplace
 
