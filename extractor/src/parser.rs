@@ -213,6 +213,19 @@ impl FileMeta {
         strptimes: &Vec<config::Strptime>,
     ) -> Result<FileDateTime> {
         for strptime in strptimes {
+            if !date_str.chars().all(|c| c.is_ascii()) {
+                for c in vec![" ", "-", ":", "1"] {
+                    let repl_text = date_str.replace(|c: char| !c.is_ascii(), c);
+                    log::debug!("[Encode] {} is not ascii, replace with {}", date_str, repl_text);
+                    match self.fuzzy_strptime(&repl_text, &strptime.fmt).await {
+                        Ok(Some(dt)) => {
+                            return Ok(dt);
+                        }
+                        _ => (),
+                    }
+                }
+                continue;
+            }
             match self.fuzzy_strptime(&date_str, &strptime.fmt).await {
                 Ok(Some(dt)) => {
                     return Ok(dt);
