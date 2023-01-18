@@ -1,6 +1,42 @@
 # duplicate file count max
 dup_max: 999
 
+# https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
+# "2020-04-12" => Date = NaiveDate
+# "22:10" => Time = NaiveTime
+# "2020-04-12 22:10:57" => Date + Time = NaiveDateTime
+# "2020-04-12 22:10:57+02:00" => Date + Time + TimeZone = DateTime<Tz>
+.dateparse: &dateparse
+# .naivedate: &naivedate
+  - fmt: "%Y-%m-%d"
+    test: "2002-06-20"
+  - fmt: "%Y:%m:%d"
+    test: "2010:06:24"
+# .naivedatetime: &naivedatetime
+  - fmt: "%Y:%m:%d %H:%M:%S"
+    test: "2017:08:16 12:18:36"
+  - fmt: "%Y:%m:%dT%H:%M:%S"
+    test: "2017:08:16T12:18:36"
+  - fmt: "%Y/%m/%d %H:%M:%S"
+    test: "2002/08/29 17:31:40"
+  - fmt: "%Y-%m-%dT%H:%M:%S"
+    test: "2022-04-02T08:20:27"
+# .datetimetz: &datetimetz
+  - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
+    test: "2019:05:23 06:10:21.000 UTC"
+  - fmt: "%a %b %d %H:%M:%S %:z %Y"
+    test: "Wed Nov 30 05:58:56 +01:00 2022"
+  - fmt: "%a %b %d %H:%M:%S %Z %Y"
+    test: "Wed Jan 18 13:10:27 CST 2023"
+  - fmt: "%Y-%m-%dT%H:%M:%S%z"
+    test: "2022-01-31T23:59:15+0800"
+  - fmt: "%Y-%m-%dT%H:%M:%S %:z"
+    test: "2015-01-22T00:00:00 +00:00"
+  - fmt: "%Y-%m-%dT%H:%M:%S%:z"
+    test: "2012-05-22T15:52:27+01:00"
+  - fmt: "%Y-%m-%dT%H:%M:%SZ"
+    test: "2012-12-31T04:35:10Z"
+
 # strips of metadata-extractor tag name
 # directory.getName() tag.getTagName() tag.getDescription()
 # [FileFile Modified Date = Wed Nov 30 05:58:56 +08:00 2022
@@ -8,133 +44,69 @@ dup_max: 999
 stripes:
   - name: "] Date/Time = "
     regex: "Date/Time = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S"
-        test: "2017:08:16 12:18:36"
+    strptimes: *dateparse
   # [ICC Profile] Profile Date/Time = 2022:01:01 00:00:00
   # inaccurate see: https://photo.stackexchange.com/questions/82495/what-does-the-exif-icc-profile-date-mean
   # - name: "] Profile Date/Time"
   #   regex: "Date/Time = (.*)"
-  #   strptimes:
-  #     - fmt: "%Y:%m:%d %H:%M:%S"
-  #       test: "2022:01:01 00:00:00"
+  #   strptimes: *dateparse
   - name: "] Date/Time Original = "
     regex: "Date/Time Original = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S"
-        test: "2002:07:13 15:58:28"
-      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
-        test: "2019:05:23 06:10:21.000 UTC"
+    strptimes: *dateparse
   - name: "] File Modified Date = "
     regex: "File Modified Date = (.*)"
-    strptimes:
-      - fmt: "%a %b %d %H:%M:%S %:z %Y"
-        test: "Wed Nov 30 05:58:56 +01:00 2022"
+    strptimes: *dateparse
   - name: "] Modification Time = "
     regex: "Modification Time = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
-        test: "2019:05:23 06:10:21.000 UTC"
-      - fmt: "%a %b %d %H:%M:%S %Z %Y"
-        test: "Wed Jan 18 13:10:27 CST 2023"
-      - fmt: "%a %b %d %H:%M:%S %:z %Y"
-        test: "Wed Nov 30 05:58:56 +01:00 2022"
+    strptimes: *dateparse
   - name: "] Modification Date = "
     regex: "Modification Date = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S%z"
-        test: "2022-01-31T23:59:15+0800"
+    strptimes: *dateparse
   - name: "] Creation Time = "
     regex: "Creation Time = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
-        test: "2019:05:23 06:10:21.000 UTC"
-      - fmt: "%a %b %d %H:%M:%S %Z %Y"
-        test: "Wed Jan 18 13:10:27 CST 2023"
+    strptimes: *dateparse
   - name: "] Creation Date = "
     regex: "Creation Date = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S%z"
-        test: "2022-01-31T23:59:15+0800"
+    strptimes: *dateparse
   - name: "] Last Modification Time = "
     regex: "Last Modification Time = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S"
-        test: "2013:01:01 04:08:30"
-      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
-        test: "2019:05:23 06:10:21.000 UTC"
+    strptimes: *dateparse
   - name: "] Date/Time Digitized = "
     regex: "Date/Time Digitized = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S"
-        test: "2002:07:13 15:58:28"
+    strptimes: *dateparse
+  - name: "] Digital Date Created = "
+    regex: "Digital Date Created = (.*)"
+    strptimes: *dateparse
   - name: "] date:create: = "
     regex: "date:create: (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
-        test: "2019:05:23 06:10:21.000 UTC"
+    strptimes: *dateparse
   - name: "] photoshop:DateCreated = "
     regex: "photoshop:DateCreated = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S %:z"
-        test: "2015-01-22T00:00:00 +00:00"
-      - fmt: "%Y-%m-%dT%H:%M:%S"
-        test: "2022-04-02T08:20:27"
-      - fmt: "%Y-%m-%d"
-        test: "2002-06-20"
+    strptimes: *dateparse
   - name: "] xmp:CreateDate = "
     regex: "xmp:CreateDate = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
-        test: "2012-05-22T15:52:27+01:00"
-      - fmt: "%Y-%m-%dT%H:%M:%S"
-        test: "2013-01-01T02:13:24"
-      - fmt: "%Y-%m-%dT%H:%M:%SZ"
-        test: "2012-12-31T04:35:10Z"
+    strptimes: *dateparse
   - name: "] xmp:MetadataDate = "
     regex: "xmp:MetadataDate = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
-        test: "2012-05-22T15:52:27+01:00"
-      - fmt: "%Y-%m-%dT%H:%M:%S"
-        test: "2013-01-01T02:13:24"
-      - fmt: "%Y-%m-%dT%H:%M:%SZ"
-        test: "2012-12-31T04:35:10Z"
+    strptimes: *dateparse
   - name: "] xmp:ModifyDate = "
     regex: "xmp:ModifyDate = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
-        test: "2012-05-22T15:52:27+01:00"
-      - fmt: "%Y-%m-%dT%H:%M:%S"
-        test: "2013-01-01T02:13:24"
-      - fmt: "%Y-%m-%dT%H:%M:%SZ"
-        test: "2012-12-31T04:35:10Z"
+    strptimes: *dateparse
   - name: "] Date Created = "
     regex: "Date Created = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%d"
-        test: "2015-01-22"
-      - fmt: "%Y:%m:%d"
-        test: "2002:06:20"
+    strptimes: *dateparse
   - name: "] Aufnahmedatum : "
     regex: "Aufnahmedatum : (.*)"
-    strptimes:
-      - fmt: "%Y/%m/%d %H:%M:%S"
-        test: "2002/08/29 17:31:40"
+    strptimes: *dateparse
   - name: "] xmpMM:History[1]/stEvt:when = "
     regex: "stEvt:when = (.*)"
-    strptimes:
-      - fmt: "%Y-%m-%dT%H:%M:%S%:z"
-        test: "2012-05-22T15:52:27+01:00"
+    strptimes: *dateparse
   - name: "] GPS Date Stamp = "
     regex: "GPS Date Stamp = (.*)"
-    strptimes:
-        - fmt: "%Y:%m:%d"
-          test: "2010:06:24"
+    strptimes: *dateparse
 
 blacklist:
   - ":  :     :  :"   # [Exif SubIFD] Date/Time Original =     :  :     :  :
-
 
 # some experimental extend trait
 additionals:
