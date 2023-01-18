@@ -178,7 +178,7 @@ impl SplitsProcess {
         // log::info!("start splits process");
         // log::info!("input: {}", self.input.display());
         // log::info!("output: {}", self.output.display());
-        log::debug!("config: {:#?}", self.config);
+        // log::debug!("config: {:#?}", self.config);
         // let extractor = MetadataParser::new().await?;
         // log::debug!("extractor: {:#?}", extractor);
 
