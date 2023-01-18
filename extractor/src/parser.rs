@@ -173,21 +173,6 @@ impl FileMeta {
             }
         }
 
-        match Utc.datetime_from_str(&date_str, fmt) {
-            Ok(dt) => {
-                return Ok(Some(FileDateTime {
-                    year: dt.year() as u16,
-                    month: dt.month() as u8,
-                    day: dt.day() as u8,
-                    hour: dt.hour() as u8,
-                    minute: dt.minute() as u8,
-                    second: dt.second() as u8,
-                    timestamp: dt.timestamp() as i64,
-                }));
-            }
-            Err(e) => log::debug!("Utc try {} as {}, {}", date_str, fmt, e),
-        }
-
         // Date + Time + Timezone (other or non-standard)
         match DateTime::parse_from_str(&date_str, fmt) {
             Ok(date) => {
@@ -202,6 +187,21 @@ impl FileMeta {
                 }));
             }
             Err(e) => log::debug!("DateTime try {} as {}, {}", date_str, fmt, e),
+        }
+
+        match Utc.datetime_from_str(&date_str, fmt) {
+            Ok(dt) => {
+                return Ok(Some(FileDateTime {
+                    year: dt.year() as u16,
+                    month: dt.month() as u8,
+                    day: dt.day() as u8,
+                    hour: dt.hour() as u8,
+                    minute: dt.minute() as u8,
+                    second: dt.second() as u8,
+                    timestamp: dt.timestamp() as i64,
+                }));
+            }
+            Err(e) => log::debug!("Utc try {} as {}, {}", date_str, fmt, e),
         }
 
         Ok(None)
@@ -363,19 +363,13 @@ impl FileMeta {
     async fn type_from_metadata(&self, text: &String) -> Result<Option<String>> {
         // for check_str in vec!["Expected File Name Extension", "Detected File Type Name"] {
         for check_str in vec!["Expected File Name Extension"] {
-            if !text.contains(check_str) {
-                continue;
+            if text.contains(check_str) {
+                return Ok(Some(self.regex_text_value(
+                    text,
+                    &format!("{} = (.*)", check_str),
+                    1,
+                )?));
             }
-            match self.regex_text_value(text, &format!("{} = (.*)", check_str), 1) {
-                Ok(s) => {
-                    return Ok(Some(s));
-                }
-                Err(e) => {
-                    log::debug!("[-] get file type from {} failed, {}", text, e);
-                }
-            };
-
-            break;
         }
         Ok(None)
     }
