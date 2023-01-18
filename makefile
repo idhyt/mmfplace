@@ -16,7 +16,7 @@ image-build:
 	docker build -f Dockerfile -t $(BUILD_NAME) .
 
 docker-tests:
-	[ -d tests_output ] && rm -rf tests_output
+	[ -d tests_output ] && rm -rf tests_output || true
 	docker run -it --rm -v $(ROOT_DIR)/tests:/opt/tests -v $(ROOT_DIR)/tests_output:/opt/tests_output -e RUST_LOG=DEBUG $(BUILD_NAME) --input=/opt/tests --output=/opt/tests_output --logfile=/opt/tests_output/tests.log
 	@tree tests_output
 	@echo "\n---------------- ERROR ----------------\n"
