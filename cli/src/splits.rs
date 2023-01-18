@@ -132,7 +132,7 @@ impl SplitsProcess {
         let copy_path = self.get_copy_path(&fmeta).await?;
         if self.test {
             log::info!(
-                "test success: {} -> {}",
+                "[Success] test without copy {} to {}",
                 fmeta.file_path.display(),
                 copy_path.display()
             );
@@ -141,7 +141,11 @@ impl SplitsProcess {
 
         match copy_path.is_file() {
             true => {
-                log::debug!("file {} exists, skip", copy_path.display());
+                log::info!(
+                    "[Duplicate] copy {} to {} exists, skip",
+                    fmeta.file_path.display(),
+                    copy_path.display()
+                );
                 return Ok(true);
             }
             false => {
@@ -159,6 +163,11 @@ impl SplitsProcess {
                     }
                 }
                 fmeta.copy_to(&copy_path).await?;
+                log::info!(
+                    "[Success] copy {} to {}",
+                    fmeta.file_path.display(),
+                    copy_path.display()
+                );
             }
         }
 
