@@ -11,6 +11,13 @@ stripes:
     strptimes:
       - fmt: "%Y:%m:%d %H:%M:%S"
         test: "2017:08:16 12:18:36"
+  # [ICC Profile] Profile Date/Time = 2022:01:01 00:00:00
+  # inaccurate see: https://photo.stackexchange.com/questions/82495/what-does-the-exif-icc-profile-date-mean
+  # - name: "] Profile Date/Time"
+  #   regex: "Date/Time = (.*)"
+  #   strptimes:
+  #     - fmt: "%Y:%m:%d %H:%M:%S"
+  #       test: "2022:01:01 00:00:00"
   - name: "] Date/Time Original = "
     regex: "Date/Time Original = (.*)"
     strptimes:
@@ -22,17 +29,23 @@ stripes:
     regex: "File Modified Date = (.*)"
     strptimes:
       - fmt: "%a %b %d %H:%M:%S %:z %Y"
-        test: "Wed Nov 30 05:58:56 %:z 2022"
+        test: "Wed Nov 30 05:58:56 +01:00 2022"
   - name: "] Modification Time = "
     regex: "Modification Time = (.*)"
     strptimes:
       - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
         test: "2019:05:23 06:10:21.000 UTC"
+      - fmt: "%a %b %d %H:%M:%S %Z %Y"
+        test: "Wed Jan 18 13:10:27 CST 2023"
+      - fmt: "%a %b %d %H:%M:%S %:z %Y"
+        test: "Wed Nov 30 05:58:56 +01:00 2022"
   - name: "] Creation Time = "
     regex: "Creation Time = (.*)"
     strptimes:
       - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
         test: "2019:05:23 06:10:21.000 UTC"
+      - fmt: "%a %b %d %H:%M:%S %Z %Y"
+        test: "Wed Jan 18 13:10:27 CST 2023"
   - name: "] Last Modification Time = "
     regex: "Last Modification Time = (.*)"
     strptimes:
