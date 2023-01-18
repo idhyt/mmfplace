@@ -207,7 +207,7 @@ impl FileMeta {
         Ok(None)
     }
 
-    async fn date_from_strptime(
+    async fn date_from_strptimes(
         &self,
         date_str: &str,
         strptimes: &Vec<config::Strptime>,
@@ -236,7 +236,7 @@ impl FileMeta {
             let date_string = self.regex_text_value(value, &stripe.regex, 1)?;
             // found date string, parse it
             let fdt = self
-                .date_from_strptime(&date_string, &stripe.strptimes)
+                .date_from_strptimes(&date_string, &stripe.strptimes)
                 .await?;
             log::debug!("[+] {} -> {}", date_string, fdt.to_string());
             return Ok(Some(fdt));
@@ -336,7 +336,7 @@ impl FileMeta {
         match date_string {
             // found date string, parse it
             Ok(s) => {
-                let fdt = self.date_from_strptime(&s, &stripe.strptimes).await?;
+                let fdt = self.date_from_strptimes(&s, &stripe.strptimes).await?;
                 log::debug!("[+] {} -> {}", s, fdt.to_string());
                 return Ok(Some(fdt));
             }
