@@ -21,6 +21,10 @@ dup_max: 999
     test: "2002/08/29 17:31:40"
   - fmt: "%Y-%m-%dT%H:%M:%S"
     test: "2022-04-02T08:20:27"
+  # - fmt: "%Y:%m:%d %H:%M:%S%P"
+  #   test: "2017:06:17 18:01:24pm"
+  # - fmt: "%Y:%m:%d %H:%M:%S%p"
+  #   test: "2017:06:17 18:01:24PM"
 # .datetimetz: &datetimetz
   - fmt: "%Y:%m:%d %H:%M:%S.%f %Z"
     test: "2019:05:23 06:10:21.000 UTC"
