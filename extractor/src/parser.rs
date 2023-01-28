@@ -303,10 +303,10 @@ impl FileMeta {
 
     fn earliest_from_attributes(&self) -> Result<FileDateTime> {
         let metadata = std::fs::metadata(&self.file_path)?;
-        let atime = FileTime::from_last_access_time(&metadata).seconds();
-        let mtime = FileTime::from_last_modification_time(&metadata).seconds();
+        let atime = FileTime::from_last_access_time(&metadata).unix_seconds();
+        let mtime = FileTime::from_last_modification_time(&metadata).unix_seconds();
         let ctime = match FileTime::from_creation_time(&metadata) {
-            Some(v) => v.seconds(),
+            Some(v) => v.unix_seconds(),
             None => {
                 // log::debug!("not all Unix platforms have this field available");
                 mtime
