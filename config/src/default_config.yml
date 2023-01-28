@@ -116,6 +116,7 @@ stripes:
 blacklist:
   - ":  :     :  :"   # [Exif SubIFD] Date/Time Original =     :  :     :  :
   - "2010:00:00"
+  - "2019:10:07 24:23:32"
 
 # some experimental extend trait
 additionals:
