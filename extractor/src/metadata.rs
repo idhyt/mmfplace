@@ -18,7 +18,10 @@ impl MetadataReader {
         };
 
         if !jlibs_dir.is_dir() {
-            return Err(anyhow!("java libs directory not found in {}", jlibs_dir.display()));
+            return Err(anyhow!(
+                "java libs directory not found in {}",
+                jlibs_dir.display()
+            ));
         }
 
         let extractor_jar = jlibs_dir.clone().join("metadata-extractor-2.18.0.jar");
@@ -45,11 +48,12 @@ impl MetadataReader {
 
     pub async fn read(&self, file_path: impl AsRef<Path>) -> Result<HashSet<String>> {
         let mut readers: HashSet<String> = HashSet::new();
-
+        let cps = if cfg!(windows) { ";" } else { ":" };
         let mut child = Command::new("java")
             .arg("-cp")
             .arg(format!(
-                "{xc_jar}:{me_jar}",
+                "{xc_jar}{c}{me_jar}",
+                c = cps,
                 me_jar = self.extractor_jar.display(),
                 xc_jar = self.xmpcore_jar.display()
             ))
