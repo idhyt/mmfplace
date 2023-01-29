@@ -63,20 +63,22 @@ fn main() {
     // env_logger::init();
     let args = Args::parse();
 
-    let filespec = match &args.logfile {
+    let mut logger = flexi_logger::Logger::try_with_env_or_str("info")
+        .expect("Could not create Logger from environment :(");
+    match &args.logfile {
         Some(p) => {
-            flexi_logger::FileSpec::try_from(p.to_str().unwrap()).expect("invalid logfile path")
+            let filespec = flexi_logger::FileSpec::try_from(p.to_str().unwrap())
+                .expect("invalid logfile path");
+            logger = logger
+                .log_to_file(filespec)
+                .write_mode(flexi_logger::WriteMode::Async)
+                .duplicate_to_stdout(flexi_logger::Duplicate::All)
+            // .start()
+            // .expect("failed to initialize logger!");
         }
-        None => flexi_logger::FileSpec::default(),
+        None => (), // flexi_logger::FileSpec::default(),
     };
-
-    let _logger = flexi_logger::Logger::try_with_env_or_str("info")
-        .expect("Could not create Logger from environment :(")
-        .log_to_file(filespec)
-        .write_mode(flexi_logger::WriteMode::Async)
-        .duplicate_to_stdout(flexi_logger::Duplicate::All)
-        .start()
-        .expect("failed to initialize logger!");
+    let _logger = logger.start().expect("failed to initialize logger!");
 
     log::info!("args: {:#?}", args);
 
