@@ -38,6 +38,26 @@ impl FileDateTime {
         self.year
     }
 
+    pub fn get_month(&self) -> u8 {
+        self.month
+    }
+
+    pub fn get_day(&self) -> u8 {
+        self.day
+    }
+
+    pub fn get_hour(&self) -> u8 {
+        self.hour
+    }
+
+    pub fn get_minute(&self) -> u8 {
+        self.minute
+    }
+
+    pub fn get_second(&self) -> u8 {
+        self.second
+    }
+
     pub fn get_timestamp(&self) -> i64 {
         self.timestamp
     }
@@ -216,7 +236,11 @@ impl FileMeta {
             if !date_str.chars().all(|c| c.is_ascii()) {
                 for c in vec![" ", "-", ":", "1", ""] {
                     let repl_text = date_str.replace(|c: char| !c.is_ascii(), c);
-                    log::debug!("[Encode] {} is not ascii, replace with {}", date_str, repl_text);
+                    log::debug!(
+                        "[Encode] {} is not ascii, replace with {}",
+                        date_str,
+                        repl_text
+                    );
                     match self.fuzzy_strptime(&repl_text, &strptime.fmt).await {
                         Ok(Some(dt)) => {
                             return Ok(dt);
@@ -262,12 +286,12 @@ impl FileMeta {
         &mut self,
         texts: &HashSet<String>,
         config: &config::Config,
-    ) -> Result<Vec<FileDateTime>> {
+    ) -> Result<Option<FileDateTime>> {
         let mut file_dts: Vec<FileDateTime> = Vec::new();
 
         if texts.len() == 0 {
             log::error!("no metadata found for {}", self.file_path.display());
-            return Ok(file_dts);
+            return Ok(None);
         }
 
         'outer: for value in texts {
@@ -282,7 +306,7 @@ impl FileMeta {
             // get file type from metadata
             if self.suffix.is_empty() {
                 if let Some(file_type) = self.type_from_metadata(value).await? {
-                    log::info!("[+] extractor {} from file metadata file type.", file_type);
+                    log::info!("[+] parse out {} from file metadata file type.", file_type);
                     self.set_suffix(&file_type.to_lowercase());
                 }
             }
@@ -291,14 +315,51 @@ impl FileMeta {
                 Some(dt) => dt,
                 None => continue 'outer,
             };
-            log::info!("[+] extractor {} from file metadata.", parsed.to_string());
+            log::info!("[+] parse out {} from file metadata.", parsed.to_string());
             if parsed.get_year() < 1975 {
                 log::warn!("[!] {} < 1975, skip...", parsed.get_year());
             } else {
                 file_dts.push(parsed);
             }
         }
-        Ok(file_dts)
+
+        if file_dts.len() == 0 {
+            log::error!("no date found in metadata for {}", self.file_path.display());
+            return Ok(None);
+        }
+
+        // sort by timestamp
+        file_dts.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
+
+        for index in 0..file_dts.len() {
+            // if latest
+            if index == file_dts.len() - 1 {
+                return Ok(Some(file_dts[index].clone()));
+            }
+            // hour, minute, second not all zero, used it
+            if file_dts[index].get_hour() != 0
+                || file_dts[index].get_minute() != 0
+                || file_dts[index].get_second() != 0
+            {
+                return Ok(Some(file_dts[index].clone()));
+            }
+            // if next date is not same day, used it
+            if file_dts[index + 1].get_year() != file_dts[index].get_year()
+                || file_dts[index + 1].get_month() != file_dts[index].get_month()
+                || file_dts[index + 1].get_day() != file_dts[index].get_day()
+            {
+                return Ok(Some(file_dts[index].clone()));
+            }
+            // if next date is same day but hour not all zero, used next date
+            if file_dts[index + 1].get_hour() != 0
+                || file_dts[index + 1].get_minute() != 0
+                || file_dts[index + 1].get_second() != 0
+            {
+                return Ok(Some(file_dts[index + 1].clone()));
+            }
+        }
+
+        Ok(None)
     }
 
     fn earliest_from_attributes(&self) -> Result<FileDateTime> {
@@ -395,9 +456,15 @@ impl FileMeta {
         let mut file_dts: Vec<FileDateTime> = Vec::new();
 
         let readers = extractor.read(&self.file_path).await?;
-        let dts = self.date_from_metedata(&readers, &config).await?;
-        file_dts.extend(dts);
-
+        match self.date_from_metedata(&readers, &config).await? {
+            Some(dt) => {
+                log::info!("[+] extractor {} from metadata.", dt.to_string());
+                file_dts.push(dt);
+            }
+            None => {
+                // log::error!("extract datetime from metadata failed!");
+            }
+        }
         let earliest = self.earliest_from_attributes()?;
         log::info!(
             "[+] extractor {} from file attributes.",
