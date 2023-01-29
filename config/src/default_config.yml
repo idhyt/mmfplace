@@ -48,6 +48,8 @@ dup_max: 999
     test: "2012-12-31T04:35:10Z"
   - fmt: "%a %b %d %H:%M:%S %Y"
     test: "Tue May 7 21:48:30 2002"
+  - fmt: "%Y-%m-%dT%H:%M%:z"
+    test: " 2018-07-01T20:38+08:00"
 
 # strips of metadata-extractor tag name
 # directory.getName() tag.getTagName() tag.getDescription()
@@ -121,6 +123,9 @@ blacklist:
   - ":  :     :  :"   # [Exif SubIFD] Date/Time Original =     :  :     :  :
   - "2010:00:00"
   - " 24:"            # "2019:10:07 24:23:32"
+
+retain_suffix:
+  - "heic"    # iphone
 
 # some experimental extend trait
 additionals:

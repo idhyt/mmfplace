@@ -492,16 +492,21 @@ impl FileMeta {
             }
         };
 
-        if self.suffix.is_empty() {
-            let suffix = match self.file_path.extension() {
-                Some(s) => s.to_str().unwrap().to_owned().to_lowercase(),
-                None => "".to_string(),
-            };
+        let suffix = match self.file_path.extension() {
+            Some(s) => s.to_str().unwrap().to_owned().to_lowercase(),
+            None => "".to_string(),
+        };
+        if config.retain_suffix.contains(&suffix) {
             self.set_suffix(&suffix);
-            log::debug!(
-                "file type not found, set it to {} from file name.",
-                self.suffix
-            );
+            log::debug!("retain file type {} from file name.", self.suffix);
+        } else {
+            if self.suffix.is_empty() {
+                self.set_suffix(&suffix);
+                log::debug!(
+                    "file type not found, set it to {} from file name.",
+                    self.suffix
+                );
+            }
         }
 
         log::info!(

@@ -21,6 +21,8 @@ pub struct Config {
     #[serde(default)]
     pub dup_max: u32,
     #[serde(default)]
+    pub retain_suffix: Vec<String>,
+    #[serde(default)]
     pub stripes: Vec<Stripe>,
     #[serde(default)]
     pub blacklist: Vec<String>,
@@ -58,6 +60,9 @@ impl Config {
             }
             if config.additionals.len() > 0 {
                 self.additionals.extend(config.additionals);
+            }
+            if config.retain_suffix.len() > 0 {
+                self.retain_suffix.extend(config.retain_suffix);
             }
         }
 
