@@ -124,8 +124,13 @@ blacklist:
 
 # some experimental extend trait
 additionals:
+  # - name: "filename" 
+  #   regex: (\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})_.*
+  #   strptimes:
+  #     - fmt: "%Y-%m-%d_%H-%M-%S"
+  #       test: "2018-05-02_13-13-39_dcf485515fb4c7611a704ff7f745abd3.jpg"
   - name: "filename" 
-    regex: (\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})_.*
+    regex: (\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}).*
     strptimes:
-      - fmt: "%Y-%m-%d_%H-%M-%S"
-        test: "2018-05-02_13-13-39_dcf485515fb4c7611a704ff7f745abd3.jpg"
+      - fmt: "%Y-%m-%d-%H-%M-%S"
+        test: "2018-05-02-13-13-39-01.jpg"
