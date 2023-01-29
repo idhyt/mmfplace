@@ -17,6 +17,7 @@ pub struct SplitsProcess {
     config: Config,
     test: bool,
     extractor: MetadataReader, // only init once
+    total: u64,
 }
 
 /// calculates sha256 digest as lowercase hex string
@@ -71,7 +72,17 @@ impl SplitsProcess {
         // }
 
         let extractor = MetadataReader::new(None).await?;
-
+        let mut total: u64 = 0;
+        if input.as_ref().is_dir() {
+            for entry in WalkDir::new(input.as_ref()) {
+                let entry = entry?;
+                if entry.file_type().is_file() {
+                    total += 1;
+                }
+            }
+        } else {
+            total = 1;
+        }
         Ok(Self {
             // work_dir,
             input: input.as_ref().to_path_buf(),
@@ -79,6 +90,7 @@ impl SplitsProcess {
             config,
             test,
             extractor,
+            total,
         })
     }
 
@@ -122,8 +134,8 @@ impl SplitsProcess {
         Err(anyhow!("try {} time but file exists", self.config.dup_max))
     }
 
-    async fn do_split(&self, input_file: impl AsRef<Path>) -> Result<bool> {
-        log::debug!("start process {}", input_file.as_ref().display());
+    async fn do_split(&self, input_file: impl AsRef<Path>, index: u64) -> Result<bool> {
+        log::info!("[{}/{}] start process {}", index, self.total, input_file.as_ref().display());
         let fmeta = FileMeta::new(&input_file)
             .process(&self.config, &self.extractor)
             .await?;
@@ -132,7 +144,8 @@ impl SplitsProcess {
         let copy_path = self.get_copy_path(&fmeta).await?;
         if self.test {
             log::info!(
-                "[Success] test without copy {} to {}",
+                "[{}/{}] [Success] test without copy {} to {}",
+                index, self.total,
                 fmeta.file_path.display(),
                 copy_path.display()
             );
@@ -142,7 +155,8 @@ impl SplitsProcess {
         match copy_path.is_file() {
             true => {
                 log::info!(
-                    "[Duplicate] copy {} to {} exists, skip",
+                    "[{}/{}] [Duplicate] copy {} to {} exists, skip",
+                    index, self.total,
                     fmeta.file_path.display(),
                     copy_path.display()
                 );
@@ -164,7 +178,8 @@ impl SplitsProcess {
                 }
                 fmeta.copy_to(&copy_path).await?;
                 log::info!(
-                    "[Success] copy {} to {}",
+                    "[{}/{}] [Success] copy {} to {}",
+                    index, self.total,
                     fmeta.file_path.display(),
                     copy_path.display()
                 );
@@ -181,14 +196,15 @@ impl SplitsProcess {
         // log::debug!("config: {:#?}", self.config);
         // let extractor = MetadataParser::new().await?;
         // log::debug!("extractor: {:#?}", extractor);
-
+        let mut index = 1 as u64;
         if self.input.is_file() {
-            self.do_split(&self.input).await?;
+            self.do_split(&self.input, index).await?;
         } else if self.input.is_dir() {
             for entry in WalkDir::new(&self.input) {
                 let entry = entry?;
                 if entry.file_type().is_file() {
-                    self.do_split(&entry.path()).await?;
+                    self.do_split(&entry.path(), index).await?;
+                    index += 1;
                 }
             }
         }
