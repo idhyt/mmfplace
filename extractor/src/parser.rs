@@ -275,7 +275,7 @@ impl FileMeta {
             let fdt = self
                 .date_from_strptimes(&date_string, &stripe.strptimes)
                 .await?;
-            log::debug!("[+] {} -> {}", date_string, fdt.to_string());
+            // log::debug!("[+] {} -> {}", date_string, fdt.to_string());
             return Ok(Some(fdt));
         }
 
