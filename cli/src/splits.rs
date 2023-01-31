@@ -71,7 +71,7 @@ impl SplitsProcess {
         //     create_dir_all(&output)?;
         // }
 
-        let extractor = MetadataReader::new(None).await?;
+        let extractor = MetadataReader::new(Some(work_dir)).await?;
         let mut total: u64 = 0;
         if input.as_ref().is_dir() {
             for entry in WalkDir::new(input.as_ref()) {
@@ -135,7 +135,12 @@ impl SplitsProcess {
     }
 
     async fn do_split(&self, input_file: impl AsRef<Path>, index: u64) -> Result<bool> {
-        log::info!("[{}/{}] start process {}", index, self.total, input_file.as_ref().display());
+        log::info!(
+            "[{}/{}] start process {}",
+            index,
+            self.total,
+            input_file.as_ref().display()
+        );
         let fmeta = FileMeta::new(&input_file)
             .process(&self.config, &self.extractor)
             .await?;
@@ -145,7 +150,8 @@ impl SplitsProcess {
         if self.test {
             log::info!(
                 "[{}/{}] [Success] test without copy {} to {}",
-                index, self.total,
+                index,
+                self.total,
                 fmeta.file_path.display(),
                 copy_path.display()
             );
@@ -156,7 +162,8 @@ impl SplitsProcess {
             true => {
                 log::info!(
                     "[{}/{}] [Duplicate] copy {} to {} exists, skip",
-                    index, self.total,
+                    index,
+                    self.total,
                     fmeta.file_path.display(),
                     copy_path.display()
                 );
@@ -179,7 +186,8 @@ impl SplitsProcess {
                 fmeta.copy_to(&copy_path).await?;
                 log::info!(
                     "[{}/{}] [Success] copy {} to {}",
-                    index, self.total,
+                    index,
+                    self.total,
                     fmeta.file_path.display(),
                     copy_path.display()
                 );

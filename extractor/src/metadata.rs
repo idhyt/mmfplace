@@ -11,9 +11,19 @@ pub struct MetadataReader {
 }
 
 impl MetadataReader {
-    pub async fn new(tools_dir: Option<PathBuf>) -> Result<Self> {
-        let jlibs_dir = match tools_dir {
-            Some(td) => td,
+    pub async fn new<T>(work_dir: Option<T>) -> Result<Self>
+    where
+        T: AsRef<Path>,
+    {
+        let jlibs_dir = match work_dir {
+            Some(wd) => {
+                let check_path = wd.as_ref().clone().join("extractor").join("jlibs");
+                if check_path.is_dir() {
+                    check_path
+                } else {
+                    Path::new("extractor").join("jlibs")
+                }
+            }
             None => Path::new("extractor").join("jlibs"),
         };
 
