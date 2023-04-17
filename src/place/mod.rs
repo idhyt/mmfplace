@@ -148,17 +148,7 @@ where
     let arc_mreader = Arc::new(MetadataReader::new(&work_dir)?);
     let mut index: u64 = 0;
 
-    // if total == 1 {
-    //     let file_parser = parse::FileParser::new(&input)
-    //         .create(&config, &meta_reader)
-    //         .await?;
-
-    //     log::info!("file_parser: {:?}", file_parser);
-    //     return Ok(true);
-    // }
-
     let mut handles = Vec::new();
-
     for entry in WalkDir::new(input) {
         let entry = entry?;
         if entry.file_type().is_file() {
@@ -187,14 +177,18 @@ where
         let copy_path = get_copy_path(&output, &file_parser, dup_max)?;
         if test {
             log::info!(
-                "[Success] test without copy {:?} to {:?}",
+                "[{}/{}] [Success] test without copy {:?} to {:?}",
+                index,
+                total,
                 file_parser.file_path,
                 copy_path
             );
         } else {
             copy_to(&file_parser.file_path, &copy_path).await?;
             log::info!(
-                "[Success] copy {:?} to {:?}",
+                "[{}/{}] [Success] copy {:?} to {:?}",
+                index,
+                total,
                 file_parser.file_path,
                 copy_path
             );
