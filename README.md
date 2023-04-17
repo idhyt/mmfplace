@@ -66,22 +66,51 @@ tests_output
 ## Usage
 
 ```
-Usage: cli [OPTIONS] --input <INPUT>
+Usage: mmfplace [OPTIONS] --input <INPUT> [MODE]
+
+Arguments:
+  [MODE]
+          which mode to used
+
+          [default: copy]
+
+          Possible values:
+          - test: test mode, do not copy/move file
+          - copy: Copy file to output directory
+          - move: Move file to output directory
 
 Options:
-  -w, --work-dir <WORK_DIR>  point to the run directory, must have RW permissions
-  -i, --input <INPUT>        input file/directory path
-  -o, --output <OUTPUT>      output directory path
-  -c, --config <CONFIG>      custom config file path
-      --logfile <LOGFILE>    custom the logfile path
-      --test                 test mode, do not move file
-  -h, --help                 Print help information
-  -V, --version              Print version information
+  -w, --work-dir <WORK_DIR>
+          point to the run directory, must have RW permissions
+
+  -i, --input <INPUT>
+          input file/directory path
+
+  -o, --output <OUTPUT>
+          output directory path
+
+  -c, --config <CONFIG>
+          custom config file path
+
+      --logfile <LOGFILE>
+          custom the logfile path
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
 ```
 
 `--config`: 可以追加config, 格式参考[config.yml](./config/src/default_config.yml)
 
 可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理, 详见 [makefile](./makefile) 中 docker-tests 部分
+
+建议先通过 `test` 模式进行测试, 看是否存在错误再进行整理, 命令如下:
+
+```shell
+mmfplace test --input=/path/to/mmf --logfile=/path/to/log.txt
+```
 
 ## 错误处理
 
