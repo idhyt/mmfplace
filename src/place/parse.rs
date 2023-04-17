@@ -26,6 +26,7 @@ pub struct FileParser {
     pub file_path: PathBuf,
     suffix: String,
     pub datetime: FileDateTime,
+    pub index: u64,
 }
 
 impl FileDateTime {
@@ -79,11 +80,12 @@ impl FileDateTime {
 }
 
 impl FileParser {
-    pub fn new(file_path: impl AsRef<Path>) -> Self {
+    pub fn new(file_path: impl AsRef<Path>, index: u64) -> Self {
         Self {
             file_path: file_path.as_ref().to_path_buf(),
             suffix: "".to_string(),
             datetime: FileDateTime::new(),
+            index,
         }
     }
 

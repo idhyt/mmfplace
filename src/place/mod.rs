@@ -162,7 +162,7 @@ where
             let _config = Arc::clone(&arc_config);
             let _reader = Arc::clone(&arc_mreader);
             handles.push(tokio::spawn(async move {
-                let file_parser = parse::FileParser::new(&entry.path())
+                let file_parser = parse::FileParser::new(&entry.path(), index)
                     .create(&_config, &_reader)
                     .await
                     .unwrap();
@@ -178,7 +178,7 @@ where
         if test {
             log::info!(
                 "[{}/{}] [Success] test without copy {:?} to {:?}",
-                index,
+                file_parser.index,
                 total,
                 file_parser.file_path,
                 copy_path
@@ -187,7 +187,7 @@ where
             copy_to(&file_parser.file_path, &copy_path).await?;
             log::info!(
                 "[{}/{}] [Success] copy {:?} to {:?}",
-                index,
+                file_parser.index,
                 total,
                 file_parser.file_path,
                 copy_path
