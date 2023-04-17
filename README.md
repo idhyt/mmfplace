@@ -104,12 +104,14 @@ Options:
 
 `--config`: 可以追加config, 格式参考[config.yml](./config/src/default_config.yml)
 
-可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理, 详见 [makefile](./makefile) 中 docker-tests 部分
+可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理
 
-建议先通过 `test` 模式进行测试, 看是否存在错误再进行整理, 命令如下:
+可以先运行测试命令 `make docker-tests` 详见 [makefile](./makefile) 中 docker-tests 部分
+
+正式处理前建议先通过 `test` 模式进行测试, 看是否存在错误再进行整理, 命令如下:
 
 ```shell
-mmfplace test --input=/path/to/mmf --logfile=/path/to/log.txt
+mmfplace test --input=/path/to/directory --logfile=/path/to/log.txt
 ```
 
 ## 错误处理
