@@ -12,7 +12,7 @@ pub struct MetadataReader {
 }
 
 impl MetadataReader {
-    pub fn new<T>(work_dir: T) -> Result<Self>
+    pub async fn new<T>(work_dir: T) -> Result<Self>
     where
         T: AsRef<Path>,
     {
@@ -28,6 +28,32 @@ impl MetadataReader {
         let xmpcore_jar = jlibs_dir.clone().join("xmpcore-6.1.11.jar");
         if !xmpcore_jar.is_file() {
             return Err(anyhow!("xmpcore file not found in {:?}", xmpcore_jar));
+        }
+
+        // check java runtime
+        match Command::new("java")
+            .arg("-version")
+            .stderr(Stdio::piped())
+            .output()
+            .await
+        {
+            Ok(output) => match output.status.success() {
+                true => log::debug!(
+                    "java runtime found: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                ),
+                false => {
+                    return Err(anyhow!(
+                        "java runtime not found, please install java runtime first."
+                    ));
+                }
+            },
+            Err(err) => {
+                return Err(anyhow!(
+                    "java runtime not found, please install java runtime first, {:?}",
+                    err
+                ));
+            }
         }
 
         Ok(MetadataReader {

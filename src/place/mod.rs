@@ -145,7 +145,7 @@ where
     );
     let dup_max = config.dup_max;
     let arc_config = Arc::new(config);
-    let arc_mreader = Arc::new(MetadataReader::new(&work_dir)?);
+    let arc_mreader = Arc::new(MetadataReader::new(&work_dir).await?);
     let mut index: u64 = 0;
 
     let mut handles = Vec::new();
