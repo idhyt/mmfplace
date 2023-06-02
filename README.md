@@ -102,7 +102,7 @@ Options:
           Print version
 ```
 
-`--config`: 可以追加config, 格式参考[config.yml](./config/src/default_config.yml)
+`--config`: 可以追加config, 格式参考[config.yml](./src/config/default_config.yml)
 
 可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理
 
