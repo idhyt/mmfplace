@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "cli",
+    # "config",
+    # "place",
+    "utils",
+]
+resolver = "2"
