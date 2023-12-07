@@ -1,0 +1,2120 @@
+INFO [cli] args: Args {
+    work_dir: None,
+    input: "./metadata-extractor-images",
+    output: None,
+    config: None,
+    logfile: Some(
+        "./tests/metadata-extractor-images.log",
+    ),
+    test: true,
+}
+DEBUG [cli::splits] start process ./metadata-extractor-images/m2ts/20190706142908.m2ts
+ERROR [extractor::parser] no metadata found for ./metadata-extractor-images/m2ts/20190706142908.m2ts
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:31, 1674027991 from file attributes.
+DEBUG [extractor::parser] file type not found, set it to m2ts from file name.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 07:46:31, 1674027991 found in ./metadata-extractor-images/m2ts/20190706142908.m2ts
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/m2ts/20190706142908.m2ts",
+    suffix: "m2ts",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 7,
+        minute: 46,
+        second: 31,
+        timestamp: 1674027991,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/m2ts/20190706142908.m2ts to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-07-46-31.m2ts
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/Epson PerfectionV800.tiff
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 640 pixels
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 425 pixels
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Height = 640 pixels
+DEBUG [extractor::parser] [File] File Name = Epson PerfectionV800.tiff
+DEBUG [extractor::parser] [ICC Profile] Device Mfg Description = IEC http://www.iec.ch
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif SubIFD] Color Space = sRGB
+DEBUG [extractor::parser] [ICC Profile] Media White Point = (0.9505, 1, 1.0891)
+DEBUG [extractor::parser] [ICC Profile] Primary Platform = Microsoft Corporation
+DEBUG [extractor::parser] [ICC Profile] Device manufacturer = IEC 
+DEBUG [extractor::parser] [ICC Profile] Profile Copyright = Copyright (c) 1998 Hewlett-Packard Company
+DEBUG [extractor::parser] [ICC Profile] Profile Connection Space = XYZ 
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 74 130124 260174 390224 520274 650324 780374
+DEBUG [extractor::parser] [ICC Profile] Red Colorant = (0.4361, 0.2225, 0.0139)
+DEBUG [extractor::parser] Processed 0.782 MB file in 28.77 ms
+DEBUG [extractor::parser] [Exif IFD0] Compression = Uncompressed
+DEBUG [extractor::parser] [ICC Profile] Profile Description = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = RGB
+DEBUG [extractor::parser] [ICC Profile] Tag Count = 17
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Width = 425 pixels
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions = view (0x76696577): 36 bytes
+DEBUG [extractor::parser] [Exif IFD0] Fill Order = Normal
+DEBUG [extractor::parser] [ICC Profile] Device model = sRGB
+DEBUG [extractor::parser] [Exif IFD0] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 1066 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Software = VueScan 9 x64 (9.6.01)
+DEBUG [extractor::parser] [ICC Profile] Signature = acsp
+DEBUG [extractor::parser] [Exif SubIFD] FlashPix Version = 1.00
+DEBUG [extractor::parser] [Exif IFD0] Sample Format = Unsigned, Unsigned, Unsigned
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 1066 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [ICC Profile] Media Black Point = (0, 0, 0)
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 3 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 102 rows/strip
+DEBUG [extractor::parser] [ICC Profile] Profile Date/Time = 1998:02:09 06:49:00
+DEBUG [extractor::parser] [ICC Profile] Technology = CRT 
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Exif SubIFD] Exif Version = 2.20
+DEBUG [extractor::parser] [ICC Profile] Class = Display Device
+DEBUG [extractor::parser] [ICC Profile] Device Model Description = IEC 61966-2.1 Default RGB colour space - sRGB
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions Description = Reference Viewing Condition in IEC61966-2.1
+DEBUG [extractor::parser] [ICC Profile] Profile Size = 3144
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [Exif IFD0] Model = PerfectionV800
+DEBUG [extractor::parser] [ICC Profile] Color space = RGB 
+DEBUG [extractor::parser] [ICC Profile] XYZ values = 0.964 1 0.825
+DEBUG [extractor::parser] [ICC Profile] Blue Colorant = (0.1431, 0.0606, 0.7141)
+DEBUG [extractor::parser] [ICC Profile] Version = 2.1.0
+DEBUG [extractor::parser] [ICC Profile] Luminance = (76.0365, 80, 87.1246)
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:36 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:36 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:36 +08:00 2023 -> 2023:01:18 15:46:36, 1674027996
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:36, 1674027996 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Make = Epson
+DEBUG [extractor::parser] [ICC Profile] Green Colorant = (0.3851, 0.7169, 0.0971)
+DEBUG [extractor::parser] [ICC Profile] CMM Type = Lino
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [File] File Size = 819606 bytes
+DEBUG [extractor::parser] [ICC Profile] Measurement = 1931 2° Observer, Backing (0, 0, 0), Geometry Unknown, Flare 1%, Illuminant D65
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 130050 130050 130050 130050 130050 130050 35700 bytes
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:36, 1674027996 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 15:46:36, 1674027996 found in ./metadata-extractor-images/tif/Epson PerfectionV800.tiff
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/Epson PerfectionV800.tiff",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 15,
+        minute: 46,
+        second: 36,
+        timestamp: 1674027996,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/Epson PerfectionV800.tiff to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-15-46-36.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/Issue 555 (1).tif
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0xc619) = 1 1
+DEBUG [extractor::parser] [XMP] Camera:VignettingPolynomial[5] = -4.168530e-15
+DEBUG [extractor::parser] [Exif SubIFD] Exif Version = 2.30
+DEBUG [extractor::parser] [XMP] drone-dji:CamReverse = 0
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [XMP] Camera:IrradianceGain = 16
+DEBUG [extractor::parser] [XMP] drone-dji:DroneID = cdd7347e50f5ebf9e7cd9a1f96a7dfbf
+DEBUG [extractor::parser] [GPS] GPS Altitude = 117.1 metres
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2021:07:22 10:18:46
+DEBUG [extractor::parser] NaiveDateTime try 2021:07:22 10:18:46 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2021:07:22 10:18:46 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2021:07:22 10:18:46 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2021:07:22 10:18:46 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2021:07:22 10:18:46 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2021:07:22 10:18:46 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2021:07:22 10:18:46 -> 2021:07:22 10:18:46, 1626949126
+INFO [extractor::parser] [+] extractor 2021:07:22 10:18:46, 1626949126 from file metadata.
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveFocalLengthUnits = mm
+DEBUG [extractor::parser] [XMP] drone-dji:FlightYawDegree = -48.20
+DEBUG [extractor::parser] [XMP] drone-dji:CaptureUUID = 977e4243441d11eba0abcdd7347e50f5
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 4160000 bytes
+DEBUG [extractor::parser] [Exif SubIFD] Focal Length = 5.7 mm
+DEBUG [extractor::parser] [Exif SubIFD] ISO Speed = 200
+DEBUG [extractor::parser] [XMP] drone-dji:GpsLatitude = -20.44058452
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Width = 1600 pixels
+DEBUG [extractor::parser] [XMP] Camera:VignettingPolynomial[3] = -2.867600e-09
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveDistortion[5] = 0.000968
+DEBUG [extractor::parser] [XMP] drone-dji:SensorIndex = 2
+DEBUG [extractor::parser] [XMP] Camera:BlackCurrent = 4096
+DEBUG [extractor::parser] [XMP] crs:HasSettings = False
+DEBUG [extractor::parser] [XMP] Camera:VignettingCenter[2] = 650.000000
+DEBUG [extractor::parser] [XMP] drone-dji:RtkStdHgt = 0.02404
+DEBUG [extractor::parser] [XMP] Camera:CentralWavelength = 560
+DEBUG [extractor::parser] [XMP] Camera:BandName = Green
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [XMP] drone-dji:GimbalReverse = 0
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [XMP] drone-dji:FlightYSpeed = +0.10
+DEBUG [extractor::parser] [XMP] drone-dji:DewarpHMatrix = 1.0088100,0.0002678,13.6485004,0.0055425,1.0031000,1.2842799,0.0000159,-0.0000006,1.0000000
+DEBUG [extractor::parser] [GPS] GPS Latitude = -20° 26' 26.1"
+DEBUG [extractor::parser] [XMP] Camera:RigName = FC6360
+DEBUG [extractor::parser] [XMP] Camera:WavelengthFWHM = 16
+DEBUG [extractor::parser] [Exif IFD0] Make = DJI
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveDistortion[3] = -0.313541
+DEBUG [extractor::parser] [XMP] drone-dji:FlightXSpeed = +0.00
+DEBUG [extractor::parser] [GPS] GPS Longitude Ref = E
+DEBUG [extractor::parser] [XMP] Camera:SunSensorExposureTime = 0.364
+DEBUG [extractor::parser] [XMP] drone-dji:DewarpFlag = 0
+DEBUG [extractor::parser] [XMP] Camera:PrincipalPoint = 2.324661,1.932576
+DEBUG [extractor::parser] [XMP] dc:format = image/TIF
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveDistortion[1] = -0.414660
+DEBUG [extractor::parser] [XMP] Camera:IrradianceYaw = 0.000000
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif SubIFD] Shutter Speed Value = 1 sec
+DEBUG [extractor::parser] [XMP] crs:AlreadyApplied = False
+DEBUG [extractor::parser] [XMP] drone-dji:LS_type = 1
+DEBUG [extractor::parser] [XMP] tiff:Model = FC6360
+DEBUG [extractor::parser] [XMP] drone-dji:RtkStdLat = 0.00988
+DEBUG [extractor::parser] [XMP] drone-dji:AbsoluteAltitude = +117.10
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveDistortion[4] = 0.000968
+DEBUG [extractor::parser] [XMP] drone-dji:Package_idx = 206
+DEBUG [extractor::parser] [XMP] drone-dji:RelativeOpticalCenterY = 4.71875
+DEBUG [extractor::parser] [XMP] drone-dji:RtkStdLon = 0.01137
+DEBUG [extractor::parser] [XMP] drone-dji:GimbalRollDegree = +0.00
+DEBUG [extractor::parser] [XMP] xmp:CreateDate = 2021-07-22
+DEBUG [extractor::parser] [+] 2021-07-22 -> 2021:07:22 00:00:00, 1626912000
+INFO [extractor::parser] [+] extractor 2021:07:22 00:00:00, 1626912000 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 1300 rows/strip
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Program = Program normal
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 16 bits/component/pixel
+DEBUG [extractor::parser] [XMP] Camera:IrradianceExposureTime = 0.364000
+DEBUG [extractor::parser] [XMP] drone-dji:ExposureTime = 768
+DEBUG [extractor::parser] [Exif SubIFD] Max Aperture Value = f/2.2
+DEBUG [extractor::parser] [XMP] Camera:IrradiancePitch = 0.000000
+DEBUG [extractor::parser] [XMP] drone-dji:RtkFlag = 50
+DEBUG [extractor::parser] [XMP] Camera:RadiometricCalibration[2] = 0.000000
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 1600 pixels
+DEBUG [extractor::parser] [XMP] Camera:Irradiance = 10059.419922
+DEBUG [extractor::parser] [Exif IFD0] Software = v01.17.2023
+DEBUG [extractor::parser] [Exif SubIFD] Custom Rendered = Normal process
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveDistortion[2] = 0.346141
+DEBUG [extractor::parser] [XMP] drone-dji:Irradiance = 10059.420
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Time = 12/15625 sec
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = BlackIsZero
+DEBUG [extractor::parser] [XMP] XMP Value Count = 87
+DEBUG [extractor::parser] [XMP] drone-dji:FlightPitchDegree = +5.10
+DEBUG [extractor::parser] [XMP] drone-dji:GimbalPitchDegree = -89.90
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Height = 1300 pixels
+DEBUG [extractor::parser] [Exif SubIFD] Body Serial Number = cdd7347e50f5ebf9e7cd9a1f96a7dfbf
+DEBUG [extractor::parser] [Exif IFD0] Image Description = DCIM\106FPLAN\DJI_0012.TIF
+DEBUG [extractor::parser] [XMP] drone-dji:SensorGainAdjustment = 1.132724
+DEBUG [extractor::parser] [Exif IFD0] Compression = Uncompressed
+DEBUG [extractor::parser] [XMP] drone-dji:CalibratedOpticalCenterX = 800.000000
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 8
+DEBUG [extractor::parser] [XMP] drone-dji:GpsLongitude = 57.31885385
+DEBUG [extractor::parser] [XMP] crs:Version = 7.0
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [XMP] Camera:VignettingPolynomial[6] = 1.369620e-18
+DEBUG [extractor::parser] [XMP] drone-dji:VignettingFlag = 0
+DEBUG [extractor::parser] [Exif SubIFD] Metering Mode = Center weighted average
+DEBUG [extractor::parser] [Exif SubIFD] Date/Time Digitized = 2021:07:22 10:18:45
+DEBUG [extractor::parser] NaiveDateTime try 2021:07:22 10:18:45 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2021:07:22 10:18:45 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2021:07:22 10:18:45 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2021:07:22 10:18:45 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2021:07:22 10:18:45 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2021:07:22 10:18:45 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2021:07:22 10:18:45 -> 2021:07:22 10:18:45, 1626949125
+INFO [extractor::parser] [+] extractor 2021:07:22 10:18:45, 1626949125 from file metadata.
+DEBUG [extractor::parser] [XMP] xmp:ModifyDate = 2021-07-22
+DEBUG [extractor::parser] [+] 2021-07-22 -> 2021:07:22 00:00:00, 1626912000
+INFO [extractor::parser] [+] extractor 2021:07:22 00:00:00, 1626912000 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Aperture Value = f/2.2
+DEBUG [extractor::parser] [XMP] drone-dji:CalibratedOpticalCenterY = 650.000000
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Bias Value = 0 EV
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0xc61a) = 4096
+DEBUG [extractor::parser] [XMP] Camera:VignettingPolynomial[4] = 5.174200e-12
+DEBUG [extractor::parser] [GPS] GPS Altitude Ref = Sea level
+DEBUG [extractor::parser] [XMP] Camera:VignettingCenter[1] = 800.000000
+DEBUG [extractor::parser] [Exif IFD0] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [File] File Name = Issue 555 (1).tif
+DEBUG [extractor::parser] [XMP] Camera:ModelType = perspective
+DEBUG [extractor::parser] [File] File Size = 4177249 bytes
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [XMP] drone-dji:GimbalYawDegree = -48.60
+DEBUG [extractor::parser] [XMP] tiff:Make = DJI
+DEBUG [extractor::parser] [XMP] Camera:RigCameraIndex = 2
+DEBUG [extractor::parser] [XMP] drone-dji:SelfData = Undefined
+DEBUG [extractor::parser] [XMP] Camera:VignettingPolynomial[2] = 1.207220e-06
+DEBUG [extractor::parser] [Exif SubIFD] Date/Time Original = 2021:07:22 10:18:45
+DEBUG [extractor::parser] NaiveDateTime try 2021:07:22 10:18:45 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2021:07:22 10:18:45 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2021:07:22 10:18:45 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2021:07:22 10:18:45 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2021:07:22 10:18:45 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2021:07:22 10:18:45 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2021:07:22 10:18:45 -> 2021:07:22 10:18:45, 1626949125
+INFO [extractor::parser] [+] extractor 2021:07:22 10:18:45, 1626949125 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Makernote = [8192 values]
+DEBUG [extractor::parser] [XMP] drone-dji:BandFreq = 560(+/-16)nm
+DEBUG [extractor::parser] [XMP] Camera:IsNormalized = 0
+DEBUG [extractor::parser] [XMP] drone-dji:FlightRollDegree = +4.20
+DEBUG [extractor::parser] [XMP] Camera:VignettingPolynomial[1] = 2.182350e-04
+DEBUG [extractor::parser] [XMP] drone-dji:VignettingData = 0.000218235, 1.20722e-6, -2.8676e-9, 5.1742e-12, -4.16853e-15, 1.36962e-18
+DEBUG [extractor::parser] [XMP] Camera:RadiometricCalibration[1] = 1.132724
+DEBUG [extractor::parser] [XMP] drone-dji:Cfg_cnt = 1
+DEBUG [extractor::parser] [XMP] drone-dji:RawData = 5954.000 7023.000 7714.000 7191.000 7833.000 5799.000 5217.000 6077.000 6195.000 6960.000 2974.000 1438.000 1579.000 3030.000 4373.000 4235.000 4997.000 4962.000 
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Mode = Auto exposure
+DEBUG [extractor::parser] [XMP] drone-dji:RelativeAltitude = +120.99
+DEBUG [extractor::parser] [XMP] Camera:PerspectiveFocalLength = 5.74
+DEBUG [extractor::parser] [XMP] Camera:SunSensor = 10059.420
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:38 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:38 +08:00 2023 -> 2023:01:18 15:46:38, 1674027998
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:38, 1674027998 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Focal Length 35 = 40 mm
+DEBUG [extractor::parser] [XMP] Camera:RadiometricCalibration[3] = 0.000000
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 1300 pixels
+DEBUG [extractor::parser] [Exif IFD0] Model = FC6360
+DEBUG [extractor::parser] [Exif SubIFD] F-Number = f/2.2
+DEBUG [extractor::parser] [XMP] drone-dji:DewarpData = 2019-06-19;1952.8499756,1942.8399658,-25.1129761,-5.8079834,-0.4146600,0.3461410,0.0009680,0.0009680,-0.3135410
+DEBUG [extractor::parser] [XMP] Camera:IrradianceRoll = 0.000000
+DEBUG [extractor::parser] [XMP] drone-dji:FlightZSpeed = +0.00
+DEBUG [extractor::parser] [XMP] drone-dji:BandName = Green
+DEBUG [extractor::parser] [XMP] drone-dji:CalibratedFocalLength = 1913.333374
+DEBUG [extractor::parser] [XMP] drone-dji:SensorGain = 1.000
+DEBUG [extractor::parser] [XMP] crs:HasCrop = False
+DEBUG [extractor::parser] [GPS] GPS Latitude Ref = S
+DEBUG [extractor::parser] Processed 3.984 MB file in 95.19 ms
+DEBUG [extractor::parser] [XMP] drone-dji:RelativeOpticalCenterX = 3.90625
+DEBUG [extractor::parser] [GPS] GPS Version ID = 2.300
+DEBUG [extractor::parser] [GPS] GPS Longitude = 57° 19' 7.87"
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2021:07:22 00:00:00, 1626912000 found in ./metadata-extractor-images/tif/Issue 555 (1).tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/Issue 555 (1).tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2021,
+        month: 7,
+        day: 22,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        timestamp: 1626912000,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/Issue 555 (1).tif to /Users/idhyt/Working/mmfplace/target/debug/output/2021/2021-07-22-00-00-00.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/multipage.tif
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Exif Thumbnail] Bits Per Sample = 1 bits/component/pixel
+DEBUG [extractor::parser] [Exif Thumbnail] Software = IrfanView
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 600 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 16
+DEBUG [extractor::parser] [Exif Thumbnail] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [Exif Thumbnail] Image Height = 2200 pixels
+DEBUG [extractor::parser] [Exif Thumbnail] Compression = T6/Group 4 Fax
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif Thumbnail] Rows Per Strip = 2200 rows/strip
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 7803 bytes
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 1 bits/component/pixel
+DEBUG [extractor::parser] [Exif Thumbnail] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] [Exif Thumbnail] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [Exif Thumbnail] JPEG Tables = [289 values]
+DEBUG [extractor::parser] [Exif Thumbnail] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 600 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Compression = T6/Group 4 Fax
+DEBUG [extractor::parser] [Exif Thumbnail] New Subfile Type = Single page of multi-page image
+DEBUG [extractor::parser] [Exif Thumbnail] X Resolution = 200 dots per inch
+DEBUG [extractor::parser] [Exif Thumbnail] Fill Order = Normal
+DEBUG [extractor::parser] [Exif Thumbnail] Unknown tag (0x0124) = 0
+DEBUG [extractor::parser] [Exif Thumbnail] Page Number = 0 0
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 6170 pixels
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 4670 pixels
+DEBUG [extractor::parser] [Exif Thumbnail] Resolution Unit = Inch
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] Processed 1.462 MB file in 16.36 ms
+DEBUG [extractor::parser] [File] File Name = multipage.tif
+DEBUG [extractor::parser] [Exif Thumbnail] Image Width = 1700 pixels
+DEBUG [extractor::parser] [Exif Thumbnail] Strip Offsets = 1529066
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 6170 rows/strip
+DEBUG [extractor::parser] [Exif Thumbnail] Y Resolution = 200 dots per inch
+DEBUG [extractor::parser] [Exif Thumbnail] Unknown tag (0x0125) = 0
+DEBUG [extractor::parser] [File] File Size = 1533068 bytes
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:38 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:38 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:38 +08:00 2023 -> 2023:01:18 15:46:38, 1674027998
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:38, 1674027998 from file metadata.
+DEBUG [extractor::parser] [Exif Thumbnail] Strip Byte Counts = 4002 bytes
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:38, 1674027998 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 15:46:38, 1674027998 found in ./metadata-extractor-images/tif/multipage.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/multipage.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 15,
+        minute: 46,
+        second: 38,
+        timestamp: 1674027998,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/multipage.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-15-46-38.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/Issue 217.tif
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions = view (0x76696577): 36 bytes
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 1082 pixels
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Width = 1805 pixels
+DEBUG [extractor::parser] [ICC Profile] Profile Copyright = Copyright (c) 1998 Hewlett-Packard Company
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 23966
+DEBUG [extractor::parser] [ICC Profile] Measurement = 1931 2° Observer, Backing (0, 0, 0), Geometry Unknown, Flare 1%, Illuminant D65
+DEBUG [extractor::parser] [ICC Profile] Tag Count = 17
+DEBUG [extractor::parser] [Exif IFD0] Compression = Uncompressed
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = RGB
+DEBUG [extractor::parser] [Photoshop] Layer Selection IDs = 0 1 0 0 0 2
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Sony Camera Raw
+DEBUG [extractor::parser] [ICC Profile] Rendering Intent = Media-Relative Colorimetric
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Height = 1082 pixels
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 72 dots per inch
+DEBUG [extractor::parser] [ICC Profile] Device Model Description = IEC 61966-2.1 Default RGB colour space - sRGB
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:when = 2016-12-29T21:27:58+01:00
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2016-12-29T21:27:58+01:00 -> 2016:12:29 21:27:58, 1483043278
+INFO [extractor::parser] [+] extractor 2016:12:29 21:27:58, 1483043278 from file metadata.
+DEBUG [extractor::parser] [Photoshop] Grid and Guides Information = 0 0 0 1 0 0 2 64 0 0 2 64 0 0 0 0
+DEBUG [extractor::parser] [ICC Profile] Red Colorant = (0.4361, 0.2225, 0.0139)
+DEBUG [extractor::parser] [XMP] photoshop:ICCProfile = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [Photoshop] Color Halftoning Information = [72 values]
+DEBUG [extractor::parser] [Photoshop] Print Style = [557 values]
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 72 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [Photoshop] Layer State Information = 0 0
+DEBUG [extractor::parser] [XMP] photoshop:ColorMode = 3
+DEBUG [extractor::parser] [Photoshop] Seed Number = 4
+DEBUG [extractor::parser] [ICC Profile] Profile Date/Time = 1998:02:09 06:49:00
+DEBUG [extractor::parser] [ICC Profile] Green Colorant = (0.3851, 0.7169, 0.0971)
+DEBUG [extractor::parser] [Photoshop] Print Flags = 0 0 0 0 0 0 0 0 1
+DEBUG [extractor::parser] [Photoshop] URL List = 0
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 5859030 bytes
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2016:12:29 21:27:58
+DEBUG [extractor::parser] NaiveDateTime try 2016:12:29 21:27:58 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016:12:29 21:27:58 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016:12:29 21:27:58 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2016:12:29 21:27:58 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2016:12:29 21:27:58 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2016:12:29 21:27:58 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2016:12:29 21:27:58 -> 2016:12:29 21:27:58, 1483046878
+INFO [extractor::parser] [+] extractor 2016:12:29 21:27:58, 1483046878 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 1805 pixels
+DEBUG [extractor::parser] [ICC Profile] XYZ values = 0.964 1 0.825
+DEBUG [extractor::parser] [ICC Profile] Blue Colorant = (0.1431, 0.0606, 0.7141)
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:instanceID = xmp.iid:149ACA4905CEE611A50CDB347D99C8CB
+DEBUG [extractor::parser] [Photoshop] Color Transfer Functions = [112 values]
+DEBUG [extractor::parser] [Photoshop] Caption Digest = 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+DEBUG [extractor::parser] [ICC Profile] Signature = acsp
+DEBUG [extractor::parser] [XMP] xmp:ModifyDate = 2016-12-29T21:27:58+01:00
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2016-12-29T21:27:58+01:00 -> 2016:12:29 21:27:58, 1483043278
+INFO [extractor::parser] [+] extractor 2016:12:29 21:27:58, 1483043278 from file metadata.
+DEBUG [extractor::parser] [XMP] XMP Value Count = 14
+DEBUG [extractor::parser] [Photoshop] Slices =  (0,0,1082,1805) 1 Slices
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:action = created
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [XMP] xmp:MetadataDate = 2016-12-29T21:27:58+01:00
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2016-12-29T21:27:58+01:00 -> 2016:12:29 21:27:58, 1483043278
+INFO [extractor::parser] [+] extractor 2016:12:29 21:27:58, 1483043278 from file metadata.
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:softwareAgent = Adobe Photoshop CS6 (Windows)
+DEBUG [extractor::parser] [Photoshop] Layers Group Information = 0 0
+DEBUG [extractor::parser] [ICC Profile] Class = Display Device
+DEBUG [extractor::parser] [ICC Profile] Luminance = (76.0365, 80, 87.1246)
+DEBUG [extractor::parser] [Photoshop] Print Info 2 = [317 values]
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 1082 rows/strip
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x935c) = [4542144 values]
+DEBUG [extractor::parser] [Exif IFD0] Software = Adobe Photoshop CS6 (Windows)
+DEBUG [extractor::parser] [ICC Profile] Color space = RGB 
+DEBUG [extractor::parser] [XMP] xmpMM:DocumentID = xmp.did:149ACA4905CEE611A50CDB347D99C8CB
+DEBUG [extractor::parser] [Photoshop] Version Info = 1 (Adobe Photoshop, Adobe Photoshop CS6) 1
+DEBUG [extractor::parser] [ICC Profile] Profile Size = 3144
+DEBUG [extractor::parser] [Photoshop] Thumbnail Data = JpegRGB, 160x96, Decomp 46080 bytes, 1572865 bpp, 3997 bytes
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Photoshop] Resolution Info = 72x72 DPI
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [ICC Profile] Device manufacturer = IEC 
+DEBUG [extractor::parser] [ICC Profile] CMM Type = Lino
+DEBUG [extractor::parser] [ICC Profile] Profile Description = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [Exif IFD0] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 3 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [ICC Profile] Version = 2.1.0
+DEBUG [extractor::parser] [ICC Profile] Profile Connection Space = XYZ 
+DEBUG [extractor::parser] [ICC Profile] Primary Platform = Microsoft Corporation
+DEBUG [extractor::parser] [ICC Profile] Media White Point = (0.9505, 1, 1.0891)
+DEBUG [extractor::parser] [XMP] dc:format = image/tiff
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Photoshop] Print Scale = Centered, Scale 1.0
+DEBUG [extractor::parser] [Exif SubIFD] Color Space = sRGB
+DEBUG [extractor::parser] [ICC Profile] Media Black Point = (0, 0, 0)
+DEBUG [extractor::parser] [Photoshop] Pixel Aspect Ratio = 1.0
+DEBUG [extractor::parser] [XMP] xmp:CreatorTool = Adobe Photoshop CS6 (Windows)
+DEBUG [extractor::parser] [File Type] Detected File Type Name = ARW
+DEBUG [extractor::parser] [File] File Name = Issue 217.tif
+DEBUG [extractor::parser] [Photoshop] Global Angle = 120
+DEBUG [extractor::parser] [ICC Profile] Device model = sRGB
+DEBUG [extractor::parser] [XMP] xmp:CreateDate = 2016-12-29T21:27:58+01:00
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2016-12-29T21:27:58+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2016-12-29T21:27:58+01:00 -> 2016:12:29 21:27:58, 1483043278
+INFO [extractor::parser] [+] extractor 2016:12:29 21:27:58, 1483043278 from file metadata.
+DEBUG [extractor::parser] [ICC Profile] Device Mfg Description = IEC http://www.iec.ch
+DEBUG [extractor::parser] Processed 9.942 MB file in 101.61 ms
+DEBUG [extractor::parser] [File] File Size = 10425188 bytes
+DEBUG [extractor::parser] [XMP] xmpMM:OriginalDocumentID = xmp.did:149ACA4905CEE611A50CDB347D99C8CB
+DEBUG [extractor::parser] [Photoshop] Global Altitude = 30
+DEBUG [extractor::parser] [XMP] xmpMM:InstanceID = xmp.iid:149ACA4905CEE611A50CDB347D99C8CB
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions Description = Reference Viewing Condition in IEC61966-2.1
+DEBUG [extractor::parser] [Photoshop] Layer Groups Enabled ID = 1
+DEBUG [extractor::parser] [Photoshop] Print Flags Information = 0 1 0 0 0 0 0 0 0 2
+DEBUG [extractor::parser] [ICC Profile] Technology = CRT 
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = arw
+INFO [extractor::parser] [+] extractor arw from file metadata file type.
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2016:12:29 21:27:58, 1483043278 found in ./metadata-extractor-images/tif/Issue 217.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/Issue 217.tif",
+    suffix: "arw",
+    datetime: FileDateTime {
+        year: 2016,
+        month: 12,
+        day: 29,
+        hour: 21,
+        minute: 27,
+        second: 58,
+        timestamp: 1483043278,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/Issue 217.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2016/2016-12-29-21-27-58.arw
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/Issue 16.tif
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentPurple = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[12]/stEvt:action = derived
+DEBUG [extractor::parser] [XMP] crs:ParametricShadowSplit = 25
+DEBUG [extractor::parser] Processed 1.763 MB file in 103.80 ms
+DEBUG [extractor::parser] [XMP] xmpMM:History[11]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [XMP] crs:GrainAmount = 0
+DEBUG [extractor::parser] [XMP] photoshop:ICCProfile = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [XMP] crs:ParametricDarks = 0
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentBlue = 0
+DEBUG [extractor::parser] [Exif IFD0] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [XMP] photoshop:State = NY
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentRed = 0
+DEBUG [extractor::parser] [XMP] xmpMM:DocumentID = uuid:90DE4FE487BEE211B02BDB0AD9151D25
+DEBUG [extractor::parser] [XMP] tiff:PhotometricInterpretation = 2
+DEBUG [extractor::parser] [XMP] xmpMM:History[6]/stEvt:instanceID = xmp.iid:FABCD4E5092068119109A9ADE0FA654F
+DEBUG [extractor::parser] [XMP] exif:PixelXDimension = 728
+DEBUG [extractor::parser] [XMP] crs:ProcessVersion = 5.0
+DEBUG [extractor::parser] [XMP] xmpMM:History[3]/stEvt:action = derived
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 47096
+DEBUG [extractor::parser] [XMP] crs:LensManualDistortionAmount = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[11]/stEvt:when = 2010-10-21T09:46:30-04:00
+DEBUG [extractor::parser] [XMP] xmpMM:History[6]/stEvt:when = 2010-10-21T09:45:20-04:00
+DEBUG [extractor::parser] [XMP] tiff:NativeDigest = 256,257,258,259,262,274,277,284,530,531,282,283,296,301,318,319,529,532,306,270,271,272,305,315,33432;DC311D4C1317A16A36A5C36B66E221B6
+DEBUG [extractor::parser] <plist version="1.0">
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentYellow = 0
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiTelWork = 917-940-4139
+DEBUG [extractor::parser] [XMP] xmpMM:History[7]/stEvt:when = 2010-10-21T09:45:35-04:00
+DEBUG [extractor::parser] [XMP] photoshop:DateCreated = 2010-01-01
+DEBUG [extractor::parser] [+] 2010-01-01 -> 2010:01:01 00:00:00, 1262304000
+INFO [extractor::parser] [+] extractor 2010:01:01 00:00:00, 1262304000 from file metadata.
+DEBUG [extractor::parser] 	<key>com.apple.print.PageFormat.PMHorizontalRes</key>
+DEBUG [extractor::parser] [XMP] tiff:Orientation = 1
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentBlue = 0
+DEBUG [extractor::parser] [XMP] crs:SharpenEdgeMasking = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[5]/stEvt:when = 2010-10-16T22:39:30-04:00
+DEBUG [extractor::parser] [XMP] xmpMM:History[2]/stEvt:action = converted
+DEBUG [extractor::parser] [XMP] crs:SplitToningBalance = 0
+DEBUG [extractor::parser] [XMP] crs:ToneCurveGreen[2] = 255, 255
+DEBUG [extractor::parser] [Exif SubIFD] Scene Type = Directly photographed image
+DEBUG [extractor::parser] [XMP] crs:PerspectiveScale = 100
+DEBUG [extractor::parser] [XMP] tiff:ImageWidth = 728
+DEBUG [extractor::parser] [IPTC] Copyright Notice = © 2010 Eric Piasecki
+DEBUG [extractor::parser] [XMP] xmpMM:History[13]/stEvt:action = saved
+DEBUG [extractor::parser] [XMP] xmpMM:History[6]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [ICC Profile] Device manufacturer = IEC 
+DEBUG [extractor::parser] [XMP] exif:PixelYDimension = 825
+DEBUG [extractor::parser] [XMP] dc:subject[2] = color
+DEBUG [extractor::parser] [XMP] xmp:CreateDate = 2013-05-15T09:42:30-07:00
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2013-05-15T09:42:30-07:00 -> 2013:05:15 09:42:30, 1368636150
+INFO [extractor::parser] [+] extractor 2013:05:15 09:42:30, 1368636150 from file metadata.
+DEBUG [extractor::parser] [XMP] crs:PostCropVignetteAmount = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[5]/stEvt:changed = /
+DEBUG [extractor::parser] <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [XMP] xmpMM:History[4]/stEvt:changed = /
+DEBUG [extractor::parser] [IPTC] Coded Character Set = UTF-8
+DEBUG [extractor::parser] [IPTC] Digital Time Created = 16:06:06-0400
+DEBUG [extractor::parser] [XMP] xmpMM:History[11]/stEvt:action = saved
+DEBUG [extractor::parser] [Photoshop] Print Scale = Centered, Scale 1.0
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions = view (0x76696577): 36 bytes
+DEBUG [extractor::parser] [XMP] crs:LensProfileSetup = LensDefaults
+DEBUG [extractor::parser] [IPTC] Keywords = apt;color;kureck jones;moroccan;vivid
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 825 pixels
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentGreen = 0
+DEBUG [extractor::parser] [Photoshop] Sheet Disclosure = [70 values]
+DEBUG [extractor::parser] [ICC Profile] Media White Point = (0.9505, 1, 1.0891)
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:changed = /
+DEBUG [extractor::parser] [XMP] tiff:YResolution = 3000000/10000
+DEBUG [extractor::parser] [XMP] crs:AlreadyApplied = True
+DEBUG [extractor::parser] [XMP] dc:subject[1] = apt
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiAdrCtry = USA
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentPurple = 0
+DEBUG [extractor::parser] [Exif SubIFD] Color Space = sRGB
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentOrange = 0
+DEBUG [extractor::parser] [XMP] crs:BlueSaturation = 0
+DEBUG [extractor::parser] [Photoshop] Grid and Guides Information = 0 0 0 1 0 0 2 64 0 0 2 64 0 0 0 0
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2013:05:15 09:42:30
+DEBUG [extractor::parser] NaiveDateTime try 2013:05:15 09:42:30 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013:05:15 09:42:30 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013:05:15 09:42:30 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2013:05:15 09:42:30 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2013:05:15 09:42:30 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2013:05:15 09:42:30 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2013:05:15 09:42:30 -> 2013:05:15 09:42:30, 1368610950
+INFO [extractor::parser] [+] extractor 2013:05:15 09:42:30, 1368610950 from file metadata.
+DEBUG [extractor::parser] [XMP] crs:Clarity = 0
+DEBUG [extractor::parser] [XMP] crs:ToneCurveBlue[2] = 255, 255
+DEBUG [extractor::parser] [Photoshop] URL List = 0
+DEBUG [extractor::parser] [Photoshop] Thumbnail Data = JpegRGB, 141x160, Decomp 67840 bytes, 1572865 bpp, 5028 bytes
+DEBUG [extractor::parser] [XMP] dc:rights[1] = © 2010 Eric Piasecki
+DEBUG [extractor::parser] [XMP] crs:ConvertToGrayscale = False
+DEBUG [extractor::parser] [XMP] crs:ToneCurve[1] = 0, 0
+DEBUG [extractor::parser] 			</dict>
+DEBUG [extractor::parser] [XMP] crs:ToneCurve[2] = 255, 255
+DEBUG [extractor::parser] [IPTC] Country/Primary Location Name = USA
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Program = Manual control
+DEBUG [extractor::parser] [XMP] crs:ParametricLights = 0
+DEBUG [extractor::parser] [XMP] crs:DefringePurpleHueHi = 70
+DEBUG [extractor::parser] [XMP] xmpMM:History[4]/stEvt:action = saved
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentPurple = 0
+DEBUG [extractor::parser] [XMP] crs:Contrast = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[7]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 1801800 bytes
+DEBUG [extractor::parser] [XMP] crs:DefringePurpleAmount = 0
+DEBUG [extractor::parser] [Photoshop] Caption Digest = 30 79 116 122 129 19 32 237 165 125 149 102 210 226 117 0
+DEBUG [extractor::parser] [XMP] tiff:Make = Phase One
+DEBUG [extractor::parser] [XMP] exif:ShutterSpeedValue = 2584963/1000000
+DEBUG [extractor::parser] [ICC Profile] Device model = sRGB
+DEBUG [extractor::parser] [XMP] xmpMM:History[10]/stEvt:action = saved
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentGreen = 0
+DEBUG [extractor::parser] [Exif IFD0] Compression = Uncompressed
+DEBUG [extractor::parser] [XMP] exif:ExposureTime = 1/6
+DEBUG [extractor::parser] [IPTC] Province/State = NY
+DEBUG [extractor::parser] [Exif IFD0] Copyright = © 2010 Eric Piasecki
+DEBUG [extractor::parser] <dict>
+DEBUG [extractor::parser] [ICC Profile] Technology = CRT 
+DEBUG [extractor::parser] [XMP] crs:CameraProfile = Embedded
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentOrange = 0
+DEBUG [extractor::parser] 				<key>com.apple.print.PageFormat.PMHorizontalRes</key>
+DEBUG [extractor::parser] [XMP] crs:ColorNoiseReduction = 0
+DEBUG [extractor::parser] 		<array>
+DEBUG [extractor::parser] [ICC Profile] Red Colorant = (0.4361, 0.2225, 0.0139)
+DEBUG [extractor::parser] [XMP] xmpMM:History[4]/stEvt:instanceID = xmp.iid:F97F1174072068119109E9E219B5AC6D
+DEBUG [extractor::parser] [XMP] xmpMM:History[9]/stEvt:action = derived
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentYellow = 0
+DEBUG [extractor::parser] [Exif SubIFD] ISO Speed Ratings = 100
+DEBUG [extractor::parser] [ICC Profile] Media Black Point = (0, 0, 0)
+DEBUG [extractor::parser] [XMP] exif:ExifVersion = 0230
+DEBUG [extractor::parser] [XMP] xmpMM:History[7]/stEvt:changed = /
+DEBUG [extractor::parser] [XMP] crs:BlueHue = 0
+DEBUG [extractor::parser] [ICC Profile] Profile Size = 3144
+DEBUG [extractor::parser] [Photoshop] Timeline Information = [516 values]
+DEBUG [extractor::parser] [XMP] crs:PerspectiveVertical = 0
+DEBUG [extractor::parser] [XMP] tiff:BitsPerSample[3] = 8
+DEBUG [extractor::parser] [XMP] photoshop:History = 
+DEBUG [extractor::parser] [Exif IFD0] Model = P 45+
+DEBUG [extractor::parser] 		<key>com.apple.print.ticket.itemArray</key>
+DEBUG [extractor::parser] [XMP] xmpMM:History[13]/stEvt:softwareAgent = Adobe Photoshop Lightroom 4.1 (Macintosh)
+DEBUG [extractor::parser] [XMP] crs:ToneCurveRed[2] = 255, 255
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiUrlWork = www.ericpiasecki.com
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentMagenta = 0
+DEBUG [extractor::parser] [XMP] crs:Shadows = 0
+DEBUG [extractor::parser] [XMP] crs:Sharpness = 0
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = arw
+INFO [extractor::parser] [+] extractor arw from file metadata file type.
+DEBUG [extractor::parser] [XMP] crs:RedHue = 0
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiAdrCity = New York
+DEBUG [extractor::parser] [XMP] dc:subject[3] = kureck jones
+DEBUG [extractor::parser] [ICC Profile] Profile Date/Time = 1998:02:09 06:49:00
+DEBUG [extractor::parser] [XMP] crs:SharpenDetail = 25
+DEBUG [extractor::parser] [XMP] crs:Exposure = 0.00
+DEBUG [extractor::parser] [XMP] xmpMM:History[10]/stEvt:instanceID = xmp.iid:FCBCD4E5092068119109A9ADE0FA654F
+DEBUG [extractor::parser] 		<string>com.apple.jobticket</string>
+DEBUG [extractor::parser] [XMP] tiff:BitsPerSample[1] = 8
+DEBUG [extractor::parser] [XMP] xmpRights:Marked = True
+DEBUG [extractor::parser] [XMP] crs:PerspectiveRotate = 0.0
+DEBUG [extractor::parser] [XMP] crs:ToneCurveName = Linear
+DEBUG [extractor::parser] [Exif IFD0] Artist = Eric Piasecki Photography LLC
+DEBUG [extractor::parser] [XMP] tiff:ImageLength = 825
+DEBUG [extractor::parser] [XMP] crs:Brightness = 0
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [Exif SubIFD] Date/Time Original = 2010:09:30 16:06:06
+DEBUG [extractor::parser] NaiveDateTime try 2010:09:30 16:06:06 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010:09:30 16:06:06 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010:09:30 16:06:06 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2010:09:30 16:06:06 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2010:09:30 16:06:06 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2010:09:30 16:06:06 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2010:09:30 16:06:06 -> 2010:09:30 16:06:06, 1285862766
+INFO [extractor::parser] [+] extractor 2010:09:30 16:06:06, 1285862766 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 728 pixels
+DEBUG [extractor::parser] [ICC Profile] Version = 2.1.0
+DEBUG [extractor::parser] [ICC Profile] Profile Description = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [XMP] tiff:Model = P 45+
+DEBUG [extractor::parser] [XMP] dc:subject[4] = moroccan
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentAqua = 0
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentBlue = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[12]/stEvt:parameters = saved to new location
+DEBUG [extractor::parser] [XMP] xmpMM:History[9]/stEvt:parameters = converted from application/vnd.adobe.photoshop to image/tiff
+DEBUG [extractor::parser] [XMP] exif:ColorSpace = 1
+DEBUG [extractor::parser] [XMP] photoshop:Country = USA
+DEBUG [extractor::parser] [Photoshop] Print Flags Information = 0 1 0 0 0 0 0 0 0 1
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:when = 2010-10-16T21:46:26-04:00
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010-10-16T21:46:26-04:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010-10-16T21:46:26-04:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2010-10-16T21:46:26-04:00 -> 2010:10:16 21:46:26, 1287279986
+INFO [extractor::parser] [+] extractor 2010:10:16 21:46:26, 1287279986 from file metadata.
+DEBUG [extractor::parser] [XMP] crs:SplitToningShadowSaturation = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[7]/stEvt:action = saved
+DEBUG [extractor::parser] [ICC Profile] Device Mfg Description = IEC http://www.iec.ch
+DEBUG [extractor::parser] [ICC Profile] Device Model Description = IEC 61966-2.1 Default RGB colour space - sRGB
+DEBUG [extractor::parser] 				<key>com.apple.print.ticket.stateFlag</key>
+DEBUG [extractor::parser] [Exif SubIFD] Date/Time Digitized = 2010:09:30 16:06:06
+DEBUG [extractor::parser] NaiveDateTime try 2010:09:30 16:06:06 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010:09:30 16:06:06 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010:09:30 16:06:06 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2010:09:30 16:06:06 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2010:09:30 16:06:06 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2010:09:30 16:06:06 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2010:09:30 16:06:06 -> 2010:09:30 16:06:06, 1285862766
+INFO [extractor::parser] [+] extractor 2010:09:30 16:06:06, 1285862766 from file metadata.
+DEBUG [extractor::parser] [XMP] xmpMM:History[6]/stEvt:changed = /
+DEBUG [extractor::parser] [Photoshop] Print Flags = 0 0 0 0 0 0 0 0 1
+DEBUG [extractor::parser] [XMP] exif:FileSource = 3
+DEBUG [extractor::parser] [XMP] photoshop:City = New York
+DEBUG [extractor::parser] [XMP] crs:VignetteAmount = 0
+DEBUG [extractor::parser] 		<key>com.apple.print.ticket.creator</key>
+DEBUG [extractor::parser] 	</dict>
+DEBUG [extractor::parser] [ICC Profile] Blue Colorant = (0.1431, 0.0606, 0.7141)
+DEBUG [extractor::parser] [Photoshop] Color Transfer Functions = [112 values]
+DEBUG [extractor::parser] 			<dict>
+DEBUG [extractor::parser] [Exif SubIFD] White Balance = Other
+DEBUG [extractor::parser] [ICC Profile] Signature = acsp
+DEBUG [extractor::parser] [XMP] crs:GreenHue = 0
+DEBUG [extractor::parser] [XMP] crs:DefringeGreenAmount = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[2]/stEvt:parameters = from image/tiff to application/vnd.adobe.photoshop
+DEBUG [extractor::parser] [XMP] exif:DateTimeOriginal = 2010-09-30T16:06:06-07:00
+DEBUG [extractor::parser] [File Type] Detected File Type Name = ARW
+DEBUG [extractor::parser] [XMP] crs:LuminanceSmoothing = 0
+DEBUG [extractor::parser] [ICC Profile] Primary Platform = Microsoft Corporation
+DEBUG [extractor::parser] [XMP] tiff:Compression = 1
+DEBUG [extractor::parser] [XMP] crs:IncrementalTemperature = 0
+DEBUG [extractor::parser] [XMP] crs:ShadowTint = 0
+DEBUG [extractor::parser] [ICC Profile] Luminance = (76.0365, 80, 87.1246)
+DEBUG [extractor::parser] [XMP] xmpMM:DerivedFrom/stRef:documentID = xmp.did:BD2FF02B08206811822AD8C695AB4810
+DEBUG [extractor::parser] [XMP] crs:FillLight = 0
+DEBUG [extractor::parser] [XMP] crs:ToneCurveGreen[1] = 0, 0
+DEBUG [extractor::parser] [Photoshop] Copyright Flag = Yes
+DEBUG [extractor::parser] [XMP] crs:HighlightRecovery = 0
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = RGB
+DEBUG [extractor::parser] [XMP] exif:ISOSpeedRatings[1] = 100
+DEBUG [extractor::parser] [XMP] xmpMM:History[8]/stEvt:action = converted
+DEBUG [extractor::parser] [Exif SubIFD] Exif Version = 2.30
+DEBUG [extractor::parser] [XMP] crs:LensProfileEnable = 0
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentMagenta = 0
+DEBUG [extractor::parser] 		<key>...
+DEBUG [extractor::parser] [Photoshop] Onion Skins = [168 values]
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentAqua = 0
+DEBUG [extractor::parser] [XMP] crs:ParametricHighlightSplit = 75
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [IPTC] Digital Date Created = 2010:09:30
+DEBUG [extractor::parser] NaiveDate try 2010:09:30 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2010:09:30 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2010:09:30 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] [+] 2010:09:30 -> 2010:09:30 00:00:00, 1285804800
+INFO [extractor::parser] [+] extractor 2010:09:30 00:00:00, 1285804800 from file metadata.
+DEBUG [extractor::parser] [XMP] crs:DefringeGreenHueHi = 60
+DEBUG [extractor::parser] [XMP] xmpMM:InstanceID = uuid:5A33642488BEE211B02BDB0AD9151D25
+DEBUG [extractor::parser] [XMP] crs:IncrementalTint = 0
+DEBUG [extractor::parser] [XMP] crs:DefringePurpleHueLo = 30
+DEBUG [extractor::parser] [ICC Profile] Tag Count = 17
+DEBUG [extractor::parser] [ICC Profile] Profile Copyright = Copyright (c) 1998 Hewlett-Packard Company
+DEBUG [extractor::parser] 				<integer>1</integer>
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [XMP] xmpMM:History[4]/stEvt:when = 2010-10-16T21:46:26-04:00
+DEBUG [extractor::parser] [XMP] xmpMM:DerivedFrom/stRef:instanceID = xmp.iid:BD2FF02B08206811822AD8C695AB4810
+DEBUG [extractor::parser] [Photoshop] Resolution Info = 300x300 DPI
+DEBUG [extractor::parser] 				<real>72</real>
+DEBUG [extractor::parser] [ICC Profile] Color space = RGB 
+DEBUG [extractor::parser] [XMP] dc:subject[5] = vivid
+DEBUG [extractor::parser] [ICC Profile] Profile Connection Space = XYZ 
+DEBUG [extractor::parser] [XMP] crs:RedSaturation = 0
+DEBUG [extractor::parser] [ICC Profile] Measurement = 1931 2° Observer, Backing (0, 0, 0), Geometry Unknown, Flare 1%, Illuminant D65
+DEBUG [extractor::parser] [XMP] tiff:ResolutionUnit = 2
+DEBUG [extractor::parser] [XMP] xmpMM:History[11]/stEvt:instanceID = xmp.iid:FDBCD4E5092068119109A9ADE0FA654F
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentRed = 0
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Time = 1/6 sec
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 825 rows/strip
+DEBUG [extractor::parser] [XMP] crs:HasCrop = False
+DEBUG [extractor::parser] [ICC Profile] Class = Display Device
+DEBUG [extractor::parser] [XMP] exif:SceneType = 1
+DEBUG [extractor::parser] [XMP] tiff:XResolution = 3000000/10000
+DEBUG [extractor::parser] [XMP] crs:ParametricShadows = 0
+DEBUG [extractor::parser] [XMP] photoshop:ColorMode = 3
+DEBUG [extractor::parser] [XMP] crs:PerspectiveHorizontal = 0
+DEBUG [extractor::parser] [XMP] crs:Vibrance = 0
+DEBUG [extractor::parser] [XMP] crs:SplitToningShadowHue = 0
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 300 dots per inch
+DEBUG [extractor::parser] [XMP] xmpMM:History[10]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [XMP] crs:ParametricMidtoneSplit = 50
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiEmailWork = eric@ericpiasecki.com
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentMagenta = 0
+DEBUG [extractor::parser] [XMP] tiff:PlanarConfiguration = 1
+DEBUG [extractor::parser] [Exif IFD0] Make = Phase One
+DEBUG [extractor::parser] 		</array>
+DEBUG [extractor::parser] 	<key>com.apple.print.PageFormat.PMOrientation</key>
+DEBUG [extractor::parser] [Photoshop] Version Info = 1 (Adobe Photoshop, Adobe Photoshop CS3) 1
+DEBUG [extractor::parser] [XMP] xmpMM:History[7]/stEvt:instanceID = xmp.iid:FBBCD4E5092068119109A9ADE0FA654F
+DEBUG [extractor::parser] [Photoshop] Color Halftoning Information = [72 values]
+DEBUG [extractor::parser] [Exif SubIFD] Shutter Speed Value = 1/6 sec
+DEBUG [extractor::parser] [XMP] crs:SplitToningHighlightHue = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[5]/stEvt:instanceID = xmp.iid:CD07703B0F2068119109E9E219B5AC6D
+DEBUG [extractor::parser] [XMP] crs:DefringeGreenHueLo = 40
+DEBUG [extractor::parser] [Exif IFD0] Software = Adobe Photoshop CS3 Macintosh
+DEBUG [extractor::parser] [XMP] crs:Version = 7.1
+DEBUG [extractor::parser] [IPTC] Date Created = 2010:00:00
+DEBUG [extractor::parser] [!] [IPTC] Date Created = 2010:00:00 contains black string 2010:00:00, skip...
+DEBUG [extractor::parser] [Photoshop] XML Data = <?xml version="1.0" encoding="UTF-8"?>
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Height = 825 pixels
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [ICC Profile] Rendering Intent = Media-Relative Colorimetric
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions Description = Reference Viewing Condition in IEC61966-2.1
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:action = saved
+DEBUG [extractor::parser] [XMP] crs:ToneCurveBlue[1] = 0, 0
+DEBUG [extractor::parser] [File] File Size = 1849136 bytes
+DEBUG [extractor::parser] [XMP] xmp:ModifyDate = 2013-05-15T09:42:30-07:00
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2013-05-15T09:42:30-07:00 -> 2013:05:15 09:42:30, 1368636150
+INFO [extractor::parser] [+] extractor 2013:05:15 09:42:30, 1368636150 from file metadata.
+DEBUG [extractor::parser] 	<dict>
+DEBUG [extractor::parser] 				<integer>0</integer>
+DEBUG [extractor::parser] [XMP] tiff:BitsPerSample[2] = 8
+DEBUG [extractor::parser] [XMP] crs:GreenSaturation = 0
+DEBUG [extractor::parser] [XMP] xmp:CreatorTool = Adobe Photoshop CS3 Macintosh
+DEBUG [extractor::parser] [XMP] xmpMM:History[5]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [IPTC] By-line = Eric Piasecki Photography LLC
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Width = 728 pixels
+DEBUG [extractor::parser] [XMP] xmpMM:History[6]/stEvt:action = saved
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiAdrPcode = 10014
+DEBUG [extractor::parser] [XMP] dc:format = image/tiff
+DEBUG [extractor::parser] [XMP] xmpMM:History[13]/stEvt:changed = /
+DEBUG [extractor::parser] [XMP] crs:LuminanceAdjustmentYellow = 0
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentOrange = 0
+DEBUG [extractor::parser] [XMP] exif:ExposureBiasValue = 0/1000
+DEBUG [extractor::parser] [XMP] xmpMM:History[11]/stEvt:changed = /
+DEBUG [extractor::parser] [XMP] dc:rights[1]/xml:lang = x-default
+DEBUG [extractor::parser] [IPTC] Application Record Version = 4
+DEBUG [extractor::parser] [XMP] xmpMM:History[10]/stEvt:when = 2010-10-21T09:45:35-04:00
+DEBUG [extractor::parser] [XMP] xmpMM:History[10]/stEvt:changed = /
+DEBUG [extractor::parser] [XMP] xmpMM:History[13]/stEvt:instanceID = xmp.iid:BD2FF02B08206811822AD8C695AB4810
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:instanceID = xmp.iid:F87F1174072068119109E9E219B5AC6D
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Bias Value = 0 EV
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentGreen = 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[8]/stEvt:parameters = from application/vnd.adobe.photoshop to image/tiff
+DEBUG [extractor::parser] [ICC Profile] XYZ values = 0.964 1 0.825
+DEBUG [extractor::parser] [File] File Name = Issue 16.tif
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 300 dots per inch
+DEBUG [extractor::parser] [XMP] crs:AutoLateralCA = 0
+DEBUG [extractor::parser] 	<key>com.apple.print.PageFormat.PMScaling</key>
+DEBUG [extractor::parser] [XMP] crs:ToneCurveRed[1] = 0, 0
+DEBUG [extractor::parser] [XMP] xmpMM:History[5]/stEvt:action = saved
+DEBUG [extractor::parser] 				<key>com.apple.print.PageFormat.PMOrientation</key>
+DEBUG [extractor::parser] [XMP] XMP Value Count = 208
+DEBUG [extractor::parser] [Photoshop] Global Angle = 30
+DEBUG [extractor::parser] [XMP] xmp:MetadataDate = 2013-05-15T09:42:30-07:00
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2013-05-15T09:42:30-07:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2013-05-15T09:42:30-07:00 -> 2013:05:15 09:42:30, 1368636150
+INFO [extractor::parser] [+] extractor 2013:05:15 09:42:30, 1368636150 from file metadata.
+DEBUG [extractor::parser] [IPTC] City = New York
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiAdrExtadr = 1 Morton Square #6DW
+DEBUG [extractor::parser] [Photoshop] Slices = kureckjones_jett_075_02 (0,0,825,728) 1 Slices
+DEBUG [extractor::parser] [XMP] crs:SplitToningHighlightSaturation = 0
+DEBUG [extractor::parser] [XMP] exif:LightSource = 255
+DEBUG [extractor::parser] [Photoshop] Seed Number = 1
+DEBUG [extractor::parser] [XMP] tiff:SamplesPerPixel = 3
+DEBUG [extractor::parser] [XMP] xmpMM:History[1]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [XMP] crs:WhiteBalance = As Shot
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 3 samples/pixel
+DEBUG [extractor::parser] [XMP] exif:ExposureProgram = 1
+DEBUG [extractor::parser] [XMP] xmpMM:History[3]/stEvt:parameters = converted from image/tiff to application/vnd.adobe.photoshop
+DEBUG [extractor::parser] [XMP] Iptc4xmpCore:CreatorContactInfo/Iptc4xmpCore:CiAdrRegion = NY
+DEBUG [extractor::parser] [XMP] xmpMM:History[13]/stEvt:when = 2013-04-02T09:52:31-04:00
+DEBUG [extractor::parser] [XMP] crs:Saturation = 0
+DEBUG [extractor::parser] [XMP] dc:creator[1] = Eric Piasecki Photography LLC
+DEBUG [extractor::parser] [XMP] crs:HueAdjustmentRed = 0
+DEBUG [extractor::parser] [XMP] crs:SharpenRadius = +1.0
+DEBUG [extractor::parser] [XMP] xmpMM:OriginalDocumentID = xmp.did:F87F1174072068119109E9E219B5AC6D
+DEBUG [extractor::parser] [XMP] xmpMM:History[4]/stEvt:softwareAgent = Adobe Photoshop CS4 Macintosh
+DEBUG [extractor::parser] [XMP] crs:HasSettings = True
+DEBUG [extractor::parser] [Photoshop] Global Altitude = 30
+DEBUG [extractor::parser] [ICC Profile] CMM Type = Lino
+DEBUG [extractor::parser] [ICC Profile] Green Colorant = (0.3851, 0.7169, 0.0971)
+DEBUG [extractor::parser] [XMP] crs:ParametricHighlights = 0
+DEBUG [extractor::parser] [Exif SubIFD] File Source = Digital Still Camera (DSC)
+DEBUG [extractor::parser] [Photoshop] Pixel Aspect Ratio = 1.0
+DEBUG [extractor::parser] [XMP] crs:SaturationAdjustmentAqua = 0
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Sony Camera Raw
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2010:01:01 00:00:00, 1262304000 found in ./metadata-extractor-images/tif/Issue 16.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/Issue 16.tif",
+    suffix: "arw",
+    datetime: FileDateTime {
+        year: 2010,
+        month: 1,
+        day: 1,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        timestamp: 1262304000,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/Issue 16.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2010/2010-01-01-00-00-00.arw
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m1-b0d36ed02fc2624ac79d3144e8b1bda2.tif
+DEBUG [extractor::parser] [Exif IFD0] Artist = maya
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 16773021/16777216 dots per (no unit)
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 768 pixels
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = RGB
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = Tue May  7 21:48:30 2002
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %a %b %d %H:%M:%S %Z %Y, premature end of input
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %a %b %d %H:%M:%S %Z %Y, premature end of input
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S%z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S%z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S %:z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S %:z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S%:z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%S%:z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%SZ, input contains invalid characters
+DEBUG [extractor::parser] Utc try Tue May  7 21:48:30 2002 as %Y-%m-%dT%H:%M:%SZ, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Tue May  7 21:48:30 2002 as %a %b %d %H:%M:%S %Y, input is not enough for unique date and time
+DEBUG [extractor::parser] [+] Tue May  7 21:48:30 2002 -> 2002:05:07 21:48:30, 1020808110
+INFO [extractor::parser] [+] extractor 2002:05:07 21:48:30, 1020808110 from file metadata.
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0xa417) = 485366
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = (No unit)
+DEBUG [extractor::parser] Processed 0.464 MB file in 15.61 ms
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 1 dots per (no unit)
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Exif IFD0] Compression = LZW
+DEBUG [extractor::parser] [Exif IFD0] Image Description = Composer: Untitled, frame 0
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x6912) = 1
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [File] File Name = m1-b0d36ed02fc2624ac79d3144e8b1bda2.tif
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 8
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 4 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 1024 pixels
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [File] File Size = 486219 bytes
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Software = Co�poser
+DEBUG [extractor::parser] [Exif IFD0] Host Computer = thor
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2002:05:07 21:48:30, 1020808110 found in ./metadata-extractor-images/tif/ImageTestSuite/m1-b0d36ed02fc2624ac79d3144e8b1bda2.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/m1-b0d36ed02fc2624ac79d3144e8b1bda2.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2002,
+        month: 5,
+        day: 7,
+        hour: 21,
+        minute: 48,
+        second: 30,
+        timestamp: 1020808110,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/m1-b0d36ed02fc2624ac79d3144e8b1bda2.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2002/2002-05-07-21-48-30.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m1-68bc8a1966db7a1da2d3b5946c00d1af.tif
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 200 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Software = Oi/GFS, writer v00.06.02
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0125) = 0
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0xf4a6) = 
+DEBUG [extractor::parser] [Exif IFD0] Fill Order = Normal
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x014c) = 1
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 2368 pixels
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] Processed 0.715 MB file in 29.17 ms
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [File] File Size = 749524 bytes
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 200/38401 dots per inch
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Sony Camera Raw
+DEBUG [extractor::parser] [File] File Name = m1-68bc8a1966db7a1da2d3b5946c00d1af.tif
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = arw
+INFO [extractor::parser] [+] extractor arw from file metadata file type.
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [File Type] Detected File Type Name = ARW
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = [32 values]
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 1869 9119 13525 17375 20522 23573 24599 31008 32004 35147 35404 34840 35409 34168 36513 35393 36897 35726 35465 32836 30157 26397 4244660001 22443 19247 16308 12224 13000 9171 9168 5038 81 bytes
+DEBUG [extractor::parser] [Exif IFD0] Compression = T6/Group 4 Fax
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 76 rows/strip
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 3306 pixels
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x7112) = 1
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 15:46:37, 1674027997 found in ./metadata-extractor-images/tif/ImageTestSuite/m1-68bc8a1966db7a1da2d3b5946c00d1af.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/m1-68bc8a1966db7a1da2d3b5946c00d1af.tif",
+    suffix: "arw",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 15,
+        minute: 46,
+        second: 37,
+        timestamp: 1674027997,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/m1-68bc8a1966db7a1da2d3b5946c00d1af.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-15-46-37.arw
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/e45931b568d12c9905b1db1775321972.tif
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif SubIFD] Compressed Bits Per Pixel = 3 bits/pixel
+DEBUG [extractor::parser] [XMP] exif:ISOSpeedRatings[1] = 100
+DEBUG [extractor::parser] [XMP] exif:ShutterSpeedValue = -103871/65536
+DEBUG [extractor::parser] [Photoshop] Color Halftoning Information = [72 values]
+DEBUG [extractor::parser] [XMP] xmp:MetadataDate = 2007-06-13T13:42:54+01:00
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2007-06-13T13:42:54+01:00 -> 2007:06:13 13:42:54, 1181738574
+INFO [extractor::parser] [+] extractor 2007:06:13 13:42:54, 1181738574 from file metadata.
+DEBUG [extractor::parser] [XMP] exif:FocalPlaneResolutionUnit = 2
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = arw
+INFO [extractor::parser] [+] extractor arw from file metadata file type.
+DEBUG [extractor::parser] [Exif SubIFD] Components Configuration = YCbCr
+DEBUG [extractor::parser] [ICC Profile] Profile Size = 3144
+DEBUG [extractor::parser] [ICC Profile] Profile Copyright = Copyright (c) 1998 Hewlett-Packard Company
+DEBUG [extractor::parser] [ICC Profile] Device model = sRGB
+DEBUG [extractor::parser] [XMP] exif:FocalPlaneYResolution = 1440000/595
+DEBUG [extractor::parser] [Exif SubIFD] Color Space = sRGB
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Time = 3 sec
+DEBUG [extractor::parser] [ICC Profile] Green Colorant = (0.3851, 0.7169, 0.0971)
+DEBUG [extractor::parser] [XMP] xmp:CreatorTool = Adobe Photoshop CS2 Windows
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 1574 pixels
+DEBUG [extractor::parser] [XMP] tiff:NativeDigest = 256,257,258,259,262,274,277,284,530,531,282,283,296,301,318,319,529,532,306,270,271,272,305,315,33432;579CDDCE7971F5D63D7F411E900D3CFE
+DEBUG [extractor::parser] [XMP] exif:Flash/exif:Fired = False
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 1574 rows/strip
+DEBUG [extractor::parser] [XMP] exif:FlashpixVersion = 0100
+DEBUG [extractor::parser] [XMP] XMP Value Count = 48
+DEBUG [extractor::parser] [XMP] exif:MeteringMode = 5
+DEBUG [extractor::parser] [Photoshop] Slices = model 02 (0,0,1574,2362) 1 Slices
+DEBUG [extractor::parser] [XMP] tiff:ResolutionUnit = 2
+DEBUG [extractor::parser] [Exif SubIFD] Exposure Bias Value = 0 EV
+DEBUG [extractor::parser] [ICC Profile] Class = Display Device
+DEBUG [extractor::parser] Processed 10.662 MB file in 109.10 ms
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Sony Camera Raw
+DEBUG [extractor::parser] [XMP] exif:CompressedBitsPerPixel = 3/1
+DEBUG [extractor::parser] [Photoshop] Global Altitude = 30
+DEBUG [extractor::parser] [Exif IFD0] Make = Canon
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 300 dots per inch
+DEBUG [extractor::parser] [XMP] exif:Flash/exif:RedEyeMode = False
+DEBUG [extractor::parser] [Photoshop] Version Info = 1 (Adobe Photoshop, Adobe Photoshop CS2) 1
+DEBUG [extractor::parser] [XMP] exif:FileSource = 3
+DEBUG [extractor::parser] [ICC Profile] Version = 2.1.0
+DEBUG [extractor::parser] [XMP] tiff:YResolution = 3000000/10000
+DEBUG [extractor::parser] [XMP] exif:ColorSpace = 1
+DEBUG [extractor::parser] [XMP] exif:FNumber = 22/1
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions = view (0x76696577): 36 bytes
+DEBUG [extractor::parser] [File Type] Detected File Type Name = ARW
+DEBUG [extractor::parser] [XMP] xmpMM:DerivedFrom/stRef:documentID = adobe:docid:photoshop:4ff87967-0501-11dc-bd45-ab630fb26e8e
+DEBUG [extractor::parser] [Photoshop] Global Angle = 30
+DEBUG [extractor::parser] [Photoshop] Thumbnail Data = JpegRGB, 160x107, Decomp 51360 bytes, 1572865 bpp, 3906 bytes
+DEBUG [extractor::parser] [XMP] xmpMM:DerivedFrom/stRef:instanceID = adobe:docid:photoshop:4ff87967-0501-11dc-bd45-ab630fb26e8e
+DEBUG [extractor::parser] [XMP] dc:format = image/tiff
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Width = 2362 pixels
+DEBUG [extractor::parser] [Exif SubIFD] Max Aperture Value = f/4.0
+DEBUG [extractor::parser] [XMP] tiff:Orientation = 1
+DEBUG [extractor::parser] [XMP] exif:ApertureValue = 584507/65536
+DEBUG [extractor::parser] [Exif SubIFD] Shutter Speed Value = 3 sec
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 2362 pixels
+DEBUG [extractor::parser] [XMP] exif:PixelYDimension = 1574
+DEBUG [extractor::parser] [Exif SubIFD] Focal Plane Y Resolution = 119/288000 inches
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [Photoshop] Caption Digest = 70 12 242 137 38 184 86 218 176 156 1 161 176 167 144 119
+DEBUG [extractor::parser] [Photoshop] Print Scale = Centered, Scale 1.0
+DEBUG [extractor::parser] [XMP] exif:ExposureTime = 3/1
+DEBUG [extractor::parser] [Photoshop] Pixel Aspect Ratio = 1.0
+DEBUG [extractor::parser] [Exif SubIFD] Subject Distance = Unknown
+DEBUG [extractor::parser] [Photoshop] Plug-in 1 Data = [268 values]
+DEBUG [extractor::parser] [XMP] photoshop:ColorMode = 3
+DEBUG [extractor::parser] [ICC Profile] Profile Date/Time = 1998:02:09 06:49:00
+DEBUG [extractor::parser] [ICC Profile] Primary Platform = Microsoft Corporation
+DEBUG [extractor::parser] [ICC Profile] Media Black Point = (0, 0, 0)
+DEBUG [extractor::parser] [ICC Profile] Device Model Description = IEC 61966-2.1 Default RGB colour space - sRGB
+DEBUG [extractor::parser] [ICC Profile] Viewing Conditions Description = Reference Viewing Condition in IEC61966-2.1
+DEBUG [extractor::parser] [ICC Profile] Luminance = (76.0365, 80, 87.1246)
+DEBUG [extractor::parser] [ICC Profile] Tag Count = 17
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = RGB
+DEBUG [extractor::parser] [Exif SubIFD] Sensing Method = One-chip color area sensor
+DEBUG [extractor::parser] [Exif SubIFD] Flash = Flash did not fire
+DEBUG [extractor::parser] [ICC Profile] CMM Type = Lino
+DEBUG [extractor::parser] [ICC Profile] Color space = RGB 
+DEBUG [extractor::parser] [ICC Profile] Profile Connection Space = XYZ 
+DEBUG [extractor::parser] [ICC Profile] Measurement = 1931 2° Observer, Backing (0, 0, 0), Geometry Unknown, Flare 1%, Illuminant D65
+DEBUG [extractor::parser] [ICC Profile] Red Colorant = (0.4361, 0.2225, 0.0139)
+DEBUG [extractor::parser] [ICC Profile] Device manufacturer = IEC 
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 3 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Model = Canon EOS D30
+DEBUG [extractor::parser] [Exif SubIFD] Focal Length = 30 mm
+DEBUG [extractor::parser] [ICC Profile] Signature = acsp
+DEBUG [extractor::parser] [XMP] exif:ExposureBiasValue = 0/2
+DEBUG [extractor::parser] [Photoshop] URL List = 0
+DEBUG [extractor::parser] [Exif SubIFD] F-Number = f/22.0
+DEBUG [extractor::parser] [Exif SubIFD] Date/Time Original = 2007:05:10 00:50:33
+DEBUG [extractor::parser] NaiveDateTime try 2007:05:10 00:50:33 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007:05:10 00:50:33 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007:05:10 00:50:33 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2007:05:10 00:50:33 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007:05:10 00:50:33 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2007:05:10 00:50:33 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2007:05:10 00:50:33 -> 2007:05:10 00:50:33, 1178758233
+INFO [extractor::parser] [+] extractor 2007:05:10 00:50:33, 1178758233 from file metadata.
+DEBUG [extractor::parser] [XMP] photoshop:ICCProfile = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [XMP] exif:PixelXDimension = 2362
+DEBUG [extractor::parser] [File] File Size = 11180140 bytes
+DEBUG [extractor::parser] [Photoshop] Resolution Info = 300x300 DPI
+DEBUG [extractor::parser] [XMP] xmp:CreateDate = 2007-06-13T13:42:54+01:00
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2007-06-13T13:42:54+01:00 -> 2007:06:13 13:42:54, 1181738574
+INFO [extractor::parser] [+] extractor 2007:06:13 13:42:54, 1181738574 from file metadata.
+DEBUG [extractor::parser] [XMP] exif:SensingMethod = 2
+DEBUG [extractor::parser] [Photoshop] Color Transfer Functions = [112 values]
+DEBUG [extractor::parser] [ICC Profile] Technology = CRT 
+DEBUG [extractor::parser] [Exif SubIFD] Aperture Value = f/22.0
+DEBUG [extractor::parser] [Exif SubIFD] FlashPix Version = 1.00
+DEBUG [extractor::parser] [Photoshop] Plug-in 2 Data = [28 values]
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Focal Plane Resolution Unit = Inches
+DEBUG [extractor::parser] [Exif SubIFD] ISO Speed Ratings = 100
+DEBUG [extractor::parser] [ICC Profile] XYZ values = 0.964 1 0.825
+DEBUG [extractor::parser] [XMP] exif:FocalPlaneXResolution = 2160000/892
+DEBUG [extractor::parser] [XMP] exif:Flash/exif:Return = 0
+DEBUG [extractor::parser] [XMP] tiff:XResolution = 3000000/10000
+DEBUG [extractor::parser] [XMP] exif:FocalLength = 30/1
+DEBUG [extractor::parser] [XMP] photoshop:History = 
+DEBUG [extractor::parser] [Exif IFD0] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [Exif SubIFD] Exif Version = 2.10
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 11153364 bytes
+DEBUG [extractor::parser] [XMP] tiff:YCbCrPositioning = 1
+DEBUG [extractor::parser] [XMP] xmp:ModifyDate = 2007-06-13T13:42:54+01:00
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y-%m-%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y-%m-%dT%H:%M:%S, trailing input
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007-06-13T13:42:54+01:00 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] [+] 2007-06-13T13:42:54+01:00 -> 2007:06:13 13:42:54, 1181738574
+INFO [extractor::parser] [+] extractor 2007:06:13 13:42:54, 1181738574 from file metadata.
+DEBUG [extractor::parser] [IPTC] Application Record Version = 2
+DEBUG [extractor::parser] [XMP] exif:ExifVersion = 0210
+DEBUG [extractor::parser] [Photoshop] Copyright Flag = No
+DEBUG [extractor::parser] [Photoshop] Grid and Guides Information = 0 0 0 1 0 0 2 64 0 0 2 64 0 0 0 0
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2007:06:13 13:42:54
+DEBUG [extractor::parser] NaiveDateTime try 2007:06:13 13:42:54 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007:06:13 13:42:54 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007:06:13 13:42:54 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2007:06:13 13:42:54 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007:06:13 13:42:54 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2007:06:13 13:42:54 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2007:06:13 13:42:54 -> 2007:06:13 13:42:54, 1181742174
+INFO [extractor::parser] [+] extractor 2007:06:13 13:42:54, 1181742174 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Metering Mode = Multi-segment
+DEBUG [extractor::parser] [Exif SubIFD] User Comment = 
+DEBUG [extractor::parser] [Exif SubIFD] File Source = Digital Still Camera (DSC)
+DEBUG [extractor::parser] [XMP] exif:DateTimeOriginal = 2007-05-10T00:50:33+01:00
+DEBUG [extractor::parser] [XMP] tiff:Make = Canon
+DEBUG [extractor::parser] [Photoshop] Seed Number = 1
+DEBUG [extractor::parser] [Photoshop] Print Flags = 0 0 0 0 0 0 0 0 1
+DEBUG [extractor::parser] [ICC Profile] Blue Colorant = (0.1431, 0.0606, 0.7141)
+DEBUG [extractor::parser] [XMP] exif:Flash/exif:Function = False
+DEBUG [extractor::parser] [Photoshop] Print Flags Information = 0 1 0 0 0 0 0 0 0 2
+DEBUG [extractor::parser] [File] File Name = e45931b568d12c9905b1db1775321972.tif
+DEBUG [extractor::parser] [XMP] exif:Flash/exif:Mode = 0
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 300 dots per inch
+DEBUG [extractor::parser] [XMP] exif:MaxApertureValue = 262144/65536
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Exif SubIFD] Date/Time Digitized = 2007:05:10 00:50:33
+DEBUG [extractor::parser] NaiveDateTime try 2007:05:10 00:50:33 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007:05:10 00:50:33 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007:05:10 00:50:33 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2007:05:10 00:50:33 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007:05:10 00:50:33 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2007:05:10 00:50:33 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2007:05:10 00:50:33 -> 2007:05:10 00:50:33, 1178758233
+INFO [extractor::parser] [+] extractor 2007:05:10 00:50:33, 1178758233 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 26064
+DEBUG [extractor::parser] [Exif SubIFD] Focal Plane X Resolution = 223/540000 inches
+DEBUG [extractor::parser] [Exif IFD0] Compression = Uncompressed
+DEBUG [extractor::parser] [ICC Profile] Profile Description = sRGB IEC61966-2.1
+DEBUG [extractor::parser] [XMP] tiff:Model = Canon EOS D30
+DEBUG [extractor::parser] [ICC Profile] Media White Point = (0.9505, 1, 1.0891)
+DEBUG [extractor::parser] [ICC Profile] Device Mfg Description = IEC http://www.iec.ch
+DEBUG [extractor::parser] [XMP] xmpMM:DocumentID = uuid:2F317654AB19DC119E42B2B60E1ED505
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [XMP] exif:SubjectDistance = 0/1000
+DEBUG [extractor::parser] [XMP] xmpMM:InstanceID = uuid:30317654AB19DC119E42B2B60E1ED505
+DEBUG [extractor::parser] [Exif IFD0] Software = Adobe Photoshop CS2 Windows
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Height = 1574 pixels
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2007:05:10 00:50:33, 1178758233 found in ./metadata-extractor-images/tif/ImageTestSuite/e45931b568d12c9905b1db1775321972.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/e45931b568d12c9905b1db1775321972.tif",
+    suffix: "arw",
+    datetime: FileDateTime {
+        year: 2007,
+        month: 5,
+        day: 10,
+        hour: 0,
+        minute: 50,
+        second: 33,
+        timestamp: 1178758233,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/e45931b568d12c9905b1db1775321972.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2007/2007-05-10-00-50-33.arw
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/e00804b3169008f1c00bf250edccdae4.tif
+DEBUG [extractor::parser] [File] File Size = 135060 bytes
+DEBUG [extractor::parser] Processed 0.129 MB file in 16.62 ms
+DEBUG [extractor::parser] [Exif Image] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Exif Image] Page Number = 2 3
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = [40 values]
+DEBUG [extractor::parser] [Exif IFD0] Windows XP Comment = [醫療機構電子病歷製作及管理辦法]修正條文.
+DEBUG [extractor::parser] [Exif IFD0] Thresholding = No dithering or halftoning
+DEBUG [extractor::parser] [Exif IFD0] Windows XP Author = 中央健康保險局北區分局
+DEBUG [extractor::parser] [Exif IFD0] Windows XP Title = 衛署醫字第0970204746號
+DEBUG [extractor::parser] [Exif Image] Thresholding = No dithering or halftoning
+DEBUG [extractor::parser] [Exif Image] X Resolution = 200 dots per inch
+DEBUG [extractor::parser] [Exif Image] Make = RICOH
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0124) = 0
+DEBUG [extractor::parser] [Exif Image] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif IFD0] Make = RICOH
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 229 829 1821 1327 1531 1755 1103 1957 642 1648 1971 731 1736 1927 882 2680 3919 3087 2614 884 4015 689 289 3223 2835 3114 3798 4327 4137 3666 974 3042 351 351 506 727 3474 3481 2551 357 bytes
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 200 dots per inch
+DEBUG [extractor::parser] [Exif Image] Strip Byte Counts = 12132 bytes
+DEBUG [extractor::parser] [Exif Image] Compression = T6/Group 4 Fax
+DEBUG [extractor::parser] [Exif IFD0] Maximum Sample Value = 1
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 59 rows/strip
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [Exif Image] Rows Per Strip = 2339 rows/strip
+DEBUG [extractor::parser] [File] File Name = e00804b3169008f1c00bf250edccdae4.tif
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Page Number = 0 3
+DEBUG [extractor::parser] [Exif Image] Strip Offsets = 79996
+DEBUG [extractor::parser] [Exif IFD0] Predictor = 1
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 1664 pixels
+DEBUG [extractor::parser] [Exif Image] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 2339 pixels
+DEBUG [extractor::parser] [Exif IFD0] Compression = LZW
+DEBUG [extractor::parser] [Exif Image] Image Height = 2339 pixels
+DEBUG [extractor::parser] [Exif Image] Strip Byte Counts = 42396 bytes
+DEBUG [extractor::parser] [Exif Image] Maximum Sample Value = 1
+DEBUG [extractor::parser] [Exif IFD0] Windows XP Subject = [醫療機構電子病歷製作及管理辦法]修正條文.
+DEBUG [extractor::parser] [Exif Image] Unknown tag (0x0124) = 0
+DEBUG [extractor::parser] [Exif Image] Bits Per Sample = 1 bits/component/pixel
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = BlackIsZero
+DEBUG [extractor::parser] [Exif Image] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 1 bits/component/pixel
+DEBUG [extractor::parser] [Exif Image] Strip Offsets = 122660
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [Exif IFD0] Windows XP Keywords = 電子病歷
+DEBUG [extractor::parser] [Exif Image] Minimum Sample Value = 0
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [Exif Image] Y Resolution = 200 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Minimum Sample Value = 0
+DEBUG [extractor::parser] [Exif Image] Resolution Unit = Inch
+DEBUG [extractor::parser] [Exif Image] Image Width = 1664 pixels
+DEBUG [extractor::parser] [Exif Image] Page Number = 1 3
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 200 dots per inch
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 15:46:37, 1674027997 found in ./metadata-extractor-images/tif/ImageTestSuite/e00804b3169008f1c00bf250edccdae4.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/e00804b3169008f1c00bf250edccdae4.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 15,
+        minute: 46,
+        second: 37,
+        timestamp: 1674027997,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/e00804b3169008f1c00bf250edccdae4.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-15-46-37.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m7-42c19f8e79e582bef107f372f18a074b.tif
+DEBUG [extractor::parser] [ICC Profile] Red Colorant = (0.375, 0.21, 0.028)
+DEBUG [extractor::parser] [ICC Profile] CMM Type = appl
+DEBUG [extractor::parser] [Photoshop] Layers Group Information = 0 0 0 0 0 0 0 0
+DEBUG [extractor::parser] [ICC Profile] Profile Size = 4380
+DEBUG [extractor::parser] 		</array
+DEBUG [extractor::parser] [ICC Profile] Color space = RGB 
+DEBUG [extractor::parser] [ICC Profile] Profile Connection Space = uYZ 
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 4 samples/pixel
+DEBUG [extractor::parser] [Photoshop] Unicode Alpha Names = [30 values]
+DEBUG [extractor::parser] [Photoshop] Copyright Flag = No
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2008:06:13 10:53:40
+DEBUG [extractor::parser] NaiveDateTime try 2008:06:13 10:53:40 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:06:13 10:53:40 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:06:13 10:53:40 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2008:06:13 10:53:40 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2008:06:13 10:53:40 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2008:06:13 10:53:40 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2008:06:13 10:53:40 -> 2008:06:13 10:53:40, 1213354420
+INFO [extractor::parser] [+] extractor 2008:06:13 10:53:40, 1213354420 from file metadata.
+DEBUG [extractor::parser] Z			<real>72</rea�>
+DEBUG [extractor::parser] [Photoshop] Global Altitude = 30
+DEBUG [extractor::parser] [Photoshop] Caption Digest = 232 241 92 243 47 193 24 161 162 123 103 173 197 100 213 186
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [ICC Profile] XYZ values = 0.964 1 0.825
+DEBUG [extractor::parser] [Photoshop] Layer Selection IDs = 0 2 0 0 0 9 0 0 0 5
+DEBUG [extractor::parser] [Photoshop] Color Halftoning Information = [72 values]
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Photoshop] Print Flags = 0 0 0 0 0 0 0 0 1
+DEBUG [extractor::parser] 		<string>com.apple.jobticket</string>
+DEBUG [extractor::parser] [Photoshop] Version Info = 1 (Adobe Photoshop, Adobe Photoshop CS3) 1
+DEBUG [extractor::parser] [IPTC] Application Record Version = 0
+DEBUG [extractor::parser] [Exif IFD0] Predictor = 2
+DEBUG [extractor::parser] [Photoshop] Grid and Guides Information = [36 values]
+DEBUG [extractor::parser] [Photoshop] Print Scale = Centered, Scale 1.0
+DEBUG [extractor::parser] 				<key>com.apple.print.PageFormat.PMHorizontalRes</key>
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Photoshop] XML Data = <?xml version="1.0" encodig="UTF-8"?>
+DEBUG [extractor::parser] [Exif IFD0] Compression = LZW
+DEBUG [extractor::parser] 	<key>com.apple.print.PageFormat.PMHorizontalRes</key>
+DEBUG [extractor::parser] 		<key>...
+DEBUG [extractor::parser] [ICC Profile] Primary Platform = Apple Computer, Inc.
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 1845542656/16777215 dots per unit
+DEBUG [extractor::parser] 	<dict>
+DEBUG [extractor::parser] 			<dict>
+DEBUG [extractor::parser] 		<array>
+DEBUG [extractor::parser] 		�	<integer>0</integer>
+DEBUG [extractor::parser] [Photoshop] Alpha Channels = 12 84 114 97 110 115 112 97 114 101 110 99 121
+DEBUG [extractor::parser] 		<key>com.apple.print.ticket.creator</key>�		<sting>com.apple.jobticket</striLg>
+DEBUG [extractor::parser] 	<key>com.ap�le.print.PageFormat.PMOrientation</key>
+DEBUG [extractor::parser] [ICC Profile] Green Colorant = (0.4358, 0.7007, 0.0974)
+DEBUG [extractor::parser] <plist version="1.0">
+DEBUG [extractor::parser] 			</dict>
+DEBUG [extractor::parser] 				<key>com.apple.print.PageFormat.PM�rientation</key>
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] 	</diot>
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = Unknown colour space
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 17 pixels
+DEBUG [extractor::parser] 	</dict>
+DEBUG [extractor::parser] [File] File Name = m7-42c19f8e79e582bef107f372f18a074b.tif
+DEBUG [extractor::parser] 		<key>cDm.apple.print.ticket.itemArray</ke�>
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 17 rows/strip
+DEBUG [extractor::parser] 		</array>
+DEBUG [extractor::parser] [Photoshop] Color Transfer Functions = [112 values]
+DEBUG [extractor::parser] [Photoshop] Pixel Aspect Ratio = 1.0
+DEBUG [extractor::parser] [Photoshop] Slices = icon.tiff (0,0,17,17) 1 Slices
+DEBUG [extractor::parser] 				<integer>1</integer>
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Photoshop] Layer Groups Enabled ID = 1 1 1 1
+DEBUG [extractor::parser] [Photoshop] Thumbnail Data = JpegRGB, 17x17, Decomp 884 bytes, 1572865 bpp, 722 bytes
+DEBUG [extractor::parser] [Photoshop] Global Angle = 11862106
+DEBUG [extractor::parser] 		<key>com.apple.prin�.ticket.itemArray</key>
+DEBUG [extractor::parser] [Photoshop] Resolution Info = 72.01x72.01 DPI
+DEBUG [extractor::parser] <dict>
+DEBUG [extractor::parser] [ICC Profile] Signature = acsp
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 29048
+DEBUG [extractor::parser] [ICC Profile] Version = 2.0.0
+DEBUG [extractor::parser] 		<key>com�apple.print.ticket.creator</key>
+DEBUG [extractor::parser] [Exif IFD0] Extra Samples = Associated alpha
+DEBUG [extractor::parser] [Photoshop] Display Info = [17 values]
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] 	<key>com.apple.print.PageFormat.PMScaling</ke�>
+DEBUG [extractor::parser] [Photoshop] Plug-in 1 Data = [268 values]
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 17 pixels
+DEBUG [extractor::parser] 				<key>com.apple.print.ticket.stateFlag</key>
+DEBUG [extractor::parser] [ICC Profile] Class = Display Device
+DEBUG [extractor::parser] [Photoshop] URL List = 0
+DEBUG [extractor::parser] �!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+DEBUG [extractor::parser] [Photoshop] Plug-in 2 Data = [28 values]
+DEBUG [extractor::parser] [ICC Profile] Tag Count = 14
+DEBUG [extractor::parser] [Photoshop] Display Info (Obsolete) = 0 0 255 255 0 0 0 0 0 0 0 100 1 0
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 546 bytes
+DEBUG [extractor::parser] 				<key>com*apple.pr`nt.ticket.stateFlag</key>
+DEBUG [extractor::parser] [Photoshop] Layer State Information = 0 3
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = null
+DEBUG [extractor::parser] [Photoshop] Alpha Identifiers = 0 0 0 0
+DEBUG [extractor::parser] Processed 0.034 MB file in 95.29 ms
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x935c) = [5628 values]
+DEBUG [extractor::parser] [Photoshop] Print Flags Information = 0 1 0 0 0 0 0 0 0 1
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] 				<integer>0</integer>
+DEBUG [extractor::parser] [File] File Size = 35272 bytes
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2008:06:13 10:53:40, 1213354420 found in ./metadata-extractor-images/tif/ImageTestSuite/m7-42c19f8e79e582bef107f372f18a074b.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/m7-42c19f8e79e582bef107f372f18a074b.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2008,
+        month: 6,
+        day: 13,
+        hour: 10,
+        minute: 53,
+        second: 40,
+        timestamp: 1213354420,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/m7-42c19f8e79e582bef107f372f18a074b.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2008/2008-06-13-10-53-40.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/b05937c07e0f3ce1bfd2c8c71b0220ec.tif
+DEBUG [extractor::parser] [Exif SubIFD] Strip Byte Counts = 8732 bytes
+DEBUG [extractor::parser] [Exif IFD0] Tile Length = 1728
+DEBUG [extractor::parser] [Exif IFD0] Tile Offsets = 8
+DEBUG [extractor::parser] [File] File Size = 1203902 bytes
+DEBUG [extractor::parser] [Exif Thumbnail] X Resolution = 300 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0202) = 617390
+DEBUG [extractor::parser] [Exif Thumbnail] Y Resolution = 300 dots per inch
+DEBUG [extractor::parser] [Exif SubIFD] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [Exif SubIFD] Compression = JPEG
+DEBUG [extractor::parser] [Exif IFD0] Model = EPSON Perfection 2480/2580
+DEBUG [extractor::parser] [Exif SubIFD] New Subfile Type = Reduced-resolution image
+DEBUG [extractor::parser] [Exif SubIFD] Strip Offsets = 623388
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 1719 pixels
+DEBUG [extractor::parser] [Exif IFD0] JPEG Proc = Baseline
+DEBUG [extractor::parser] [Exif IFD0] Compression = JPEG (old-style)
+DEBUG [extractor::parser] [Exif SubIFD] Image Height = 224 pixels
+DEBUG [extractor::parser] [Exif Thumbnail] Model = EPSON Perfection 2480/2580
+DEBUG [extractor::parser] [Exif Thumbnail] Image Height = 3341 pixels
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x9330) = [3584 values]
+DEBUG [extractor::parser] [Exif Thumbnail] Unknown tag (0x011e) = 0
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = YCbCr
+DEBUG [extractor::parser] [Exif Thumbnail] Date/Time = 2007:09:10 15:15:48
+DEBUG [extractor::parser] NaiveDateTime try 2007:09:10 15:15:48 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007:09:10 15:15:48 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007:09:10 15:15:48 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2007:09:10 15:15:48 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007:09:10 15:15:48 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2007:09:10 15:15:48 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2007:09:10 15:15:48 -> 2007:09:10 15:15:48, 1189437348
+INFO [extractor::parser] [+] extractor 2007:09:10 15:15:48, 1189437348 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Unknown tag (0x0201) = 1147180
+DEBUG [extractor::parser] [Exif SubIFD] Strip Offsets = 1192990
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x932d) = [894 values]
+DEBUG [extractor::parser] [Exif Thumbnail] Strip Offsets = 1156074 1159435 1164034 1168752 1173056 1175814 1178162 1180139 1182542 1184500 1186599 1189138 1190984 1191029
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 150 dots per inch
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Exif SubIFD] JPEG Proc = Baseline
+DEBUG [extractor::parser] Processed 1.148 MB file in 20.56 ms
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [Exif Thumbnail] Image Width = 2130 pixels
+DEBUG [extractor::parser] [Exif SubIFD] Strip Byte Counts = 7166 bytes
+DEBUG [extractor::parser] [Exif Thumbnail] Unknown tag (0x932e) = [895 values]
+DEBUG [extractor::parser] [Exif Thumbnail] Unknown tag (0x932d) = [158 values]
+DEBUG [extractor::parser] [Exif SubIFD] Unknown tag (0x0201) = 623388
+DEBUG [extractor::parser] [Exif Thumbnail] Artist = QTKD
+DEBUG [extractor::parser] [Exif Thumbnail] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] [Exif Thumbnail] Tile Offsets = 633316
+DEBUG [extractor::parser] [Exif Thumbnail] Tile Byte Counts = 511934
+DEBUG [extractor::parser] [Exif Thumbnail] Thumbnail Length = 511934 bytes
+DEBUG [extractor::parser] [Exif IFD0] Tile Width = 1216
+DEBUG [extractor::parser] [Exif Thumbnail] Unknown tag (0x011f) = 0
+DEBUG [extractor::parser] [Exif Thumbnail] Thumbnail Offset = 633316 bytes
+DEBUG [extractor::parser] [Exif SubIFD] Strip Offsets = 1147180
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x011e) = 0
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 1205 pixels
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 150 dots per inch
+DEBUG [extractor::parser] [Exif Thumbnail] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Exif SubIFD] Rows Per Strip = 224 rows/strip
+DEBUG [extractor::parser] [Exif Thumbnail] Tile Length = 1664
+DEBUG [extractor::parser] [Exif Thumbnail] Software = Microsoft Office Document Scanning  1.03.2349.01 
+DEBUG [extractor::parser] [Exif SubIFD] Unknown tag (0x0202) = 8732
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x011f) = 0
+DEBUG [extractor::parser] [Exif SubIFD] Unknown tag (0x0202) = 7166
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [File] File Name = b05937c07e0f3ce1bfd2c8c71b0220ec.tif
+DEBUG [extractor::parser] [Exif Thumbnail] Strip Byte Counts = 3361 4599 4718 4304 2758 2348 1977 2403 1958 2099 2539 1846 45 413 bytes
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Exif SubIFD] Unknown tag (0x0201) = 1192990
+DEBUG [extractor::parser] [Exif Thumbnail] Bits Per Sample = 8 bits/component/pixel
+DEBUG [extractor::parser] [Exif IFD0] Artist = QTKD
+DEBUG [extractor::parser] [Exif IFD0] Tile Byte Counts = 617390
+DEBUG [extractor::parser] [Exif Thumbnail] Rows Per Strip = 240 rows/strip
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x932e) = [4624 values]
+DEBUG [extractor::parser] [Exif SubIFD] Unknown tag (0x0202) = 9765
+DEBUG [extractor::parser] [Exif SubIFD] Bits Per Sample = 8 bits/component/pixel
+DEBUG [extractor::parser] [Exif SubIFD] Image Width = 160 pixels
+DEBUG [extractor::parser] [Exif SubIFD] Photometric Interpretation = RGB
+DEBUG [extractor::parser] [Exif SubIFD] Strip Byte Counts = 9765 bytes
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] [Exif IFD0] Software = Microsoft Office Document Scanning  1.03.2349.01 
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2007:09:10 15:14:12
+DEBUG [extractor::parser] NaiveDateTime try 2007:09:10 15:14:12 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2007:09:10 15:14:12 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2007:09:10 15:14:12 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2007:09:10 15:14:12 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2007:09:10 15:14:12 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2007:09:10 15:14:12 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2007:09:10 15:14:12 -> 2007:09:10 15:14:12, 1189437252
+INFO [extractor::parser] [+] extractor 2007:09:10 15:14:12, 1189437252 from file metadata.
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [Exif Thumbnail] Resolution Unit = Inch
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 3 samples/pixel
+DEBUG [extractor::parser] [Exif Thumbnail] Tile Width = 1120
+DEBUG [extractor::parser] [Exif Thumbnail] JPEG Proc = Baseline
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0201) = 8
+DEBUG [extractor::parser] [Exif Thumbnail] Compression = T6/Group 4 Fax
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2007:09:10 15:14:12, 1189437252 found in ./metadata-extractor-images/tif/ImageTestSuite/b05937c07e0f3ce1bfd2c8c71b0220ec.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/b05937c07e0f3ce1bfd2c8c71b0220ec.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2007,
+        month: 9,
+        day: 10,
+        hour: 15,
+        minute: 14,
+        second: 12,
+        timestamp: 1189437252,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/b05937c07e0f3ce1bfd2c8c71b0220ec.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2007/2007-09-10-15-14-12.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m2-f228b1103fd7b629c08c1bbba94708e0.tif
+DEBUG [extractor::parser] [File] File Size = 965322 bytes
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Full-resolution image
+DEBUG [extractor::parser] Processed 0.921 MB file in 21.17 ms
+DEBUG [extractor::parser] [Exif IFD0] Image Description = Adobe Photoshop 7.0
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0125) = 0
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 1 bits/component/pixel
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = [55809 values]
+DEBUG [extractor::parser] [File Type] Detected File Type Name = ARW
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = arw
+INFO [extractor::parser] [+] extractor arw from file metadata file type.
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2008:01:05 13:29:0
+DEBUG [extractor::parser] NaiveDateTime try 2008:01:05 13:29:0 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:01:05 13:29:0 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:01:05 13:29:0 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] NaiveDateTime try 2008:01:05 13:29:0 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2008:01:05 13:29:0 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2008:01:05 13:29:0 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] [+] 2008:01:05 13:29:0 -> 2008:01:05 13:29:00, 1199539740
+INFO [extractor::parser] [+] extractor 2008:01:05 13:29:00, 1199539740 from file metadata.
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] [Exif IFD0] Fill Order = Normal
+DEBUG [extractor::parser] [Exif IFD0] Orientation = Top, left side (Horizontal / normal)
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 300 dots per inch
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 4680 pixels
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 300 dots per inch
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [Exif IFD0] Software = PixEdit Version 6.2.2.0, SN 246-50188-02,  used by Owner at Your Company Name
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 6400 pixels
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 6400 rows/strip
+DEBUG [extractor::parser] [Exif IFD0] Compression = T6/Group 4 Fax
+DEBUG [extractor::parser] [File] File Name = m2-f228b1103fd7b629c08c1bbba94708e0.tif
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x5017) = 964484
+DEBUG [extractor::parser] [Exif IFD0] Make = techsoft as - P.O.BOX 132, N-3201 Sandefjord,NORWAY
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x882c) = 482
+DEBUG [extractor::parser] [Exif SubIFD] Color Space = Undefined
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Sony Camera Raw
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 1 samples/pixel
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2008:01:05 13:29:00, 1199539740 found in ./metadata-extractor-images/tif/ImageTestSuite/m2-f228b1103fd7b629c08c1bbba94708e0.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/m2-f228b1103fd7b629c08c1bbba94708e0.tif",
+    suffix: "arw",
+    datetime: FileDateTime {
+        year: 2008,
+        month: 1,
+        day: 5,
+        hour: 13,
+        minute: 29,
+        second: 0,
+        timestamp: 1199539740,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/m2-f228b1103fd7b629c08c1bbba94708e0.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2008/2008-01-05-13-29-00.arw
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m1-14847ce6f5fab0774dae9ad4fba31316.tif
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 4672 pixels
+DEBUG [extractor::parser] [Exif IFD0] Page Number = 0 0
+DEBUG [extractor::parser] [Exif IFD0] Strip Byte Counts = 78026 bytes
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = 8
+DEBUG [extractor::parser] [Exif IFD0] Fill Order = Normal
+DEBUG [extractor::parser] [Exif IFD0] Photometric Interpretation = WhiteIsZero
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [File] File Name = m1-14847ce6f5fab0774dae9ad4fba31316.tif
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 3296 pixels
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 212 bits/component/pixel
+DEBUG [extractor::parser] Processed 0.075 MB file in 14.60 ms
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 400 dots per inch
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 1 samples/pixel
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0155) = 4672
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 400 dots per inch
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Exif IFD0] Compression = T6/Group 4 Fax
+DEBUG [extractor::parser] [File] File Size = 78236 bytes
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 15:46:37, 1674027997 found in ./metadata-extractor-images/tif/ImageTestSuite/m1-14847ce6f5fab0774dae9ad4fba31316.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/m1-14847ce6f5fab0774dae9ad4fba31316.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 15,
+        minute: 46,
+        second: 37,
+        timestamp: 1674027997,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/m1-14847ce6f5fab0774dae9ad4fba31316.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-15-46-37.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m10-76c43508fc007bcf5902b6a28e8055a5.tif
+DEBUG [extractor::parser] [ICC Profile] Profile Date/Time = 2000:07:26 06:19:38
+DEBUG [extractor::parser] [ICC Profile] Signature = acsp
+DEBUG [extractor::parser] [Exif IFD0] Bits Per Sample = 8 8 8 8 bits/component/pixel
+DEBUG [extractor::parser] [Exif IFD0] Y Resolution = 300 dots per inch
+DEBUG [extractor::parser] 
+DEBUG [extractor::parser] [ICC Profile] CMM Type = ADBE
+DEBUG [extractor::parser] [ICC Profile] XYZ values = 0.964 1 0.825
+DEBUG [extractor::parser] [ICC Profile] Rendering Intent = Media-Relative Colorimetric
+DEBUG [extractor::parser] [File Type] Detected File Type Name = TIFF
+DEBUG [extractor::parser] [File] File Name = m10-76c43508fc007bcf5902b6a28e8055a5.tif
+DEBUG [extractor::parser] [Exif IFD0] Strip Offsets = [1313 values]
+DEBUG [extractor::parser] [Exif SubIFD] Color Space = Undefined
+DEBUG [extractor::parser] [ICC Profile] Media White Point = (0.8259, 0.8468, 0.7724)
+DEBUG [extractor::parser] [Exif IFD0] Image Description = 
+DEBUG [extractor::parser] [File] File Modified Date = Wed Jan 18 15:46:37 +08:00 2023
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try Wed Jan 18 15:46:37 +08:00 2023 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] [+] Wed Jan 18 15:46:37 +08:00 2023 -> 2023:01:18 15:46:37, 1674027997
+INFO [extractor::parser] [+] extractor 2023:01:18 15:46:37, 1674027997 from file metadata.
+DEBUG [extractor::parser] Processed 0.785 MB file in 98.95 ms
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x9f32) = 2003:11:26 18:|4:31
+DEBUG [extractor::parser] [ICC Profile] Color space = CMYK
+DEBUG [extractor::parser] [Exif IFD0] Software = Adobe Photoshop 7.0
+DEBUG [extractor::parser] [ICC Profile] Profile Size = 557164
+DEBUG [extractor::parser] [Exif IFD0] Resolution Unit = Inch
+DEBUG [extractor::parser] [ICC Profile] Profile Connection Space = Lab 
+DEBUG [extractor::parser] [IPTC] Caption/Abstract =  
+DEBUG [extractor::parser] [ICC Profile] AToB 2 = mft2 (0x6D667432): 41478 bytes
+DEBUG [extractor::parser] [ICC Profile] Profile Copyright = �E�� (0x81458083): 43 bytes
+DEBUG [extractor::parser] [Exif IFD0] X Resolution = 441452/625 dots per inch
+DEBUG [extractor::parser] [IPTC] Application Record Version = 2
+DEBUG [extractor::parser] [ICC Profile] AToB 0 = mft2 (0x6D667432): 41478 bytes
+DEBUG [extractor::parser] [File Type] Detected MIME Type = image/tiff
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x86a0) = [5840 values]
+DEBUG [extractor::parser] [File] File Size = 822956 bytes
+DEBUG [extractor::parser] [Exif IFD0] Image Width = 1772 pixels
+DEBUG [extractor::parser] [ICC Profile] Version = 2.1.0
+DEBUG [extractor::parser] [File Type] Expected File Name Extension = tiff
+INFO [extractor::parser] [+] extractor tiff from file metadata file type.
+DEBUG [extractor::parser] [Exif IFD0] Rows Per Strip = 1 rows/strip
+DEBUG [extractor::parser] [ICC Profile] Profile Description = Euroscale Uncoated v2
+DEBUG [extractor::parser] [Exif IFD0] Image Height = 1313 pixels
+DEBUG [extractor::parser] [Exif IFD0] Predictor = 2
+DEBUG [extractor::parser] [Exif IFD0] Compression = LZW
+DEBUG [extractor::parser] [ICC Profile] Tag Count = 10
+DEBUG [extractor::parser] [Exif IFD0] Planar Configuration = Chunky (contiguous for each subsampling pixel)
+DEBUG [extractor::parser] [Exif IFD0] Samples Per Pixel = 4 samples/pixel
+DEBUG [extractor::parser] [ICC Profile] Device manufacturer = pDBE
+DEBUG [extractor::parser] [ICC Profile] Class = Output Device
+DEBUG [extractor::parser] [File Type] Detected File Type Long Name = Tagged Image File Format
+DEBUG [extractor::parser] [Exif SubIFD] Exif Image Height = 1313 pixels
+DEBUG [extractor::parser] [ICC Profile] Primary Platform = Apple Computer, Inc.
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x0150) = 0 255
+DEBUG [extractor::parser] [Exif IFD0] Unknown tag (0x8f06) = 5
+DEBUG [extractor::parser] [Exif IFD0] New Subfile Type = Unknown (228)
+INFO [extractor::parser] [+] extractor 2023:01:18 07:46:37, 1674027997 from file attributes.
+INFO [extractor::parser] [+] minimum datetime 2023:01:18 15:46:37, 1674027997 found in ./metadata-extractor-images/tif/ImageTestSuite/m10-76c43508fc007bcf5902b6a28e8055a5.tif
+DEBUG [cli::splits] file metadata: FileMeta {
+    file_path: "./metadata-extractor-images/tif/ImageTestSuite/m10-76c43508fc007bcf5902b6a28e8055a5.tif",
+    suffix: "tiff",
+    datetime: FileDateTime {
+        year: 2023,
+        month: 1,
+        day: 18,
+        hour: 15,
+        minute: 46,
+        second: 37,
+        timestamp: 1674027997,
+    },
+}
+INFO [cli::splits] [Success] test without copy ./metadata-extractor-images/tif/ImageTestSuite/m10-76c43508fc007bcf5902b6a28e8055a5.tif to /Users/idhyt/Working/mmfplace/target/debug/output/2023/2023-01-18-15-46-37.tiff
+DEBUG [cli::splits] start process ./metadata-extractor-images/tif/ImageTestSuite/m4-299787ea764c0a88bc481364eded5556.tif
+DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2008:09:08 09:42�29
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y-%m-%d, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y:%m:%d, trailing input
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y:%m:%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y:%m:%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y/%m/%d %H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y:%m:%d %H:%M:%S.%f %Z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %a %b %d %H:%M:%S %:z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %a %b %d %H:%M:%S %Z %Y, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S%z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S%z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S %:z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S %:z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S%:z, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%S%:z, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%SZ, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %Y-%m-%dT%H:%M:%SZ, input contains invalid characters
+DEBUG [extractor::parser] DateTime try 2008:09:08 09:42�29 as %a %b %d %H:%M:%S %Y, input contains invalid characters
+DEBUG [extractor::parser] Utc try 2008:09:08 09:42�29 as %a %b %d %H:%M:%S %Y, input contains invalid characters
+ERROR [cli] splits process failed: parse 2008:09:08 09:42�29 failed
