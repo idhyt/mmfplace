@@ -55,7 +55,6 @@ pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
                 handle.await?;
             }
             handles.clear();
-            break;
         }
     }
 
