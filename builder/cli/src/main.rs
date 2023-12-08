@@ -1,18 +1,8 @@
-use clap::{Parser, ValueEnum, ValueHint};
+use clap::{Parser, ValueHint};
 use std::path::PathBuf;
 
 use place::do_place;
 use utils::log::setup_tracing;
-
-#[derive(ValueEnum, Clone, Debug, PartialEq)]
-enum ModeType {
-    /// test mode, do not copy/move file
-    Test,
-    /// Copy file to output directory
-    Copy,
-    /// Move file to output directory
-    Move,
-}
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
