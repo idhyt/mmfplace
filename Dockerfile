@@ -7,8 +7,8 @@ RUN apk add --no-cache openjdk8 tzdata && \
 
 WORKDIR /opt/app
 
-COPY ./target/x86_64-unknown-linux-musl/release/mmfplace ./mmfplace
+COPY ./builder/target/x86_64-unknown-linux-musl/release/mmfplace ./mmfplace
+COPY ./builder/config/src/default.yaml ./config.yml
 COPY ./tools ./tools
-COPY ./src/config/default_config.yml ./config.yml
 
 ENTRYPOINT ["/opt/app/mmfplace"]

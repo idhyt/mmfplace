@@ -66,52 +66,37 @@ tests_output
 ## Usage
 
 ```
-Usage: mmfplace [OPTIONS] --input <INPUT> [MODE]
-
-Arguments:
-  [MODE]
-          which mode to used
-
-          [default: copy]
-
-          Possible values:
-          - test: test mode, do not copy/move file
-          - copy: Copy file to output directory
-          - move: Move file to output directory
+Usage: mmfplace [OPTIONS] --input <INPUT>
 
 Options:
-  -w, --work-dir <WORK_DIR>
-          point to the run directory, must have RW permissions
-
-  -i, --input <INPUT>
-          input file/directory path
-
-  -o, --output <OUTPUT>
-          output directory path
-
-  -c, --config <CONFIG>
-          custom config file path
-
-      --logfile <LOGFILE>
-          custom the logfile path
-
-  -h, --help
-          Print help (see a summary with '-h')
-
-  -V, --version
-          Print version
+  -w, --work-dir <WORK_DIR>  point to the run directory, must have RW permissions
+  -i, --input <INPUT>        input file/directory path
+  -o, --output <OUTPUT>      output directory path
+  -c, --config <CONFIG>      custom config file path
+      --logfile <LOGFILE>    custom the logfile path
+  -v, --verbose              enable verbose logging
+      --test                 test mode, do not copy/move file
+  -h, --help                 Print help
+  -V, --version              Print version
 ```
 
-`--config`: 可以追加config, 格式参考[config.yml](./src/config/default_config.yml)
+`--config`: 指定config配置, 格式参考[config.yml](./builder/config/src/default.yaml)
 
 可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理
 
-可以先运行测试命令 `make docker-tests` 详见 [makefile](./makefile) 中 docker-tests 部分
+```shell
+export ROOT_DIR=$(shell pwd)
+export BUILD_NAME=idhyt/mmfplace:0.1
+docker run -it --rm \
+        -v $(ROOT_DIR)/tests:/opt/tests \
+        -v $(ROOT_DIR)/tests_output:/opt/tests_output $(BUILD_NAME) \
+        --input=/opt/tests --output=/opt/tests_output --logfile=/opt/tests_output/tests.log
+```
 
 正式处理前建议先通过 `test` 模式进行测试, 看是否存在错误再进行整理, 命令如下:
 
 ```shell
-mmfplace test --input=/path/to/directory --logfile=/path/to/log.txt
+mmfplace --input=/path/to/directory --logfile=/path/to/log.txt --test
 ```
 
 ## 错误处理
