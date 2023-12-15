@@ -31,3 +31,6 @@ docker-tests:
 	@cat tests_output/tests.log | grep Success
 	@echo "\n---------------- DUPLICATE ----------------\n"
 	@cat tests_output/tests.log | grep Duplicate
+
+cross-build:
+	cd builder; ./xbuild

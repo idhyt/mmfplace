@@ -63,6 +63,35 @@ tests_output
 
 ```
 
+## Build
+
+```
+╰─ make cross-build
+1) x86_64-unknown-linux-musl
+2) aarch64-unknown-linux-musl
+3) x86_64-apple-darwin
+4) aarch64-apple-darwin
+5) x86_64-pc-windows-gnu
+选择目标平台的编号:
+```
+
+之后将编译出来的二进制文件放在和`tools`目录同级即可在本地运行
+
+```
+╰─ mkdir dist
+╰─ cp builder/target/x86_64-unknown-linux-musl/release/mmfplace ./dist
+╰─ cp -rf tools ./dist
+╰─ tree -L 2 ./dist
+./dist
+├── mmfplace
+└── tools
+    ├── metadata-extractor-2.18.0.jar
+    └── xmpcore-6.1.11.jar
+
+1 directory, 3 files
+```
+
+
 ## Usage
 
 ```
