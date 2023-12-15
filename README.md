@@ -65,6 +65,8 @@ tests_output
 
 ## Build
 
+可以从[releases](https://github.com/idhyt/mmfplace/releases)中下载已编译好的二进制，或者本地构建：
+
 ```
 ╰─ make cross-build
 1) x86_64-unknown-linux-musl
