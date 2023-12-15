@@ -1,0 +1,36 @@
+#! /bin/bash
+# set -ex
+cross_info=$(
+    cat <<EOF
+1) x86_64-unknown-linux-musl
+2) aarch64-unknown-linux-musl
+3) x86_64-apple-darwin
+4) aarch64-apple-darwin
+5) x86_64-pc-windows-gnu
+选择目标平台的编号:
+EOF
+)
+
+read -p "$cross_info" number
+case $number in
+1)
+    platform=x86_64-unknown-linux-musl
+    ;;
+2)
+    platform=aarch64-unknown-linux-musl
+    ;;
+3)
+    platform=x86_64-apple-darwin
+    ;;
+4)
+    platform=aarch64-apple-darwin
+    ;;
+5)
+    platform=x86_64-pc-windows-gnu
+    ;;
+*)
+    platform=x86_64-unknown-linux-gnu
+    ;;
+esac
+
+cross build --release --target $platform
