@@ -87,7 +87,8 @@ async fn process_one(
             date_path
         );
     } else {
-        copy_to(&pf.fi.file_path, &date_path).await?;
+        // copy_to(&pf.fi.file_path, &date_path).await?;
+        copy_to(&pf.fi.file_path, &date_path)?;
         log::info!(
             "[{}/{}] [Success] copy {:?} to {:?}",
             pf.index,
@@ -137,7 +138,8 @@ fn get_date_path(output: impl AsRef<Path>, pickf: &PickFile, dup_max: u32) -> Re
     Err(anyhow!("try {} time but file exists", dup_max))
 }
 
-async fn copy_to<T>(src: T, dst: T) -> Result<bool>
+// async fn copy_to<T>(src: T, dst: T) -> Result<bool>
+fn copy_to<T>(src: T, dst: T) -> Result<bool>
 where
     T: AsRef<Path>,
 {
@@ -156,7 +158,8 @@ where
     match copy_to.parent() {
         Some(parent) => {
             if !parent.is_dir() {
-                tokio::fs::create_dir_all(parent).await?;
+                // tokio::fs::create_dir_all(parent).await?;
+                std::fs::create_dir_all(parent)?;
             }
         }
         None => {
@@ -164,7 +167,9 @@ where
         }
     }
 
-    tokio::fs::copy(&copy_from, &copy_to).await?;
+    // bug will cause panic at `one file used by other` in async process...
+    // tokio::fs::copy(&copy_from, &copy_to).await?;
+    std::fs::copy(&copy_from, &copy_to)?;
 
     let metadata = std::fs::metadata(&copy_from)?;
     // log::info!("src file time: {:#?}", metadata);
@@ -175,3 +180,4 @@ where
     // log::info!("dst file time: {:#?}", metadata);
     Ok(true)
 }
+
