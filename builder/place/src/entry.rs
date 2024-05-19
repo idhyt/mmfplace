@@ -46,13 +46,15 @@ pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
             let _reader = Arc::clone(&mreader);
             handles.push(tokio::spawn(async move {
                 let pf = PickFile::new(&entry.path().to_path_buf(), index, total);
-                process_one(pf, &_config, &_reader, test).await.unwrap();
+                return pf.create(&_config.parser, &_reader).await.unwrap();
+                // process_one(pf, &_config, &_reader, test).await.unwrap();
             }));
         }
         // if handles len is bigger than config.parser.batch_size, wait for all handles done and clear it
         if handles.len() as u32 >= config.parser.batch_size {
             for handle in handles.iter_mut() {
-                handle.await?;
+                let pf = handle.await?;
+                do_copy(pf, &config.output, config.parser.dup_max, test)?;
             }
             handles.clear();
         }
@@ -61,23 +63,48 @@ pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
     // wait for all handles done
     if handles.len() > 0 {
         for handle in handles {
-            handle.await?;
+            let pf = handle.await?;
+            do_copy(pf, &config.output, config.parser.dup_max, test)?;
         }
     }
 
     Ok(())
 }
 
-async fn process_one(
-    pf: PickFile,
-    config: &config::Config,
-    reader: &MetadataReader,
-    test: bool,
-) -> Result<()> {
-    let pf = pf.create(&config.parser, reader).await?;
-    log::info!("pickup file: {:#?}", pf);
+// async fn process_one(
+//     pf: PickFile,
+//     config: &config::Config,
+//     reader: &MetadataReader,
+//     test: bool,
+// ) -> Result<()> {
+//     let pf = pf.create(&config.parser, reader).await?;
+//     log::info!("pickup file: {:#?}", pf);
 
-    let date_path = get_date_path(&config.output, &pf, config.parser.dup_max)?;
+//     let date_path = get_date_path(&config.output, &pf, config.parser.dup_max)?;
+//     if test {
+//         log::info!(
+//             "[{}/{}] [Success] test without copy {:?} to {:?}",
+//             pf.index,
+//             pf.total,
+//             pf.fi.file_path,
+//             date_path
+//         );
+//     } else {
+//         // copy_to(&pf.fi.file_path, &date_path).await?;
+//         copy_to(&pf.fi.file_path, &date_path)?;
+//         log::info!(
+//             "[{}/{}] [Success] copy {:?} to {:?}",
+//             pf.index,
+//             pf.total,
+//             pf.fi.file_path,
+//             date_path
+//         );
+//     }
+//     Ok(())
+// }
+
+fn do_copy(pf: PickFile, output: &PathBuf, dup_max: u32, test: bool) -> Result<()> {
+    let date_path = get_date_path(output, &pf, dup_max)?;
     if test {
         log::info!(
             "[{}/{}] [Success] test without copy {:?} to {:?}",
