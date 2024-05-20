@@ -1,7 +1,7 @@
 ROOT_DIR=$(shell pwd)
 BUILD_IMAGE=messense/rust-musl-cross:x86_64-musl
 BUILD_CACHE=~/.cargo/registry:/root/.cargo/registry
-BUILD_NAME=idhyt/mmfplace:0.1
+BUILD_NAME=idhyt/mmfplace:latest
 
 host-build-linux:
 	cd builder && cargo build --release --target x86_64-unknown-linux-musl
