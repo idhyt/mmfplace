@@ -33,4 +33,13 @@ case $number in
     ;;
 esac
 
-cross build --release --target $platform
+cd builder && cross build --release --target $platform && cd ..
+
+dist=mmfplace.$platform
+output=./dist/$dist
+[ -d "$output" ] || mkdir -p $output
+cp builder/target/$platform/release/mmfplace $output/mmfplace || cp builder/target/$platform/release/mmfplace.exe $output/mmfplace.exe
+cp builder/config/src/default.yaml $output/config.yaml
+cp -rf ./tools $output
+cd ./dist && tar -czvf $dist.tar.gz $dist && rm -rf $dist && cd ..
+echo "Build success, output file: $output.tar.gz"
