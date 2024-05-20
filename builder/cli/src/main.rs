@@ -8,7 +8,7 @@ use utils::log::setup_tracing;
 #[derive(Parser, Debug)]
 #[clap(
     author = "idhyt",
-    version = "0.1",
+    version = "dirty (81242966c1 2024-05-20)",
     about = "split multi-media file by earliest datetime",
     long_about = None
 )]
