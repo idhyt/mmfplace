@@ -5,6 +5,7 @@
 该日期数据来自于[文件元数据](https://github.com/drewnoakes/metadata-extractor), 文件属性看到的时间, 以及特殊标识(如文件名)
 
 整理之前的目录:
+
 ```
 ❯ tree tests
 tests
@@ -30,7 +31,9 @@ tests
 ...
 
 ```
+
 整理之后的目录:
+
 ```
 ❯ tree tests_output
 tests_output
@@ -68,7 +71,7 @@ tests_output
 可以从[releases](https://github.com/idhyt/mmfplace/releases)中下载已编译好的二进制，或者本地构建：
 
 ```
-╰─ make cross-build
+╰─ make build
 1) x86_64-unknown-linux-musl
 2) aarch64-unknown-linux-musl
 3) x86_64-apple-darwin
@@ -77,17 +80,23 @@ tests_output
 选择目标平台的编号:
 ```
 
-之后将编译出来的`二进制`文件, `tools`目录以及`config.yaml`文件放在同级目录即可在本地运行
+编译后的文件存放在 `dist` 文件夹
 
 ```
-╰─ mkdir dist
-╰─ cp builder/target/x86_64-unknown-linux-musl/release/mmfplace ./dist
-╰─ cp builder/config/src/default.yaml ./dist/config.yaml
-╰─ cp -rf tools ./dist
-╰─ tree -L 2 ./dist
-./dist
-├── mmfplace
+╰─ tree dist
+dist
+├── mmfplace.aarch64-apple-darwin.tar.gz
+├── mmfplace.aarch64-unknown-linux-musl.tar.gz
+├── mmfplace.x86_64-apple-darwin.tar.gz
+├── mmfplace.x86_64-pc-windows-gnu.tar.gz
+└── mmfplace.x86_64-unknown-linux-musl.tar.gz
+
+0 directories, 5 files
+
+╰─ cd dist && tar -xzvf mmfplace.x86_64-unknown-linux-musl.tar.gz && tree mmfplace.x86_64-unknown-linux-musl
+mmfplace.x86_64-unknown-linux-musl
 ├── config.yaml
+├── mmfplace
 └── tools
     ├── metadata-extractor-2.18.0.jar
     └── xmpcore-6.1.11.jar
@@ -95,25 +104,9 @@ tests_output
 1 directory, 4 files
 ```
 
-
 ## Usage
 
-```
-Usage: mmfplace [OPTIONS] --input <INPUT>
-
-Options:
-  -w, --work-dir <WORK_DIR>  point to the run directory, must have RW permissions
-  -i, --input <INPUT>        input file/directory path
-  -o, --output <OUTPUT>      output directory path
-  -c, --config <CONFIG>      custom config file path
-      --logfile <LOGFILE>    custom the logfile path
-  -v, --verbose              enable verbose logging
-      --test                 test mode, do not copy/move file
-  -h, --help                 Print help
-  -V, --version              Print version
-```
-
-`--config`: 指定config配置, 格式参考[config.yml](./builder/config/src/default.yaml)
+如果在主机运行，使用前请确保系统中已经安装 java 运行环境。
 
 可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理
 
@@ -131,6 +124,27 @@ docker run -it --rm \
 ```shell
 mmfplace --input=/path/to/directory --logfile=/path/to/log.txt --test
 ```
+
+参数说明：
+
+```
+Usage: mmfplace [OPTIONS] --input <INPUT>
+
+Options:
+  -w, --work-dir <WORK_DIR>  point to the run directory, must have RW permissions
+  -i, --input <INPUT>        input file/directory path
+  -o, --output <OUTPUT>      output directory path
+  -c, --config <CONFIG>      custom config file path
+      --logfile <LOGFILE>    custom the logfile path
+  -v, --verbose              enable verbose logging
+      --test                 test mode, do not copy/move file
+  -h, --help                 Print help
+  -V, --version              Print version
+```
+
+`--config`: 指定 config 配置, 格式参考[config.yml](./builder/config/src/default.yaml)
+
+`--logfile`: 指定日志文件存放路径
 
 ## 错误处理
 
@@ -157,7 +171,6 @@ stripes:
 
 之后执行命令加入 `--config` 参数即可
 
-
 ## 特性
 
 问题：某些文件时间信息缺失，每次修改都会以当前时间作为文件时间
@@ -170,7 +183,7 @@ stripes:
 
 ```
 additionals:
-  - name: "filename" 
+  - name: "filename"
     regex: (\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})_.*
     strptimes:
       - fmt: "%Y-%m-%d_%H-%M-%S"
