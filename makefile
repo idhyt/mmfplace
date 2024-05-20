@@ -33,4 +33,13 @@ docker-tests:
 	@cat tests_output/tests.log | grep Duplicate
 
 cross-build:
-	cd builder; ./xbuild
+	./xbuild
+
+build: cross-build
+
+place-clean:
+	find . -name "*.mmfplace" -type f -exec rm -rf {} \;
+	rm -rf outputs *.log
+
+place-test: place-clean
+	cd builder && cargo run -- -i ../tests -w .. --logfile ../tests.log
