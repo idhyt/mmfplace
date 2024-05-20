@@ -183,7 +183,7 @@ impl PickFile {
             // get file type from metadata
             if self.fi.suffix.is_empty() {
                 if let Some(file_type) = self.type_from_metadata(value)? {
-                    log::info!("[+] parse out {} from file metadata file type.", file_type);
+                    log::debug!("[+] parse out {} from file metadata file type.", file_type);
                     self.fi.suffix = file_type.to_lowercase();
                 }
             }
@@ -192,7 +192,7 @@ impl PickFile {
                 Some(dt) => dt,
                 None => continue 'outer,
             };
-            log::info!("[+] parse out {} from file metadata.", parsed.to_string());
+            log::debug!("[+] parse out {} from file metadata.", parsed.to_string());
             if parsed.year < 1975 {
                 log::warn!("[!] {} < 1975, skip...", parsed.year);
             } else {
@@ -335,7 +335,7 @@ impl PickFile {
         let readers = extractor.read(&self.fi.file_path).await?;
         match self.date_from_metedata(&readers, &config)? {
             Some(dt) => {
-                log::info!("[+] extractor {} from metadata.", dt.to_string());
+                log::debug!("[+] extractor {} from metadata.", dt.to_string());
                 file_dts.push(dt);
             }
             None => {
@@ -343,7 +343,7 @@ impl PickFile {
             }
         }
         let earliest = self.earliest_from_attributes()?;
-        log::info!(
+        log::debug!(
             "[+] extractor {} from file attributes.",
             earliest.to_string()
         );
@@ -352,7 +352,7 @@ impl PickFile {
         if !config.additionals.is_empty() {
             match self.date_from_additional(&config.additionals)? {
                 Some(dt) => {
-                    log::info!("[+] extractor {} from additional.", dt.to_string());
+                    log::debug!("[+] extractor {} from additional.", dt.to_string());
                     file_dts.push(dt);
                 }
                 None => {}

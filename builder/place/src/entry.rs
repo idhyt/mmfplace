@@ -156,28 +156,18 @@ pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
 
 fn do_copy(pf: PickFile, output: &PathBuf, dup_max: u32, test: bool) -> Result<()> {
     let date_path = get_date_path(output, &pf, dup_max)?;
-    if test {
-        log::info!(
-            "[{}/{}] [Success] test without copy {:?} to {:?}",
-            pf.index,
-            pf.total,
-            pf.fi.file_path,
-            date_path
-        );
-    } else {
-        // copy_to(&pf.fi.file_path, &date_path).await?;
+    if !test {
         copy_to(&pf.fi.file_path, &date_path)?;
-
         Checker::set_placed(&pf.fi.file_path)?;
-
-        log::info!(
-            "[{}/{}] [Success] copy {:?} to {:?}",
-            pf.index,
-            pf.total,
-            pf.fi.file_path,
-            date_path
-        );
     }
+    log::info!(
+        "[{}/{}] [Success] {} {:?} to {:?}",
+        pf.index,
+        pf.total,
+        if test { "test without copy" } else { "copy" },
+        pf.fi.file_path,
+        date_path
+    );
     Ok(())
 }
 
@@ -228,7 +218,7 @@ where
     let copy_to = dst.as_ref();
 
     if copy_to.is_file() {
-        log::info!(
+        log::debug!(
             "[Duplicate] copy {:?} to {:?} exists, skip",
             copy_from,
             copy_to
