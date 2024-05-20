@@ -2,10 +2,11 @@
 # set -ex
 
 function set_version() {
+    version=${BUILD_VERSION:-0.1}
     date=$(git show --pretty=format:"%ci %cr" | head -1 | cut -d " " -f1)
     commit=$(git rev-parse HEAD | cut -c1-10)
     # replace version = "0.1", to version = "0.1 (123456 2021-08-01)",
-    sed -i "s|version = \".*\"|version = \"0.1 ($commit $date)\"|" ./builder/cli/src/main.rs
+    sed -i "s|version = \".*\"|version = \"$version ($commit $date)\"|" ./builder/cli/src/main.rs
 }
 
 function build() {
