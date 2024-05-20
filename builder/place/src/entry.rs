@@ -9,16 +9,64 @@ use super::pick::PickFile;
 use config::CONFIG;
 use utils::crypto::sha256_digest;
 
+struct Checker {}
+
+impl Checker {
+    pub fn is_ignore(file: impl AsRef<Path>) -> bool {
+        let file = file.as_ref();
+        if !file.is_file() {
+            return true;
+        }
+        if file
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_lowercase()
+            .ends_with(".mmfplace")
+        {
+            return true;
+        }
+        false
+    }
+
+    pub fn is_placed(file: impl AsRef<Path>) -> bool {
+        let file = file.as_ref();
+        // append .mmfplace to file name
+        let check_name = format!("{}.mmfplace", file.file_name().unwrap().to_str().unwrap());
+        let check_file = file.with_file_name(check_name);
+        check_file.is_file()
+    }
+
+    pub fn is_skip(file: impl AsRef<Path>) -> bool {
+        let file = file.as_ref();
+        if Self::is_ignore(file) {
+            // log::info!("skip ignore file: {:?}", file);
+            return true;
+        }
+        if Self::is_placed(file) {
+            // log::info!("skip placed file: {:?}", file);
+            return true;
+        }
+        return false;
+    }
+
+    pub fn set_placed(file: impl AsRef<Path>) -> Result<()> {
+        let file = file.as_ref();
+        let placed_name = format!("{}.mmfplace", file.file_name().unwrap().to_str().unwrap());
+        let placed_file = file.with_file_name(placed_name);
+        std::fs::write(placed_file, "")?;
+        Ok(())
+    }
+}
+
 pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
     let config = CONFIG.lock().await;
 
-    let total: u64 = match input.is_dir() {
-        true => WalkDir::new(input)
-            .into_iter()
-            .filter(|e| e.as_ref().unwrap().file_type().is_file())
-            .count() as u64,
-        false => 1,
-    };
+    let total = WalkDir::new(input)
+        .into_iter()
+        .filter(|d| !Checker::is_skip(d.as_ref().unwrap().path()))
+        .count() as u64;
 
     log::info!(
         "start process with:\n  work_dir: {:?}\n  input: {:?}\n  output: {:?}\n  test: {}\n  total: {}",
@@ -40,16 +88,19 @@ pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
 
     for entry in WalkDir::new(input) {
         let entry = entry?;
-        if entry.file_type().is_file() {
-            index += 1;
-            let _config = Arc::clone(&config);
-            let _reader = Arc::clone(&mreader);
-            handles.push(tokio::spawn(async move {
-                let pf = PickFile::new(&entry.path().to_path_buf(), index, total);
-                return pf.create(&_config.parser, &_reader).await.unwrap();
-                // process_one(pf, &_config, &_reader, test).await.unwrap();
-            }));
+        if Checker::is_skip(entry.path()) {
+            log::info!("skip file: {:?}", entry.path());
+            continue;
         }
+        index += 1;
+
+        let _config = Arc::clone(&config);
+        let _reader = Arc::clone(&mreader);
+        handles.push(tokio::spawn(async move {
+            let pf = PickFile::new(&entry.path().to_path_buf(), index, total);
+            return pf.create(&_config.parser, &_reader).await.unwrap();
+            // process_one(pf, &_config, &_reader, test).await.unwrap();
+        }));
         // if handles len is bigger than config.parser.batch_size, wait for all handles done and clear it
         if handles.len() as u32 >= config.parser.batch_size {
             for handle in handles.iter_mut() {
@@ -116,6 +167,9 @@ fn do_copy(pf: PickFile, output: &PathBuf, dup_max: u32, test: bool) -> Result<(
     } else {
         // copy_to(&pf.fi.file_path, &date_path).await?;
         copy_to(&pf.fi.file_path, &date_path)?;
+
+        Checker::set_placed(&pf.fi.file_path)?;
+
         log::info!(
             "[{}/{}] [Success] copy {:?} to {:?}",
             pf.index,
@@ -207,4 +261,3 @@ where
     // log::info!("dst file time: {:#?}", metadata);
     Ok(true)
 }
-
