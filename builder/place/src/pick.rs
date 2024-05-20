@@ -10,12 +10,12 @@ use super::{FileDateTime, FileInfo};
 #[derive(Debug, Clone)]
 pub struct PickFile {
     pub fi: FileInfo,
-    pub index: u64,
-    pub total: u64,
+    pub index: u32,
+    pub total: u32,
 }
 
 impl PickFile {
-    pub fn new(file_path: &PathBuf, index: u64, total: u64) -> Self {
+    pub fn new(file_path: &PathBuf, index: u32, total: u32) -> Self {
         Self {
             fi: FileInfo::new(file_path),
             index,

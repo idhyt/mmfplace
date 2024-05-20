@@ -66,7 +66,7 @@ pub async fn process(input: &PathBuf, test: bool) -> Result<()> {
     let total = WalkDir::new(input)
         .into_iter()
         .filter(|d| !Checker::is_skip(d.as_ref().unwrap().path()))
-        .count() as u64;
+        .count() as u32;
 
     log::info!(
         "start process with:\n  work_dir: {:?}\n  input: {:?}\n  output: {:?}\n  test: {}\n  total: {}",

@@ -56,30 +56,23 @@ impl FileInfo {
     }
 
     pub fn get_name(&self, index: u32) -> String {
-        if index == 0 {
-            return format!(
-                "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}.{}",
-                self.datetime.year,
-                self.datetime.month,
-                self.datetime.day,
-                self.datetime.hour,
-                self.datetime.minute,
-                self.datetime.second,
-                self.suffix
-            );
+        let pad = if index == 0 {
+            "".to_string()
         } else {
-            return format!(
-                "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}_{:05}.{}",
-                self.datetime.year,
-                self.datetime.month,
-                self.datetime.day,
-                self.datetime.hour,
-                self.datetime.minute,
-                self.datetime.second,
-                index,
-                self.suffix
-            );
-        }
+            format!("_{:05}", index)
+        };
+
+        return format!(
+            "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}{}.{}",
+            self.datetime.year,
+            self.datetime.month,
+            self.datetime.day,
+            self.datetime.hour,
+            self.datetime.minute,
+            self.datetime.second,
+            pad,
+            self.suffix
+        );
     }
 }
 
