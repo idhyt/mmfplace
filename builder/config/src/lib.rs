@@ -1,4 +1,5 @@
 use lazy_static::lazy_static;
+use regex::{Error, Regex};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
@@ -16,6 +17,12 @@ pub struct Strptime {
 pub struct Stripe {
     pub name: String,
     pub regex: String,
+    #[serde(default = "capture_index")]
+    pub index: Option<u8>,
+}
+
+fn capture_index() -> Option<u8> {
+    Some(1)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -55,6 +62,25 @@ impl Config {
     }
 }
 
+impl Stripe {
+    pub fn capture(&self, text: &str) -> Result<String, Error> {
+        let re = Regex::new(&self.regex)?;
+        match re.captures(text) {
+            Some(caps) => match caps.get(self.index.unwrap() as usize) {
+                Some(cap) => {
+                    return Ok(cap.as_str().trim().to_owned());
+                }
+                None => {
+                    return Err(Error::Syntax("capture index out of range".to_owned()));
+                }
+            },
+            None => {
+                return Err(Error::Syntax("no capture found".to_owned()));
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -74,5 +100,21 @@ mod tests {
         assert!(!config.blacklist.is_empty());
         assert!(!config.retain_suffix.is_empty());
         assert!(!config.additionals.is_empty());
+    }
+
+    #[test]
+    fn test_capture() {
+        let config_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
+        let config_path = config_dir.join("src").join("default.toml");
+        println!("config file: {:?}", config_path);
+        assert!(config_path.is_file());
+        let config = Config::new(Some(config_path));
+        println!("config: {:#?}", config);
+
+        for stripe in &config.stripes {
+            let text = format!("{}2024-12-20", &stripe.name);
+            let c = stripe.capture(&text).unwrap();
+            println!("text: {}, result: {:?}", text, c);
+        }
     }
 }

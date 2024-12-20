@@ -44,7 +44,7 @@ stripes = [
     #   regex: "Date/Time = (.*)"
     #   strptimes: *dateparse
     { "name" = "] Date/Time = ", "regex" = "Date/Time = (.*)" },
-    { "name" = "] Profile Date/Time", "regex" = "Date/Time = (.*)" },
+    { "name" = "] Profile Date/Time = ", "regex" = "Date/Time = (.*)" },
     { "name" = "] Date/Time Original = ", "regex" = "Date/Time Original = (.*)" },
     { "name" = "] File Modified Date = ", "regex" = "File Modified Date = (.*)" },
     { "name" = "] Modification Time = ", "regex" = "Modification Time = (.*)" },
