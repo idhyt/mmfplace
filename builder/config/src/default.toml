@@ -1,0 +1,86 @@
+# batch size
+batch_size = 20
+
+# https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
+# "2020-04-12" => Date = NaiveDate
+# "22:10" => Time = NaiveTime
+# "2020-04-12 22:10:57" => Date + Time = NaiveDateTime
+# "2020-04-12 22:10:57+02:00" => Date + Time + TimeZone = DateTime<Tz>
+dateparse = [
+    # .naivedate: &naivedate
+    { "fmt" = "%Y-%m-%d", "test" = "2002-06-20" },
+    { "fmt" = "%Y:%m:%d", "test" = "2010:06:24" },
+    # .naivedatetime: &naivedatetime
+    { "fmt" = "%Y:%m:%d %H:%M:%S", "test" = "2017:08:16 12:18:36" },
+    { "fmt" = "%Y:%m:%dT%H:%M:%S", "test" = "2017:08:16T12:18:36" },
+    { "fmt" = "%Y/%m/%d %H:%M:%S", "test" = "2002/08/29 17:31:40" },
+    { "fmt" = "%Y-%m-%dT%H:%M:%S", "test" = "2022-04-02T08:20:27" },
+    { "fmt" = "%Y-%m-%dT%H:%M:%S.%f", "test" = "2018-06-30T13:02:35.003" },
+    { "fmt" = "%Y-%m-%dT%H:%M", "test" = "2018-06-30T17:11" },
+    { "fmt" = "%D %R %p", "test" = "8/16/17 12:18 PM" },
+    { "fmt" = "%Y:%m:%d %H:%M:%S%P", "test" = "2017:06:17 18:01:24pm" },
+    { "fmt" = "%Y:%m:%d %H:%M:%S%p", "test" = "2017:06:17 18:01:24PM" },
+    # .datetimetz: &datetimetz
+    { "fmt" = "%Y:%m:%d %H:%M:%S.%f %Z", "test" = "2019:05:23 06:10:21.000 UTC" },
+    { "fmt" = "%a %b %d %H:%M:%S %:z %Y", "test" = "Wed Nov 30 05:58:56 +01:00 2022" },
+    { "fmt" = "%a %b %d %H:%M:%S %Z %Y", "test" = "Wed Jan 18 13:10:27 CST 2023" },
+    { "fmt" = "%Y-%m-%dT%H:%M:%S%z", "test" = "2022-01-31T23:59:15+0800" },
+    { "fmt" = "%Y-%m-%dT%H:%M:%S %:z", "test" = "2015-01-22T00:00:00 +00:00" },
+    { "fmt" = "%Y-%m-%dT%H:%M:%S%:z", "test" = "2012-05-22T15:52:27+01:00" },
+    { "fmt" = "%Y-%m-%dT%H:%M:%SZ", "test" = "2012-12-31T04:35:10Z" },
+    { "fmt" = "%a %b %d %H:%M:%S %Y", "test" = "Tue May 7 21:48:30 2002" },
+    { "fmt" = "%Y-%m-%dT%H:%M%:z", "test" = "2018-07-01T20:38+08:00" },
+]
+
+
+# strips of metadata-extractor tag name
+# directory.getName() tag.getTagName() tag.getDescription()
+# [FileFile Modified Date = Wed Nov 30 05:58:56 +08:00 2022
+# striptime format https://docs.rs/chrono/latest/chrono/format/strftime/index.html
+stripes = [
+    # [ICC Profile] Profile Date/Time = 2022:01:01 00:00:00
+    # inaccurate see: https://photo.stackexchange.com/questions/82495/what-does-the-exif-icc-profile-date-mean
+    # - name: "] Profile Date/Time"
+    #   regex: "Date/Time = (.*)"
+    #   strptimes: *dateparse
+    { "name" = "] Date/Time = ", "regex" = "Date/Time = (.*)" },
+    { "name" = "] Profile Date/Time", "regex" = "Date/Time = (.*)" },
+    { "name" = "] Date/Time Original = ", "regex" = "Date/Time Original = (.*)" },
+    { "name" = "] File Modified Date = ", "regex" = "File Modified Date = (.*)" },
+    { "name" = "] Modification Time = ", "regex" = "Modification Time = (.*)" },
+    { "name" = "] Modification Date = ", "regex" = "Modification Date = (.*)" },
+    { "name" = "] Creation Time = ", "regex" = "Creation Time = (.*)" },
+    { "name" = "] Creation Date = ", "regex" = "Creation Date = (.*)" },
+    { "name" = "] Last Modification Time = ", "regex" = "Last Modification Time = (.*)" },
+    { "name" = "] Date/Time Digitized = ", "regex" = "Date/Time Digitized = (.*)" },
+    { "name" = "] Digital Date Created = ", "regex" = "Digital Date Created = (.*)" },
+    { "name" = "] date:create: = ", "regex" = "date:create: (.*)" },
+    { "name" = "] photoshop:DateCreated = ", "regex" = "photoshop:DateCreated = (.*)" },
+    { "name" = "] xmp:CreateDate = ", "regex" = "xmp:CreateDate = (.*)" },
+    { "name" = "] xmp:MetadataDate = ", "regex" = "xmp:MetadataDate = (.*)" },
+    { "name" = "] xmp:ModifyDate = ", "regex" = "xmp:ModifyDate = (.*)" },
+    { "name" = "] Date Created = ", "regex" = "Date Created = (.*)" },
+    { "name" = "] Aufnahmedatum : ", "regex" = "Aufnahmedatum : (.*)" },
+    { "name" = "] xmpMM:History[1]/stEvt:when = ", "regex" = "stEvt:when = (.*)" },
+    { "name" = "] GPS Date Stamp = ", "regex" = "GPS Date Stamp = (.*)" },
+]
+
+blacklist = [
+    # [Exif SubIFD] Date/Time Original =     :  :     :  :
+    ":  :     :  :",
+    # "2019:10:07 24:23:32"
+    "2010:00:00",
+    " 24:",
+]
+
+retain_suffix = [
+    # iphone
+    "heic",
+]
+
+# some experimental extend trait
+additionals = [
+    { "name" = "filename", "regex" = "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}).*", dateparse = [
+        { "fmt" = "%Y-%m-%d-%H-%M-%S", "test" = "2018-05-02-13-13-39-01.jpg" },
+    ] },
+]
