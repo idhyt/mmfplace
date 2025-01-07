@@ -1,0 +1,2 @@
+metadata-extractor-2.18.0.jar
+xmpcore-6.1.11.jar
