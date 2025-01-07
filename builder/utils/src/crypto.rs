@@ -1,15 +1,29 @@
 use anyhow::Result;
-use sha2::{Digest, Sha256};
+use digest::DynDigest;
 use std::io::{BufReader, Read};
-use std::path::Path;
+use std::path::PathBuf;
 
-/// calculates sha256 digest as lowercase hex string
-pub fn sha256_digest(path: impl AsRef<Path>) -> Result<String> {
+// DynDigest needs to be boxed here, since function return should be sized.
+fn select_hasher(s: &str) -> Box<dyn DynDigest> {
+    match s {
+        // cargo add md-5
+        "md5" => Box::new(md5::Md5::default()),
+        // "sha1" => Box::new(sha1::Sha1::default()),
+        // "sha224" => Box::new(sha2::Sha224::default()),
+        // cargo add sha2
+        // "sha256" => Box::new(sha2::Sha256::default()),
+        // "sha384" => Box::new(sha2::Sha384::default()),
+        // "sha512" => Box::new(sha2::Sha512::default()),
+        _ => unimplemented!("unsupported digest: {}", s),
+    }
+}
+
+fn file_hasher(hasher: &str, path: &PathBuf) -> Result<String> {
     let input = std::fs::File::open(path)?;
     let mut reader = BufReader::new(input);
 
     let digest = {
-        let mut hasher = Sha256::new();
+        let mut hasher = select_hasher(hasher);
         let mut buffer = [0; 1024];
         loop {
             let count = reader.read(&mut buffer)?;
@@ -18,8 +32,24 @@ pub fn sha256_digest(path: impl AsRef<Path>) -> Result<String> {
             }
             hasher.update(&buffer[..count]);
         }
-        hasher.finalize()
+        hasher.finalize_reset()
     };
-    let hex_hash = base16ct::lower::encode_string(&digest);
-    Ok(hex_hash)
+    Ok(base16ct::lower::encode_string(&digest))
+}
+
+pub fn get_file_md5(path: &PathBuf) -> Result<String> {
+    file_hasher("md5", path)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_md5() {
+        let path = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
+        let md5 = get_file_md5(&path).unwrap();
+        println!("md5: {}", md5);
+        assert_eq!(md5, "a18932e314dbb4c81c6fd0e282d81d16");
+    }
 }
