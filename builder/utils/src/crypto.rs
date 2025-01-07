@@ -1,4 +1,3 @@
-use anyhow::Result;
 use digest::DynDigest;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
@@ -18,7 +17,9 @@ fn select_hasher(s: &str) -> Box<dyn DynDigest> {
     }
 }
 
-fn file_hasher(hasher: &str, path: &PathBuf) -> Result<String> {
+type HasherRet<T> = std::result::Result<T, std::io::Error>;
+
+fn file_hasher(hasher: &str, path: &PathBuf) -> HasherRet<String> {
     let input = std::fs::File::open(path)?;
     let mut reader = BufReader::new(input);
 
@@ -37,7 +38,7 @@ fn file_hasher(hasher: &str, path: &PathBuf) -> Result<String> {
     Ok(base16ct::lower::encode_string(&digest))
 }
 
-pub fn get_file_md5(path: &PathBuf) -> Result<String> {
+pub fn get_file_md5(path: &PathBuf) -> HasherRet<String> {
     file_hasher("md5", path)
 }
 
