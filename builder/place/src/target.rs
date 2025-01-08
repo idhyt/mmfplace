@@ -117,9 +117,14 @@ impl Target {
     //         )
     //     }
     // }
+
+    pub async fn process(mut self, index: usize, total: usize) -> Result<Self> {
+        self.hash = format!("todo-{}-{}-{}", index, total, self.hash);
+        Ok(self)
+    }
 }
 
-struct Checker<'a> {
+pub struct Checker<'a> {
     pub path: &'a PathBuf,
     pub path_str: &'a str,
 }

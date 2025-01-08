@@ -34,7 +34,7 @@ pub struct Additional {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Config {
-    pub batch_size: u32,
+    pub batch_size: usize,
     pub dateparse: Vec<Strptime>,
     pub stripes: Vec<Stripe>,
     pub blacklist: Vec<String>,

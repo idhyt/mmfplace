@@ -8,7 +8,7 @@ lazy_static! {
     pub static ref META: MetadataReader = MetadataReader::new(None);
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct MetadataReader {
     extractor_jar: PathBuf,
     xmpcore_jar: PathBuf,
