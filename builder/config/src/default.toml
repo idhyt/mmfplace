@@ -6,7 +6,7 @@ batch_size = 20
 # "22:10" => Time = NaiveTime
 # "2020-04-12 22:10:57" => Date + Time = NaiveDateTime
 # "2020-04-12 22:10:57+02:00" => Date + Time + TimeZone = DateTime<Tz>
-dateparse = [
+striptimes = [
     # .naivedate: &naivedate
     { "fmt" = "%Y-%m-%d", "test" = "2002-06-20" },
     { "fmt" = "%Y:%m:%d", "test" = "2010:06:24" },
@@ -37,7 +37,7 @@ dateparse = [
 # directory.getName() tag.getTagName() tag.getDescription()
 # [FileFile Modified Date = Wed Nov 30 05:58:56 +08:00 2022
 # striptime format https://docs.rs/chrono/latest/chrono/format/strftime/index.html
-stripes = [
+dateparse = [
     # [ICC Profile] Profile Date/Time = 2022:01:01 00:00:00
     # inaccurate see: https://photo.stackexchange.com/questions/82495/what-does-the-exif-icc-profile-date-mean
     # - name: "] Profile Date/Time"

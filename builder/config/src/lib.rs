@@ -14,7 +14,7 @@ pub struct Strptime {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Stripe {
+pub struct Parser {
     pub name: String,
     pub regex: String,
     #[serde(default = "capture_index")]
@@ -35,9 +35,9 @@ pub struct Additional {
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Config {
     pub batch_size: usize,
-    pub dateparse: Vec<Strptime>,
-    pub stripes: Vec<Stripe>,
-    pub typeparse: Vec<Stripe>,
+    pub striptimes: Vec<Strptime>,
+    pub dateparse: Vec<Parser>,
+    pub typeparse: Vec<Parser>,
     pub blacklist: Vec<String>,
     pub retain_suffix: Vec<String>,
     pub additionals: Vec<Additional>,
@@ -63,7 +63,7 @@ impl Config {
     }
 }
 
-impl Stripe {
+impl Parser {
     pub fn capture(&self, text: &str) -> Result<String, Error> {
         let re = Regex::new(&self.regex)?;
         match re.captures(text) {
@@ -97,7 +97,7 @@ mod tests {
         println!("config: {:#?}", config);
         assert!(config.batch_size > 0);
         assert!(!config.dateparse.is_empty());
-        assert!(!config.stripes.is_empty());
+        assert!(!config.striptimes.is_empty());
         assert!(!config.blacklist.is_empty());
         assert!(!config.retain_suffix.is_empty());
         assert!(!config.additionals.is_empty());
@@ -112,15 +112,15 @@ mod tests {
         let config = Config::new(Some(config_path));
         println!("config: {:#?}", config);
 
-        for stripe in &config.stripes {
-            let text = format!("{}2024-12-20", &stripe.name);
-            let c = stripe.capture(&text).unwrap();
+        for parser in &config.dateparse {
+            let text = format!("{}2024-12-20", &parser.name);
+            let c = parser.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
 
-        for strip in &config.typeparse {
-            let text = format!("{} = .file_type", &strip.name);
-            let c = strip.capture(&text).unwrap();
+        for parser in &config.typeparse {
+            let text = format!("{} = .file_type", &parser.name);
+            let c = parser.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
     }
