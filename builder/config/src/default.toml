@@ -65,6 +65,10 @@ stripes = [
     { "name" = "] GPS Date Stamp = ", "regex" = "GPS Date Stamp = (.*)" },
 ]
 
+typeparse = [
+    { "name" = "Expected File Name Extension", "regex" = "Expected File Name Extension = (.*)" },
+]
+
 blacklist = [
     # [Exif SubIFD] Date/Time Original =     :  :     :  :
     ":  :     :  :",

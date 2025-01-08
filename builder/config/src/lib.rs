@@ -37,6 +37,7 @@ pub struct Config {
     pub batch_size: usize,
     pub dateparse: Vec<Strptime>,
     pub stripes: Vec<Stripe>,
+    pub typeparse: Vec<Stripe>,
     pub blacklist: Vec<String>,
     pub retain_suffix: Vec<String>,
     pub additionals: Vec<Additional>,
@@ -114,6 +115,12 @@ mod tests {
         for stripe in &config.stripes {
             let text = format!("{}2024-12-20", &stripe.name);
             let c = stripe.capture(&text).unwrap();
+            println!("text: {}, result: {:?}", text, c);
+        }
+
+        for strip in &config.typeparse {
+            let text = format!("{} = .file_type", &strip.name);
+            let c = strip.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
     }
