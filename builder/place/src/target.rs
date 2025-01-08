@@ -2,7 +2,9 @@ use anyhow::Result;
 use chrono::{Datelike, Timelike, Utc};
 use std::path::PathBuf;
 
-#[derive(Debug, Clone)]
+use utils::crypto::get_file_md5;
+
+#[derive(Debug, Clone, Default)]
 pub struct FileDateTime {
     pub year: u16,
     pub month: u8,
@@ -39,18 +41,19 @@ impl std::fmt::Display for FileDateTime {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Target {
     pub path: PathBuf,
-    pub suffix: String,
+    pub suffix: Option<String>,
     pub datetime: FileDateTime,
+    pub hash: String,
 }
 
 impl std::fmt::Display for Target {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{}, {}, {}",
+            "{}, {:?}, {}",
             self.path.display(),
             self.suffix,
             self.datetime
@@ -62,40 +65,58 @@ impl Target {
     pub fn new(path: &PathBuf) -> Self {
         Self {
             path: path.to_path_buf(),
+            // suffix: path
+            //     .extension()
+            //     .map_or_else(|| "bin".to_string(), |s| s.to_string_lossy().to_string()),
             suffix: path
                 .extension()
-                .map_or_else(|| "".to_string(), |s| s.to_string_lossy().to_string()),
+                .map_or(None, |s| Some(s.to_string_lossy().to_string())),
             datetime: FileDateTime::new(),
+            hash: get_file_md5(path).unwrap(),
         }
     }
 
-    // mark maybe the file hasher like Some("a18932e314dbb4c81c6fd0e282d81d16") or None
-    pub fn get_name(&self, mark: Option<&str>) -> String {
-        if let Some(mark) = mark {
-            format!(
-                "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}_{}.{}",
-                self.datetime.year,
-                self.datetime.month,
-                self.datetime.day,
-                self.datetime.hour,
-                self.datetime.minute,
-                self.datetime.second,
-                mark,
-                self.suffix
-            )
-        } else {
-            format!(
-                "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}.{}",
-                self.datetime.year,
-                self.datetime.month,
-                self.datetime.day,
-                self.datetime.hour,
-                self.datetime.minute,
-                self.datetime.second,
-                self.suffix
-            )
-        }
+    pub fn get_name(&self) -> String {
+        format!(
+            "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}.{}.{}",
+            self.datetime.year,
+            self.datetime.month,
+            self.datetime.day,
+            self.datetime.hour,
+            self.datetime.minute,
+            self.datetime.second,
+            self.hash,
+            self.suffix.as_ref().map_or("bin", |s| &s)
+        )
     }
+
+    // // mark maybe the file hasher like Some("a18932e314dbb4c81c6fd0e282d81d16") or None
+    // pub fn get_name(&self, mark: Option<&str>) -> String {
+    //     if let Some(mark) = mark {
+    //         format!(
+    //             "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}_{}.{}",
+    //             self.datetime.year,
+    //             self.datetime.month,
+    //             self.datetime.day,
+    //             self.datetime.hour,
+    //             self.datetime.minute,
+    //             self.datetime.second,
+    //             mark,
+    //             self.suffix
+    //         )
+    //     } else {
+    //         format!(
+    //             "{:04}-{:02}-{:02}-{:02}-{:02}-{:02}.{}",
+    //             self.datetime.year,
+    //             self.datetime.month,
+    //             self.datetime.day,
+    //             self.datetime.hour,
+    //             self.datetime.minute,
+    //             self.datetime.second,
+    //             self.suffix
+    //         )
+    //     }
+    // }
 }
 
 struct Checker<'a> {
@@ -161,19 +182,19 @@ mod tests {
         let target = Target::new(&path);
         println!("{}", target);
         assert_eq!(target.path, path);
-        assert_eq!(target.suffix, "jpg");
+        assert_eq!(target.suffix.unwrap(), "jpg");
     }
 
     #[test]
     fn test_target_get_name() {
         let path = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
         let target = Target::new(&path);
-        let name = target.get_name(None);
+        let name = target.get_name();
         println!("target: {}, name: {}", target, name);
-        assert!(name.contains(&format!("{}.jpg", target.datetime.second)));
-        let name = target.get_name(Some("a18932e314dbb4c81c6fd0e282d81d16"));
+        assert!(name.contains(&format!("{}.{}.jpg", target.datetime.second, target.hash)));
+        let name = target.get_name();
         println!("target: {}, name: {}", target, name);
-        assert!(name.contains("_a18932e314dbb4c81c6fd0e282d81d16.jpg"));
+        assert!(name.contains("a18932e314dbb4c81c6fd0e282d81d16.jpg"));
     }
 
     #[test]
