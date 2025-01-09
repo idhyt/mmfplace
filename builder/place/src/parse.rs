@@ -1,21 +1,24 @@
 use chrono::{DateTime, Datelike, NaiveDate, NaiveDateTime, TimeZone, Timelike, Utc};
+use filetime::FileTime;
+use std::path::PathBuf;
 
 use super::FileDateTime;
 
-use config::{Parser, CONFIG};
+use config::{Parser, Strptime, CONFIG};
 
-fn capture_from_string(value: &str, parsers: &Vec<Parser>) -> Option<String> {
+fn capture_from_string(value: &str, parsers: &Vec<Parser>, check: bool) -> Option<String> {
     for parser in parsers {
         // ensure the string contains the parser name
-        if value.contains(&parser.name) {
-            match parser.capture(&value) {
-                Ok(t) => {
-                    log::info!("capture {} from metadata: {}", parser.name, t);
-                    return Some(t);
-                }
-                Err(e) => {
-                    log::error!("capture {} from metadata with error: {}", parser.name, e);
-                }
+        if check && !value.contains(&parser.check) {
+            continue;
+        }
+        match parser.capture(&value) {
+            Ok(t) => {
+                log::info!("capture {} from {}", t, value);
+                return Some(t);
+            }
+            Err(e) => {
+                log::error!("capture {} from {} with error: {}", parser.regex, value, e);
             }
         }
     }
@@ -24,37 +27,14 @@ fn capture_from_string(value: &str, parsers: &Vec<Parser>) -> Option<String> {
 
 pub fn capture_type(value: &str) -> Option<String> {
     // capture file extension from string
-    capture_from_string(value, &CONFIG.typeparse)
+    capture_from_string(value, &CONFIG.typeparse, true)
 }
 
 pub fn capture_date(value: &str) -> Option<String> {
-    capture_from_string(value, &CONFIG.dateparse)
+    capture_from_string(value, &CONFIG.dateparse, true)
 }
 
-pub fn get_datetime_from_string(value: &str) -> Option<FileDateTime> {
-    let date_str = capture_date(value);
-    if date_str.is_none() {
-        return None;
-    }
-    let data_str = date_str.unwrap();
-    for strip in &CONFIG.striptimes {
-        // 如果包含非 ascii 字符，尝试替换为 ascii 字符并解析
-        if !value.chars().all(|c| c.is_ascii()) {
-            for c in vec![" ", "-", ":", "1", ""] {
-                let repl_text = value.replace(|c: char| !c.is_ascii(), c);
-                log::debug!("replace non-ascii {} with {}", value, repl_text);
-                if let Some(dt) = fuzzy_strptime(&repl_text, &strip.fmt) {
-                    return Some(dt);
-                }
-            }
-        } else {
-            if let Some(dt) = fuzzy_strptime(&data_str, &strip.fmt) {
-                return Some(dt);
-            }
-        }
-    }
-    None
-}
+/// 解析所有可能的时间格式，格式见配置文件中的 `striptimes`
 // https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
 fn fuzzy_strptime(value: &str, fmt: &str) -> Option<FileDateTime> {
     // like "2020-04-12" => Date = NaiveDate
@@ -122,6 +102,99 @@ fn fuzzy_strptime(value: &str, fmt: &str) -> Option<FileDateTime> {
             });
         }
         Err(e) => log::debug!("try Utc {} as {}, {}", value, fmt, e),
+    }
+
+    None
+}
+
+fn get_datetime_with_striptimes(value: &str, striptimes: &Vec<Strptime>) -> Option<FileDateTime> {
+    for strip in striptimes {
+        // 如果包含非 ascii 字符，尝试替换为 ascii 字符并解析
+        if !value.chars().all(|c| c.is_ascii()) {
+            for c in vec![" ", "-", ":", "1", ""] {
+                let repl_text = value.replace(|c: char| !c.is_ascii(), c);
+                log::debug!("replace non-ascii {} with {}", value, repl_text);
+                if let Some(dt) = fuzzy_strptime(&repl_text, &strip.fmt) {
+                    return Some(dt);
+                }
+            }
+        } else {
+            if let Some(dt) = fuzzy_strptime(&value, &strip.fmt) {
+                return Some(dt);
+            }
+        }
+    }
+    None
+}
+
+/// 从给定字符串中获取时间
+pub fn get_datetime_from_string(value: &str) -> Option<FileDateTime> {
+    let date_str = capture_date(value);
+    if date_str.is_none() {
+        return None;
+    }
+    let data_str = date_str.unwrap();
+    get_datetime_with_striptimes(&data_str, &CONFIG.striptimes)
+}
+
+/// 从文件属性中获取访问时间、创建时间、修改时间，并返回最早的时间
+pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateTime> {
+    let metadata = std::fs::metadata(file);
+    if metadata.is_err() {
+        log::error!(
+            "get metadata {} failed with error {:?}",
+            file.display(),
+            metadata.err()
+        );
+        return None;
+    }
+    let metadata = metadata.unwrap();
+    let atime = FileTime::from_last_access_time(&metadata).unix_seconds();
+    let mtime = FileTime::from_last_modification_time(&metadata).unix_seconds();
+    let ctime = if let Some(v) = FileTime::from_creation_time(&metadata) {
+        v.unix_seconds()
+    } else {
+        // log::debug!("not all Unix platforms have this field available");
+        mtime
+    };
+
+    if let Some(t) = vec![atime, mtime, ctime].iter().min() {
+        let dt = Utc.timestamp_opt(*t, 0).unwrap();
+        Some(FileDateTime {
+            year: dt.year() as u16,
+            month: dt.month() as u8,
+            day: dt.day() as u8,
+            hour: dt.hour() as u8,
+            minute: dt.minute() as u8,
+            second: dt.second() as u8,
+            timestamp: dt.timestamp() as i64,
+        })
+    } else {
+        log::error!("get attributes min timestamp failed for {}", file.display());
+        None
+    }
+}
+
+/// 从文件名中获取时间
+/// 1. 从文件名中捕获时间字符串
+/// 2. 通过时间字符串解析时间
+fn get_datetime_from_additional(file: &PathBuf) -> Option<FileDateTime> {
+    if let Some(additionals) = &CONFIG.additionals {
+        for additional in additionals.iter() {
+            if additional.name == "filename" {
+                if let Some(name) = file.file_name() {
+                    let name = name.to_string_lossy();
+                    // 从文件名中捕获时间字符串
+                    if let Some(value) = capture_from_string(&name, &additional.dateparse, false) {
+                        if let Some(dt) =
+                            get_datetime_with_striptimes(&value, &additional.striptimes)
+                        {
+                            return Some(dt);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     None
