@@ -13,18 +13,12 @@ use utils::log::setup_tracing;
     long_about = None
 )]
 struct Args {
-    /// point to the run directory, must have RW permissions
-    #[arg(short, long, value_hint = ValueHint::FilePath)]
-    work_dir: Option<PathBuf>,
     /// input file/directory path
     #[arg(short, long, value_hint = ValueHint::FilePath)]
     input: PathBuf,
     /// output directory path
     #[arg(short, long, value_hint = ValueHint::FilePath)]
-    output: Option<PathBuf>,
-    /// custom config file path
-    #[arg(short, long, value_hint = ValueHint::FilePath)]
-    config: Option<PathBuf>,
+    output: PathBuf,
     /// custom the logfile path
     #[arg(long, value_hint = ValueHint::FilePath)]
     logfile: Option<PathBuf>,
@@ -45,9 +39,7 @@ async fn main() {
     setup_tracing(args.verbose, &args.logfile).expect("Failed to setup tracing");
     log::debug!("args: {:#?}", args);
 
-    setup_config(args.work_dir, args.config, args.output).await;
-
-    match do_place(&args.input, args.test).await {
+    match do_place(&args.input, &args.output, args.test).await {
         Ok(_) => (),
         Err(e) => {
             log::error!("process error: {}", e);
@@ -55,19 +47,4 @@ async fn main() {
         }
     }
     std::process::exit(0);
-}
-
-async fn setup_config(
-    work_dir: Option<PathBuf>,
-    config_file: Option<PathBuf>,
-    output: Option<PathBuf>,
-) {
-    use config::CONFIG;
-
-    let mut config = CONFIG.lock().await;
-    config.set_work_dir(work_dir);
-    config.set_output_dir(output);
-    config.load(config_file);
-    // log::debug!("config: {:#?}", config);
-    drop(config);
 }
