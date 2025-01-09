@@ -15,7 +15,9 @@ pub struct Strptime {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Parser {
-    pub name: String,
+    /// check the string in target or not.
+    pub check: String,
+    /// the regex to match the string.
     pub regex: String,
     #[serde(default = "capture_index")]
     pub index: Option<u8>,
@@ -28,8 +30,8 @@ fn capture_index() -> Option<u8> {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Additional {
     pub name: String,
-    pub regex: String,
-    pub dateparse: Vec<Strptime>,
+    pub dateparse: Vec<Parser>,
+    pub striptimes: Vec<Strptime>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
@@ -40,7 +42,7 @@ pub struct Config {
     pub typeparse: Vec<Parser>,
     pub blacklist: Vec<String>,
     pub retain_suffix: Vec<String>,
-    pub additionals: Vec<Additional>,
+    pub additionals: Option<Vec<Additional>>,
 }
 
 impl Config {
@@ -100,7 +102,7 @@ mod tests {
         assert!(!config.striptimes.is_empty());
         assert!(!config.blacklist.is_empty());
         assert!(!config.retain_suffix.is_empty());
-        assert!(!config.additionals.is_empty());
+        assert!(!config.additionals.is_some());
     }
 
     #[test]
@@ -113,13 +115,13 @@ mod tests {
         println!("config: {:#?}", config);
 
         for parser in &config.dateparse {
-            let text = format!("{}2024-12-20", &parser.name);
+            let text = format!("{}2024-12-20", &parser.check);
             let c = parser.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
 
         for parser in &config.typeparse {
-            let text = format!("{} = .file_type", &parser.name);
+            let text = format!("{} = .file_type", &parser.check);
             let c = parser.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }

@@ -33,40 +33,40 @@ striptimes = [
 ]
 
 
-# strips of metadata-extractor tag name
-# directory.getName() tag.getTagName() tag.getDescription()
+# strips of metadata-extractor tag check
+# directory.getcheck() tag.getTagcheck() tag.getDescription()
 # [FileFile Modified Date = Wed Nov 30 05:58:56 +08:00 2022
 # striptime format https://docs.rs/chrono/latest/chrono/format/strftime/index.html
 dateparse = [
     # [ICC Profile] Profile Date/Time = 2022:01:01 00:00:00
     # inaccurate see: https://photo.stackexchange.com/questions/82495/what-does-the-exif-icc-profile-date-mean
-    # - name: "] Profile Date/Time"
+    # - check: "] Profile Date/Time"
     #   regex: "Date/Time = (.*)"
     #   strptimes: *dateparse
-    { "name" = "] Date/Time = ", "regex" = "Date/Time = (.*)" },
-    { "name" = "] Profile Date/Time = ", "regex" = "Date/Time = (.*)" },
-    { "name" = "] Date/Time Original = ", "regex" = "Date/Time Original = (.*)" },
-    { "name" = "] File Modified Date = ", "regex" = "File Modified Date = (.*)" },
-    { "name" = "] Modification Time = ", "regex" = "Modification Time = (.*)" },
-    { "name" = "] Modification Date = ", "regex" = "Modification Date = (.*)" },
-    { "name" = "] Creation Time = ", "regex" = "Creation Time = (.*)" },
-    { "name" = "] Creation Date = ", "regex" = "Creation Date = (.*)" },
-    { "name" = "] Last Modification Time = ", "regex" = "Last Modification Time = (.*)" },
-    { "name" = "] Date/Time Digitized = ", "regex" = "Date/Time Digitized = (.*)" },
-    { "name" = "] Digital Date Created = ", "regex" = "Digital Date Created = (.*)" },
-    { "name" = "] date:create: = ", "regex" = "date:create: (.*)" },
-    { "name" = "] photoshop:DateCreated = ", "regex" = "photoshop:DateCreated = (.*)" },
-    { "name" = "] xmp:CreateDate = ", "regex" = "xmp:CreateDate = (.*)" },
-    { "name" = "] xmp:MetadataDate = ", "regex" = "xmp:MetadataDate = (.*)" },
-    { "name" = "] xmp:ModifyDate = ", "regex" = "xmp:ModifyDate = (.*)" },
-    { "name" = "] Date Created = ", "regex" = "Date Created = (.*)" },
-    { "name" = "] Aufnahmedatum : ", "regex" = "Aufnahmedatum : (.*)" },
-    { "name" = "] xmpMM:History[1]/stEvt:when = ", "regex" = "stEvt:when = (.*)" },
-    { "name" = "] GPS Date Stamp = ", "regex" = "GPS Date Stamp = (.*)" },
+    { "check" = "] Date/Time = ", "regex" = "Date/Time = (.*)" },
+    { "check" = "] Profile Date/Time = ", "regex" = "Date/Time = (.*)" },
+    { "check" = "] Date/Time Original = ", "regex" = "Date/Time Original = (.*)" },
+    { "check" = "] File Modified Date = ", "regex" = "File Modified Date = (.*)" },
+    { "check" = "] Modification Time = ", "regex" = "Modification Time = (.*)" },
+    { "check" = "] Modification Date = ", "regex" = "Modification Date = (.*)" },
+    { "check" = "] Creation Time = ", "regex" = "Creation Time = (.*)" },
+    { "check" = "] Creation Date = ", "regex" = "Creation Date = (.*)" },
+    { "check" = "] Last Modification Time = ", "regex" = "Last Modification Time = (.*)" },
+    { "check" = "] Date/Time Digitized = ", "regex" = "Date/Time Digitized = (.*)" },
+    { "check" = "] Digital Date Created = ", "regex" = "Digital Date Created = (.*)" },
+    { "check" = "] date:create: = ", "regex" = "date:create: (.*)" },
+    { "check" = "] photoshop:DateCreated = ", "regex" = "photoshop:DateCreated = (.*)" },
+    { "check" = "] xmp:CreateDate = ", "regex" = "xmp:CreateDate = (.*)" },
+    { "check" = "] xmp:MetadataDate = ", "regex" = "xmp:MetadataDate = (.*)" },
+    { "check" = "] xmp:ModifyDate = ", "regex" = "xmp:ModifyDate = (.*)" },
+    { "check" = "] Date Created = ", "regex" = "Date Created = (.*)" },
+    { "check" = "] Aufnahmedatum : ", "regex" = "Aufnahmedatum : (.*)" },
+    { "check" = "] xmpMM:History[1]/stEvt:when = ", "regex" = "stEvt:when = (.*)" },
+    { "check" = "] GPS Date Stamp = ", "regex" = "GPS Date Stamp = (.*)" },
 ]
 
 typeparse = [
-    { "name" = "Expected File Name Extension", "regex" = "Expected File Name Extension = (.*)" },
+    { "check" = "Expected File check Extension", "regex" = "Expected File check Extension = (.*)" },
 ]
 
 blacklist = [
@@ -84,7 +84,9 @@ retain_suffix = [
 
 # some experimental extend trait
 additionals = [
-    { "name" = "filename", "regex" = "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}).*", dateparse = [
+    { "name" = "filename", dateparse = [
+        { "check" = "not check", "regex" = "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}).*" },
+    ], striptimes = [
         { "fmt" = "%Y-%m-%d-%H-%M-%S", "test" = "2018-05-02-13-13-39-01.jpg" },
     ] },
 ]
