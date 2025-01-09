@@ -36,6 +36,7 @@ pub fn capture_date(value: &str) -> Option<String> {
 
 /// 解析所有可能的时间格式，格式见配置文件中的 `striptimes`
 // https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
+#[warn(deprecated)]
 fn fuzzy_strptime(value: &str, fmt: &str) -> Option<FileDateTime> {
     // like "2020-04-12" => Date = NaiveDate
     if value.len() == 10 {
@@ -157,7 +158,7 @@ pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateT
         // log::debug!("not all Unix platforms have this field available");
         mtime
     };
-
+    // println!("atime: {}, mtime: {}, ctime: {}", atime, mtime, ctime);
     if let Some(t) = vec![atime, mtime, ctime].iter().min() {
         let dt = Utc.timestamp_opt(*t, 0).unwrap();
         Some(FileDateTime {
@@ -178,24 +179,103 @@ pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateT
 /// 从文件名中获取时间
 /// 1. 从文件名中捕获时间字符串
 /// 2. 通过时间字符串解析时间
-fn get_datetime_from_additional(file: &PathBuf) -> Option<FileDateTime> {
+fn get_datetime_from_filename(
+    file: &PathBuf,
+    dateparse: &Vec<Parser>,
+    striptimes: &Vec<Strptime>,
+) -> Option<FileDateTime> {
+    let name = file.file_name();
+    if name.is_none() {
+        return None;
+    }
+    let name = name.unwrap().to_string_lossy();
+    // 从文件名中捕获时间字符串
+    if let Some(value) = capture_from_string(&name, dateparse, false) {
+        // 尝试解析时间
+        if let Some(dt) = get_datetime_with_striptimes(&value, striptimes) {
+            return Some(dt);
+        }
+    }
+    None
+}
+
+pub fn get_datetime_from_additional(file: &PathBuf) -> Option<FileDateTime> {
     if let Some(additionals) = &CONFIG.additionals {
         for additional in additionals.iter() {
             if additional.name == "filename" {
-                if let Some(name) = file.file_name() {
-                    let name = name.to_string_lossy();
-                    // 从文件名中捕获时间字符串
-                    if let Some(value) = capture_from_string(&name, &additional.dateparse, false) {
-                        if let Some(dt) =
-                            get_datetime_with_striptimes(&value, &additional.striptimes)
-                        {
-                            return Some(dt);
-                        }
-                    }
-                }
+                return get_datetime_from_filename(
+                    file,
+                    &additional.dateparse,
+                    &additional.striptimes,
+                );
             }
         }
     }
 
     None
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn test_capture_date() {
+        let test = "[Exif SubIFD] Date/Time Digitized = 2002:11:16 15:27:01";
+        let dt = capture_date(test);
+        println!("dt: {:?}", dt);
+        assert!(dt.is_some());
+    }
+
+    #[test]
+    fn test_capture_type() {
+        let test = "> [File Type] Expected File Name Extension = jpg";
+        let dt = capture_type(test);
+        println!("dt: {:?}", dt);
+        assert_eq!(dt, Some("jpg".to_string()));
+    }
+
+    #[test]
+    fn test_get_datetime_from_string() {
+        let test = "[Exif SubIFD] Date/Time Digitized = 2002:11:16 15:27:01";
+        let dt = capture_date(test);
+        println!("dt: {:?}", dt);
+        assert!(dt.is_some());
+
+        let dt = get_datetime_from_string(&test);
+        println!("dt: {:?}", dt);
+        assert!(dt.is_some());
+    }
+
+    #[test]
+    fn test_get_earliest_datetime_from_attributes() {
+        let file = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .join("tests/simple.jpg");
+        println!("test file: {}", file.display());
+        assert!(file.is_file());
+
+        let dt = get_earliest_datetime_from_attributes(&file);
+        println!("dt: {:?}", dt);
+        assert!(dt.is_some());
+    }
+
+    #[test]
+    fn test_get_datetime_from_additional() {
+        let file = PathBuf::from("./tests/test.jpg");
+        let dt = get_datetime_from_additional(&file);
+        println!("dt: {:?}", dt);
+        assert!(dt.is_none());
+        let file = PathBuf::from("./tests/IMG_2018-05-02-13-13-39-01-0001.sha.md5.xxx.jpg.jpg");
+        let dt = get_datetime_from_additional(&file);
+        println!("dt: {:?}", dt);
+        assert!(dt.is_some());
+        let dt = dt.unwrap();
+        assert_eq!(dt.year, 2018);
+        assert_eq!(dt.second, 39);
+    }
 }

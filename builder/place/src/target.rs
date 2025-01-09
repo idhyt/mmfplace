@@ -1,51 +1,26 @@
-use anyhow::Result;
-use chrono::{Datelike, Timelike, Utc};
+use anyhow::{anyhow, Result};
 use std::path::PathBuf;
 
+use super::meta::META;
+use super::parse::{
+    capture_type, get_datetime_from_additional, get_datetime_from_string,
+    get_earliest_datetime_from_attributes,
+};
+use super::FileDateTime;
+
+use config::CONFIG;
 use utils::crypto::get_file_md5;
 
 #[derive(Debug, Clone, Default)]
-pub struct FileDateTime {
-    pub year: u16,
-    pub month: u8,
-    pub day: u8,
-    pub hour: u8,
-    pub minute: u8,
-    pub second: u8,
-    pub timestamp: i64,
-}
-
-impl FileDateTime {
-    pub fn new() -> Self {
-        let now = Utc::now();
-        Self {
-            year: now.year() as u16,
-            month: now.month() as u8,
-            day: now.day() as u8,
-            hour: now.hour() as u8,
-            minute: now.minute() as u8,
-            second: now.second() as u8,
-            timestamp: now.timestamp() as i64,
-        }
-    }
-}
-
-// impl display for FileDateTime
-impl std::fmt::Display for FileDateTime {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{:04}:{:02}:{:02} {:02}:{:02}:{:02}, {}",
-            self.year, self.month, self.day, self.hour, self.minute, self.second, self.timestamp
-        )
-    }
-}
-
-#[derive(Debug, Clone, Default)]
 pub struct Target {
+    /// target path
     pub path: PathBuf,
+    /// the origin file extension with lower case
+    pub extension: String,
+    /// fixed file extension
     pub suffix: Option<String>,
     pub datetime: FileDateTime,
+    /// file hash, md5 used now
     pub hash: String,
 }
 
@@ -53,9 +28,9 @@ impl std::fmt::Display for Target {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "{}, {:?}, {}",
+            "{}, {}, {}",
             self.path.display(),
-            self.suffix,
+            self.extension,
             self.datetime
         )
     }
@@ -65,14 +40,27 @@ impl Target {
     pub fn new(path: &PathBuf) -> Self {
         Self {
             path: path.to_path_buf(),
-            // suffix: path
-            //     .extension()
-            //     .map_or_else(|| "bin".to_string(), |s| s.to_string_lossy().to_string()),
-            suffix: path
-                .extension()
-                .map_or(None, |s| Some(s.to_string_lossy().to_string())),
+            extension: path.extension().map_or_else(
+                || "bin".to_string(),
+                |s| s.to_string_lossy().to_string().to_lowercase(),
+            ),
+            suffix: None,
             datetime: FileDateTime::new(),
             hash: get_file_md5(path).unwrap(),
+        }
+    }
+
+    pub fn set_suffix(&mut self, suffix: Option<&str>) {
+        // 保留原始后缀
+        if CONFIG.retain_suffix.contains(&self.extension) {
+            self.suffix = Some(self.extension.clone());
+            return;
+        }
+
+        if let Some(s) = suffix {
+            self.suffix = Some(s.to_string());
+        } else {
+            self.suffix = Some(self.extension.clone());
         }
     }
 
@@ -86,7 +74,7 @@ impl Target {
             self.datetime.minute,
             self.datetime.second,
             self.hash,
-            self.suffix.as_ref().map_or("bin", |s| &s)
+            self.suffix.as_ref().map_or(&self.extension, |s| &s)
         )
     }
 
@@ -118,108 +106,176 @@ impl Target {
     //     }
     // }
 
+    async fn datetime_from_metedata(&mut self) -> Option<Vec<FileDateTime>> {
+        let mut dts: Vec<FileDateTime> = Vec::new();
+
+        let texts = match META.read(&self.path).await {
+            Ok(texts) => {
+                if texts.len() == 0 {
+                    log::error!("no metadata found for {:?}", self.path);
+                    return None;
+                }
+                texts
+            }
+            Err(e) => {
+                log::error!("read metadata {:?} failed with error: {}", self.path, e);
+                return None;
+            }
+        };
+
+        'outer: for value in texts {
+            log::debug!("{}", value);
+            // println!("> {}", value);
+
+            for black_str in &CONFIG.blacklist {
+                if value.contains(black_str) {
+                    log::debug!("[!] {} contains black string {}, skip...", value, black_str);
+                    continue 'outer;
+                }
+            }
+            // capture file extension from metadata
+            if self.suffix.is_none() {
+                if let Some(t) = capture_type(&value) {
+                    log::info!("capture file extension from metadata: {}", t);
+                    // println!("capture file extension from metadata: {}", t);
+                    self.set_suffix(Some(&t));
+                }
+            }
+
+            // get date from metadata
+            if let Some(dt) = get_datetime_from_string(&value) {
+                log::debug!("[+] {} -> {}", value, dt);
+                if dt.year < 1975 {
+                    log::warn!("[!] {} < 1975, skip...", dt.year);
+                } else {
+                    dts.push(dt);
+                }
+            }
+        }
+
+        if dts.len() == 0 {
+            return None;
+        }
+        Some(dts)
+    }
+
     pub async fn process(mut self, index: usize, total: usize) -> Result<Self> {
+        let mut dts = if let Some(dts) = self.datetime_from_metedata().await {
+            log::debug!("✨ success get date from metadata: {:?}", dts);
+            dts
+        } else {
+            vec![]
+        };
+
+        // test only
+        dts.push(self.datetime.clone());
+
+        if let Some(dt) = get_earliest_datetime_from_attributes(&self.path) {
+            log::debug!("✨ success get date(earliest) from attributes: {}", dt);
+            dts.push(dt);
+        }
+
+        if let Some(dt) = get_datetime_from_additional(&self.path) {
+            log::debug!("✨ success get date from additional: {}", dt);
+            dts.push(dt);
+        }
+
+        assert!(dts.len() > 0, "💥 no date found in {:?}", self.path);
+
+        // println!("dts: {:?}", dts);
+        // sort by timestamp
+        dts.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
+        // remove duplicate by timestamp
+        dts.dedup_by_key(|k| k.timestamp);
+        // println!("sort and dedup dts: {:?}", dts);
+        // find the earliest date
+
+        // for index in 0..dts.len() {
+        //     // if latest
+        //     if index == dts.len() - 1 {
+        //         return Ok(dts[index].clone());
+        //     }
+        //     // hour, minute, second not all zero, used it
+        //     if dts[index].hour != 0
+        //         || dts[index].minute != 0
+        //         || dts[index].second != 0
+        //     {
+        //         return Ok(dts[index].clone());
+        //     }
+        //     // if next date is not same day, used it
+        //     if dts[index + 1].year != dts[index].year
+        //         || dts[index + 1].month != dts[index].month
+        //         || dts[index + 1].day != dts[index].day
+        //     {
+        //         return Ok(dts[index].clone());
+        //     }
+        //     // if next date is same day but hour not all zero, used next date
+        //     if dts[index + 1].hour != 0
+        //         || dts[index + 1].minute != 0
+        //         || dts[index + 1].second != 0
+        //     {
+        //         return Ok(dts[index + 1].clone());
+        //     }
+        // }
+
+        // Ok(None)
+
         self.hash = format!("todo-{}-{}-{}", index, total, self.hash);
         Ok(self)
-    }
-}
-
-pub struct Checker<'a> {
-    pub path: &'a PathBuf,
-    pub path_str: &'a str,
-}
-
-impl Checker<'_> {
-    pub fn new<'a>(path: &'a PathBuf) -> Checker<'a> {
-        Checker {
-            path,
-            path_str: path.to_str().unwrap(),
-        }
-    }
-
-    // 非文件，或者已被处理过，将示为忽略
-    pub fn is_ignore(&self) -> bool {
-        if !self.path.is_file() {
-            return true;
-        }
-
-        if self.path_str.to_lowercase().ends_with(".mmfplace") {
-            return true;
-        }
-
-        false
-    }
-
-    // 当存在占位文件，则表示已处理过
-    pub fn is_placed(&self) -> bool {
-        let placed = PathBuf::from(format!("{}.mmfplace", self.path_str));
-        placed.is_file()
-    }
-
-    // 处理过程中是否跳过，跳过条件：is_ignore || is_placed
-    pub fn is_skip(&self) -> bool {
-        if self.is_ignore() {
-            // log::info!("skip ignore file: {}", self.path_str);
-            return true;
-        }
-        if self.is_placed() {
-            // log::info!("skip placed file: {}", self.path_str);
-            return true;
-        }
-        false
-    }
-
-    // 设置占位文件
-    pub fn set_placed(&self) -> Result<()> {
-        let placed = PathBuf::from(format!("{}.mmfplace", self.path_str));
-        std::fs::write(placed, "")?;
-        Ok(())
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
     #[test]
     fn test_target_new() {
-        let path = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
+        let path = get_root().join("tests/simple.jpg");
+        println!("path: {:?}", path);
         let target = Target::new(&path);
         println!("{}", target);
         assert_eq!(target.path, path);
-        assert_eq!(target.suffix.unwrap(), "jpg");
+        assert_eq!(target.extension, "jpg");
     }
 
     #[test]
     fn test_target_get_name() {
-        let path = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
+        let path = get_root().join("tests/simple.jpg");
         let target = Target::new(&path);
         let name = target.get_name();
         println!("target: {}, name: {}", target, name);
-        assert!(name.contains(&format!("{}.{}.jpg", target.datetime.second, target.hash)));
+        let check = format!("{}.{}.jpg", target.datetime.second, target.hash);
+        println!("check: {}", check);
+        assert!(name.contains(&check));
         let name = target.get_name();
         println!("target: {}, name: {}", target, name);
         assert!(name.contains("a18932e314dbb4c81c6fd0e282d81d16.jpg"));
     }
 
-    #[test]
-    fn test_checker() {
-        let path = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
-        let placed = PathBuf::from("/tmp/mmfplace-tests/simple.jpg.mmfplace");
-        if placed.is_file() {
-            std::fs::remove_file(&placed).unwrap();
-        }
+    #[tokio::test]
+    async fn test_date_from_metedata() {
+        let path = get_root().join("tests/simple.jpg.png");
+        let mut target = Target::new(&path);
+        let dts = target.datetime_from_metedata().await.unwrap();
+        println!("dts: {:?}", dts);
+        assert!(dts.len() == 4);
+        println!("target: {:#?}", target);
+        assert!(target.extension == "png");
+        assert!(target.suffix == Some("jpg".to_string()));
+    }
 
-        let checker = Checker::new(&path);
-        assert!(!checker.is_ignore());
-        assert!(!checker.is_placed());
-        assert!(!checker.is_skip());
-        checker.set_placed().unwrap();
-
-        assert!(placed.is_file());
-        assert!(checker.is_placed());
-        assert!(checker.is_skip());
-
-        std::fs::remove_file(placed).unwrap();
+    #[tokio::test]
+    async fn test_process() {
+        let path = get_root().join("tests/simple.jpg.png");
+        let target = Target::new(&path).process(1, 1).await.unwrap();
+        println!("target: {:#?}", target);
     }
 }

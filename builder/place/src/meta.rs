@@ -103,6 +103,15 @@ impl MetadataReader {
 mod tests {
 
     use super::*;
+    
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
 
     #[test]
     fn test_new() {
@@ -114,7 +123,7 @@ mod tests {
     #[tokio::test]
     async fn test_read() {
         let meta = MetadataReader::new(None);
-        let test = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
+        let test = get_root().join("tests/simple.jpg");
         let readers = meta.read(&test).await.unwrap();
         println!("{:#?}", readers);
         assert!(readers.len() > 1);

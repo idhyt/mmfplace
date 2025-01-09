@@ -1,17 +1,53 @@
 use anyhow::Result;
-use filetime::{set_file_times, FileTime};
+use chrono::{Datelike, Timelike, Utc};
 use std::path::PathBuf;
-use std::sync::Arc;
 use walkdir::WalkDir;
 
+use check::Checker;
 use config::CONFIG;
-use meta::META;
-use target::{Checker, Target};
+use target::Target;
 
+mod check;
 mod meta;
-// pub mod pick;
-// mod entry;
+mod parse;
 mod target;
+
+#[derive(Debug, Clone, Default)]
+pub struct FileDateTime {
+    pub year: u16,
+    pub month: u8,
+    pub day: u8,
+    pub hour: u8,
+    pub minute: u8,
+    pub second: u8,
+    pub timestamp: i64,
+}
+
+impl FileDateTime {
+    pub fn new() -> Self {
+        let now = Utc::now();
+        Self {
+            year: now.year() as u16,
+            month: now.month() as u8,
+            day: now.day() as u8,
+            hour: now.hour() as u8,
+            minute: now.minute() as u8,
+            second: now.second() as u8,
+            timestamp: now.timestamp() as i64,
+        }
+    }
+}
+
+// impl display for FileDateTime
+impl std::fmt::Display for FileDateTime {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{:04}:{:02}:{:02} {:02}:{:02}:{:02}, {}",
+            self.year, self.month, self.day, self.hour, self.minute, self.second, self.timestamp
+        )
+    }
+}
 
 fn get_total_size(path: &PathBuf) -> usize {
     WalkDir::new(path)
@@ -52,9 +88,16 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
 
         if handles.len() >= CONFIG.batch_size {
             for handle in handles.iter_mut() {
-                let target = handle.await??;
+                let _ = handle.await??;
             }
             handles.clear();
+        }
+    }
+
+    // wait for all handles done
+    if handles.len() > 0 {
+        for handle in handles {
+            let _ = handle.await??;
         }
     }
 

@@ -17,5 +17,6 @@ walkdir = "2.3.2"
 tokio = { version = "1.27.0", features = ["full"] }
 serde = { version = "1.0.152", features = ["derive"] }
 chrono = "0.4.31"
-filetime = "0.2.19"
+filetime = "0.2.25"
 regex = "1.7.1"
+lazy_static = "1.5.0"
