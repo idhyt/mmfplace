@@ -1,6 +1,9 @@
-use anyhow::{anyhow, Result};
-use std::path::PathBuf;
+use anyhow::Result;
+use filetime::{set_file_times, FileTime};
+use std::fs;
+use std::path::{Path, PathBuf};
 
+use super::check::Checker;
 use super::meta::META;
 use super::parse::{
     capture_type, get_datetime_from_additional, get_datetime_from_string,
@@ -191,9 +194,50 @@ impl Target {
         dts
     }
 
-    pub async fn process(mut self, index: usize, total: usize) -> Result<Self> {
-        let dts = self.get_all_datetime(true).await;
+    fn copy(&self, output: impl AsRef<Path>) -> PathBuf {
+        // new dest path like `output/2024/12`
+        let dst_path = PathBuf::from_iter([
+            output.as_ref(),
+            self.datetime.year.to_string().as_ref(),
+            self.datetime.month.to_string().as_ref(),
+        ]);
 
+        // create dest path dirtory
+        if !dst_path.is_dir() {
+            fs::create_dir_all(&dst_path).unwrap();
+        }
+
+        let dst_path = dst_path.join(&self.get_name());
+        if dst_path.is_file() {
+            log::warn!(
+                "💡skip already exists {} -> {}",
+                self.path.display(),
+                dst_path.display()
+            );
+            return dst_path;
+        }
+
+        // copy file
+        std::fs::copy(&self.path, &dst_path).unwrap();
+
+        // copy metadata
+        let metadata = std::fs::metadata(&self.path).unwrap();
+        // log::info!("src file time: {:#?}", metadata);
+        let atime = FileTime::from_last_access_time(&metadata);
+        let mtime = FileTime::from_last_modification_time(&metadata);
+        set_file_times(&dst_path, atime, mtime).unwrap();
+        // let metadata = std::fs::metadata(&dst_path)?;
+        // log::info!("dst file time: {:#?}", metadata);
+
+        // set placed file
+        Checker::new(&self.path).set_placed().unwrap();
+        dst_path
+    }
+
+    pub async fn process(mut self, index: usize, total: usize, output: &PathBuf) -> Result<Self> {
+        log::debug!("[{}/{}] process {:?}", index, total, self.path);
+
+        let dts = self.get_all_datetime(true).await;
         if dts.len() == 1 {
             self.datetime = dts[0].clone();
         }
@@ -221,6 +265,8 @@ impl Target {
             }
         }
 
+        let dst = self.copy(output);
+        log::info!("success copy {:?} -> {:?}", self.path, dst);
         Ok(self)
     }
 }

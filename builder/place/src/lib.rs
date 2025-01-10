@@ -1,6 +1,7 @@
 use anyhow::Result;
 use chrono::{Datelike, Timelike, Utc};
 use std::path::PathBuf;
+use std::sync::Arc;
 use walkdir::WalkDir;
 
 use check::Checker;
@@ -72,6 +73,7 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
 
     let mut index = 0;
     let mut handles = Vec::new();
+    let aout = Arc::new(output.to_path_buf());
 
     for entry in WalkDir::new(input) {
         let path = entry?.path().to_path_buf();
@@ -83,7 +85,9 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
         index += 1;
 
         handles.push(tokio::spawn(async move {
-            Target::new(&path).process(index, total).await
+            Target::new(&path)
+                .process(index, total, Arc::clone(&atout))
+                .await
         }));
 
         if handles.len() >= CONFIG.batch_size {
