@@ -159,16 +159,13 @@ impl Target {
         Some(dts)
     }
 
-    pub async fn process(mut self, index: usize, total: usize) -> Result<Self> {
+    async fn get_all_datetime(&mut self, dup_sort: bool) -> Vec<FileDateTime> {
         let mut dts = if let Some(dts) = self.datetime_from_metedata().await {
             log::debug!("✨ success get date from metadata: {:?}", dts);
             dts
         } else {
             vec![]
         };
-
-        // test only
-        dts.push(self.datetime.clone());
 
         if let Some(dt) = get_earliest_datetime_from_attributes(&self.path) {
             log::debug!("✨ success get date(earliest) from attributes: {}", dt);
@@ -180,47 +177,50 @@ impl Target {
             dts.push(dt);
         }
 
+        // println!("dts: {:?}", dts);
         assert!(dts.len() > 0, "💥 no date found in {:?}", self.path);
 
-        // println!("dts: {:?}", dts);
-        // sort by timestamp
-        dts.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
-        // remove duplicate by timestamp
-        dts.dedup_by_key(|k| k.timestamp);
-        // println!("sort and dedup dts: {:?}", dts);
-        // find the earliest date
+        if dup_sort {
+            // sort by timestamp
+            dts.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
+            // remove duplicate by timestamp
+            dts.dedup_by_key(|k| k.timestamp);
+            // println!("sort and dedup dts: {:?}", dts);
+        }
 
-        // for index in 0..dts.len() {
-        //     // if latest
-        //     if index == dts.len() - 1 {
-        //         return Ok(dts[index].clone());
-        //     }
-        //     // hour, minute, second not all zero, used it
-        //     if dts[index].hour != 0
-        //         || dts[index].minute != 0
-        //         || dts[index].second != 0
-        //     {
-        //         return Ok(dts[index].clone());
-        //     }
-        //     // if next date is not same day, used it
-        //     if dts[index + 1].year != dts[index].year
-        //         || dts[index + 1].month != dts[index].month
-        //         || dts[index + 1].day != dts[index].day
-        //     {
-        //         return Ok(dts[index].clone());
-        //     }
-        //     // if next date is same day but hour not all zero, used next date
-        //     if dts[index + 1].hour != 0
-        //         || dts[index + 1].minute != 0
-        //         || dts[index + 1].second != 0
-        //     {
-        //         return Ok(dts[index + 1].clone());
-        //     }
-        // }
+        dts
+    }
 
-        // Ok(None)
+    pub async fn process(mut self, index: usize, total: usize) -> Result<Self> {
+        let dts = self.get_all_datetime(true).await;
 
-        self.hash = format!("todo-{}-{}-{}", index, total, self.hash);
+        if dts.len() == 1 {
+            self.datetime = dts[0].clone();
+        }
+
+        // 处理相同日期，但时间是 00:00:00 的情况
+        for index in 0..dts.len() {
+            // hour, minute, second not all zero, used it
+            if dts[index].hour != 0 || dts[index].minute != 0 || dts[index].second != 0 {
+                self.datetime = dts[index].clone();
+                break;
+            }
+            // if next date is not same day, used it
+            if dts[index + 1].year != dts[index].year
+                || dts[index + 1].month != dts[index].month
+                || dts[index + 1].day != dts[index].day
+            {
+                self.datetime = dts[index].clone();
+                break;
+            }
+            // if next date is same day but hour not all zero, used next date
+            if dts[index + 1].hour != 0 || dts[index + 1].minute != 0 || dts[index + 1].second != 0
+            {
+                self.datetime = dts[index + 1].clone();
+                break;
+            }
+        }
+
         Ok(self)
     }
 }
@@ -273,9 +273,37 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn test_get_all_datetime() {
+        let path = get_root().join("tests/simple.jpg.png");
+        let mut target = Target::new(&path);
+        let dts = target.get_all_datetime(false).await;
+        println!("dts: {:#?}", dts);
+        assert!(dts.len() == 5);
+        let mut sorts = vec![];
+        for index in 0..dts.len() - 1 {
+            if dts[index].timestamp < dts[index + 1].timestamp {
+                sorts.push(true);
+            } else {
+                sorts.push(false);
+            }
+        }
+        println!("sorts: {:?}", sorts);
+        assert!(!sorts.iter().all(|x| *x));
+
+        let dts = target.get_all_datetime(true).await;
+        println!("dts: {:#?}", dts);
+        assert!(dts.len() == 3);
+        assert!(dts[0].timestamp < dts[1].timestamp);
+        assert!(dts[1].timestamp < dts[2].timestamp);
+    }
+
+    #[tokio::test]
     async fn test_process() {
         let path = get_root().join("tests/simple.jpg.png");
         let target = Target::new(&path).process(1, 1).await.unwrap();
         println!("target: {:#?}", target);
+        let name = target.get_name();
+        println!("name: {}", name);
+        assert!(name == "2002-11-16-15-27-01.a18932e314dbb4c81c6fd0e282d81d16.jpg");
     }
 }
