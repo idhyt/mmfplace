@@ -125,7 +125,14 @@ fn get_datetime_with_striptimes(value: &str, striptimes: &Vec<Strptime>) -> Opti
             }
         }
     }
-    None
+
+    // warning!!!
+    // 如果没有解析出时间字符串，说明在配置文件中 `striptimes` 缺失时间格式，需要强制处理！
+    log::error!(
+        "💥 Unrecognized time string format: {}, must add parsing format `striptimes` in config.toml`",
+        value
+    );
+    panic!();
 }
 
 /// 从给定字符串中获取时间
