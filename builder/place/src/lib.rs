@@ -73,7 +73,7 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
 
     let mut index = 0;
     let mut handles = Vec::new();
-    let aout = Arc::new(output.to_path_buf());
+    // let aout = Arc::new(output.to_path_buf());
 
     for entry in WalkDir::new(input) {
         let path = entry?.path().to_path_buf();
@@ -86,13 +86,15 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
 
         handles.push(tokio::spawn(async move {
             Target::new(&path)
-                .process(index, total, Arc::clone(&atout))
+                //.process(index, total, Arc::clone(&atout))
+                .process(index, total, None)
                 .await
         }));
 
         if handles.len() >= CONFIG.batch_size {
             for handle in handles.iter_mut() {
-                let _ = handle.await??;
+                let target = handle.await??;
+                target.copy(output);
             }
             handles.clear();
         }
@@ -101,34 +103,10 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
     // wait for all handles done
     if handles.len() > 0 {
         for handle in handles {
-            let _ = handle.await??;
+            let target = handle.await??;
+            target.copy(output);
         }
     }
-
-    //     let _config = Arc::clone(&config);
-    //     let _reader = Arc::clone(&mreader);
-    //     handles.push(tokio::spawn(async move {
-    //         let pf = PickFile::new(&entry.path().to_path_buf(), index, total);
-    //         return pf.create(&_config.parser, &_reader).await.unwrap();
-    //         // process_one(pf, &_config, &_reader, test).await.unwrap();
-    //     }));
-    //     // if handles len is bigger than config.parser.batch_size, wait for all handles done and clear it
-    //     if handles.len() as u32 >= config.parser.batch_size {
-    //         for handle in handles.iter_mut() {
-    //             let pf = handle.await?;
-    //             do_copy(pf, &config.output, config.parser.dup_max, test)?;
-    //         }
-    //         handles.clear();
-    //     }
-    // }
-
-    // // wait for all handles done
-    // if handles.len() > 0 {
-    //     for handle in handles {
-    //         let pf = handle.await?;
-    //         do_copy(pf, &config.output, config.parser.dup_max, test)?;
-    //     }
-    // }
 
     Ok(())
 }

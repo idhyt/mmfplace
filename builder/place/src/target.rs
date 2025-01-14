@@ -194,47 +194,54 @@ impl Target {
         dts
     }
 
-    fn copy(&self, output: impl AsRef<Path>) -> PathBuf {
+    pub fn copy(&self, output: impl AsRef<Path>) -> PathBuf {
         // new dest path like `output/2024/12`
-        let dst_path = PathBuf::from_iter([
+        let dst = PathBuf::from_iter([
             output.as_ref(),
             self.datetime.year.to_string().as_ref(),
             self.datetime.month.to_string().as_ref(),
         ]);
 
         // create dest path dirtory
-        if !dst_path.is_dir() {
-            fs::create_dir_all(&dst_path).unwrap();
+        if !dst.is_dir() {
+            fs::create_dir_all(&dst).unwrap();
         }
 
-        let dst_path = dst_path.join(&self.get_name());
-        if dst_path.is_file() {
+        let dst = dst.join(&self.get_name());
+        if dst.is_file() {
             log::warn!(
                 "💡skip already exists {} -> {}",
                 self.path.display(),
-                dst_path.display()
+                dst.display()
             );
-            return dst_path;
+            return dst;
         }
 
         // copy file
-        std::fs::copy(&self.path, &dst_path).unwrap();
+        std::fs::copy(&self.path, &dst).unwrap();
 
         // copy metadata
         let metadata = std::fs::metadata(&self.path).unwrap();
         // log::info!("src file time: {:#?}", metadata);
         let atime = FileTime::from_last_access_time(&metadata);
         let mtime = FileTime::from_last_modification_time(&metadata);
-        set_file_times(&dst_path, atime, mtime).unwrap();
+        set_file_times(&dst, atime, mtime).unwrap();
         // let metadata = std::fs::metadata(&dst_path)?;
         // log::info!("dst file time: {:#?}", metadata);
 
         // set placed file
         Checker::new(&self.path).set_placed().unwrap();
-        dst_path
+        log::info!("success copy {:?} -> {:?}", self.path, dst);
+
+        dst
     }
 
-    pub async fn process(mut self, index: usize, total: usize, output: &PathBuf) -> Result<Self> {
+    pub async fn process(
+        mut self,
+        index: usize,
+        total: usize,
+        output: Option<&PathBuf>,
+    ) -> Result<Self> {
         log::debug!("[{}/{}] process {:?}", index, total, self.path);
 
         let dts = self.get_all_datetime(true).await;
@@ -265,8 +272,10 @@ impl Target {
             }
         }
 
-        let dst = self.copy(output);
-        log::info!("success copy {:?} -> {:?}", self.path, dst);
+        if let Some(output) = output {
+            self.copy(output);
+        }
+
         Ok(self)
     }
 }
@@ -346,10 +355,13 @@ mod tests {
     #[tokio::test]
     async fn test_process() {
         let path = get_root().join("tests/simple.jpg.png");
-        let target = Target::new(&path).process(1, 1).await.unwrap();
+        let output = get_root().join("tests/output");
+        let target = Target::new(&path).process(1, 1, None).await.unwrap();
         println!("target: {:#?}", target);
-        let name = target.get_name();
-        println!("name: {}", name);
-        assert!(name == "2002-11-16-15-27-01.a18932e314dbb4c81c6fd0e282d81d16.jpg");
+        assert!(target.datetime.timestamp == 1037460421);
+
+        let dst = target.copy(&output);
+        println!("copy from {:?} to {:?}", &path, &dst);
+        assert!(dst.is_file());
     }
 }
