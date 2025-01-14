@@ -6,7 +6,7 @@
 
 整理之前的目录:
 
-```
+```bash
 ❯ tree tests
 tests
 ├── 10x12x16bit-CMYK.psd
@@ -34,7 +34,7 @@ tests
 
 整理之后的目录:
 
-```
+```bash
 ❯ tree tests_output
 tests_output
 ├── 1996
@@ -70,7 +70,7 @@ tests_output
 
 可以从[releases](https://github.com/idhyt/mmfplace/releases)中下载已编译好的二进制，或者本地构建：
 
-```
+```bash
 ╰─ make build
 1) x86_64-unknown-linux-musl
 2) aarch64-unknown-linux-musl
@@ -82,7 +82,7 @@ tests_output
 
 编译后的文件存放在 `dist` 文件夹
 
-```
+```bash
 ╰─ tree dist
 dist
 ├── mmfplace.aarch64-apple-darwin.tar.gz
@@ -95,81 +95,55 @@ dist
 
 ╰─ cd dist && tar -xzvf mmfplace.x86_64-unknown-linux-musl.tar.gz && tree mmfplace.x86_64-unknown-linux-musl
 mmfplace.x86_64-unknown-linux-musl
-├── config.yaml
+├── config.toml
 ├── mmfplace
 └── tools
-    ├── metadata-extractor-2.18.0.jar
-    └── xmpcore-6.1.11.jar
+    ├── metadata-extractor.jar
+    └── xmpcore.jar
 
 1 directory, 4 files
 ```
 
 ## Usage
 
-如果在主机运行，使用前请确保系统中已经安装 java 运行环境。
-
-可以使用已经构建好的[容器镜像](https://hub.docker.com/r/idhyt/mmfplace)进行处理
-
-```shell
-export ROOT_DIR=$(shell pwd)
-export BUILD_NAME=idhyt/mmfplace:0.1
-docker run -it --rm \
-        -v $(ROOT_DIR)/tests:/opt/tests \
-        -v $(ROOT_DIR)/tests_output:/opt/tests_output $(BUILD_NAME) \
-        --input=/opt/tests --output=/opt/tests_output --logfile=/opt/tests_output/tests.log
-```
+如果在主机运行，使用前请确保系统中已经安装 java 运行环境，当前测试基于 java-11 环境，其他版本请自行验证。
 
 正式处理前建议先通过 `test` 模式进行测试, 看是否存在错误再进行整理, 命令如下:
 
 ```shell
-mmfplace --input=/path/to/directory --logfile=/path/to/log.txt --test
+mmfplace --input=/path/to/directory --output=/tmp --logfile=/path/to/log.txt --test
 ```
 
 参数说明：
 
 ```
-Usage: mmfplace [OPTIONS] --input <INPUT>
+Usage: mmfplace [OPTIONS] --input <INPUT> --output <OUTPUT>
 
 Options:
-  -w, --work-dir <WORK_DIR>  point to the run directory, must have RW permissions
-  -i, --input <INPUT>        input file/directory path
-  -o, --output <OUTPUT>      output directory path
-  -c, --config <CONFIG>      custom config file path
-      --logfile <LOGFILE>    custom the logfile path
-  -v, --verbose              enable verbose logging
-      --test                 test mode, do not copy/move file
-  -h, --help                 Print help
-  -V, --version              Print version
+  -i, --input <INPUT>      input file/directory path
+  -o, --output <OUTPUT>    output directory path
+      --logfile <LOGFILE>  custom the logfile path
+  -v, --verbose            enable verbose logging
+      --test               test mode, do not copy/move file
+  -h, --help               Print help
+  -V, --version            Print version
 ```
-
-`--config`: 指定 config 配置, 格式参考[config.yml](./builder/config/src/default.yaml)
-
-`--logfile`: 指定日志文件存放路径
 
 ## 错误处理
 
 常见的错误基本都是尝试解析时间字符串过程中出错，如:
 
 ```
-DEBUG [extractor::parser] [Exif IFD0] Date/Time = 2012:05:22 15:51:47
-DEBUG [extractor::parser] NaiveDateTime try 2012:05:22 15:51:47 as %Y:%m:%d %H:%M:%S %:z, premature end of input
-DEBUG [extractor::parser] Utc try 2012:05:22 15:51:47 as %Y:%m:%d %H:%M:%S %:z, premature end of input
-DEBUG [extractor::parser] DateTime try 2012:05:22 15:51:47 as %Y:%m:%d %H:%M:%S %:z, premature end of input
-ERROR [cli] splits process failed: parse 2012:05:22 15:51:47 failed
+💥 Unrecognized time string format: 2002:11:16 15:27:01, must add parsing format `striptimes` in config.toml`
 ```
 
-本地创建配置文件`config.yaml`，加入如下内容:
+配置文件`config.toml`，加入如下内容:
 
+```toml
+striptimes = [
+    { "fmt" = "%Y:%m:%d %H:%M:%S", "test" = "2002:11:16 15:27:01" },
+]
 ```
-stripes:
-  - name: "] Date/Time = "
-    regex: "Date/Time = (.*)"
-    strptimes:
-      - fmt: "%Y:%m:%d %H:%M:%S"
-        test: "2012:05:22 15:51:47"
-```
-
-之后执行命令加入 `--config` 参数即可
 
 ## 特性
 
@@ -177,15 +151,16 @@ stripes:
 
 如果原始文件已经按照一定的时间进行重命名，且想保留原始时间(从文件名中获取)
 
-如原始文件为 `2018-05-02_13-13-39_dcf485515fb4c7611a704ff7f745abd3.jpg`, 而从解析获取的时间最早是`2021-xx`
+如原始文件为 `2018-05-02-13-13-39_dcf485515fb4c7611a704ff7f745abd3.jpg`, 而从解析获取的时间最早是`2021-xx`
 
-如果想保留时间为`2018-05-02_13-13-39`, 在配置文件中加入如下字段
+如果想保留时间为`2018-05-02-13-13-39`, 在配置文件中加入如下字段
 
-```
-additionals:
-  - name: "filename"
-    regex: (\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})_.*
-    strptimes:
-      - fmt: "%Y-%m-%d_%H-%M-%S"
-        test: "2018-05-02_13-13-39_dcf485515fb4c7611a704ff7f745abd3.jpg"
+```toml
+additionals = [
+    { "name" = "filename", dateparse = [
+        { "check" = "not check", "regex" = "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}).*" },
+    ], striptimes = [
+        { "fmt" = "%Y-%m-%d-%H-%M-%S", "test" = "2018-05-02-13-13-39-01.jpg" },
+    ] },
+]
 ```
