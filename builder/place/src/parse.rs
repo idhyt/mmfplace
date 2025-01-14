@@ -14,11 +14,11 @@ fn capture_from_string(value: &str, parsers: &Vec<Parser>, check: bool) -> Optio
         }
         match parser.capture(&value) {
             Ok(t) => {
-                log::info!("capture {} from {}", t, value);
+                log::debug!("capture {} from {}", t, value);
                 return Some(t);
             }
             Err(e) => {
-                log::error!("capture {} from {} with error: {}", parser.regex, value, e);
+                log::debug!("capture {} from {} with error: {}", parser.regex, value, e);
             }
         }
     }

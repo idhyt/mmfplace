@@ -1,7 +1,7 @@
 use anyhow::Result;
 use chrono::{Datelike, Timelike, Utc};
 use std::path::PathBuf;
-use std::sync::Arc;
+// use std::sync::Arc;
 use walkdir::WalkDir;
 
 use check::Checker;
@@ -12,6 +12,14 @@ mod check;
 mod meta;
 mod parse;
 mod target;
+
+static mut ISTEST: bool = false;
+
+pub fn panic_with_test() {
+    if unsafe { ISTEST } {
+        panic!("-------- panic in testing mode, try to run with -v to see the detail --------");
+    }
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct FileDateTime {
@@ -61,6 +69,10 @@ fn get_total_size(path: &PathBuf) -> usize {
 }
 
 pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<()> {
+    unsafe {
+        ISTEST = test;
+    }
+
     let total = get_total_size(input);
 
     log::info!(
@@ -85,9 +97,9 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
         index += 1;
 
         handles.push(tokio::spawn(async move {
-            Target::new(&path)
+            Target::new(&path, index, total)
                 //.process(index, total, Arc::clone(&atout))
-                .process(index, total, None)
+                .process(None)
                 .await
         }));
 
@@ -115,9 +127,17 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
 mod tests {
     use super::*;
 
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
     #[test]
     fn test_get_total_size() {
-        let path = PathBuf::from("/tmp/123");
+        let path = get_root().join("tests");
         let total = get_total_size(&path);
         println!("total: {}", total);
         // assert_eq!(total, 3);

@@ -64,6 +64,7 @@ impl MetadataReader {
         let mut child = tokio::process::Command::new("java")
             // .current_dir(file_path.as_ref())
             .args(args)
+            .stderr(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
             .spawn()?;
 
@@ -103,7 +104,7 @@ impl MetadataReader {
 mod tests {
 
     use super::*;
-    
+
     fn get_root() -> PathBuf {
         PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
             .parent()
