@@ -2,7 +2,7 @@
 # set -ex
 
 function set_version() {
-    version=${BUILD_VERSION:-0.1}
+    version=${BUILD_VERSION:-0.2.0}
     date=$(git show --pretty=format:"%ci %cr" | head -1 | cut -d " " -f1)
     commit=$(git rev-parse HEAD | cut -c1-10)
     # replace version = "0.1", to version = "0.1 (123456 2021-08-01)",
@@ -56,4 +56,5 @@ EOF
     echo "Build success, output file: $output.tar.gz"
 }
 
-set_version && build
+# set_version && build
+set_version
