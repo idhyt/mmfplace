@@ -1,2 +1,2 @@
-metadata-extractor-2.18.0.jar
-xmpcore-6.1.11.jar
+https://repo1.maven.org/maven2/com/drewnoakes/metadata-extractor/2.19.0/metadata-extractor-2.19.0.jar
+https://repo1.maven.org/maven2/com/adobe/xmp/xmpcore/6.1.11/xmpcore-6.1.11.jar
