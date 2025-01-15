@@ -1,0 +1,12 @@
+[package]
+name = "dupf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+utils = { path = "../utils" }
+place = { path = "../place" }
+
+log = "0.4.17"
+anyhow = "1.0.68"
+walkdir = "2.3.2"
