@@ -17,15 +17,25 @@ image-release:
 	make image-build
 	docker push $(BUILD_NAME)
 
-host-tests:
-	mkdir -p tests_output
-	cd builder && cargo run -- -i ../tests  --logfile ../tests_output/tests.log -o ../tests_output
+check-diff:
+	@if [ -z "$$(diff -x '*.mmfplace' -r tests_output tests_output_tests)" ];then \
+		echo "\033[32m+++ Test success +++\033[0m";\
+	else \
+		echo "\033[31m--- Test failed ---\033[0m";\
+	fi
+
+host-tests: clean
+	rm -rf tests_output && mkdir -p tests_output
+	cd builder && cargo run -- -i ../tests -o ../tests_output
+	rm -rf tests_output_tests && mkdir -p tests_output_tests
+	cd builder && cargo run -- -i ../tests_output -o ../tests_output_tests
+	make check-diff
 
 test: host-tests
 
 clean:
 	rm -rf tests/*.mmfplace
-	rm -rf tests_output
+	rm -rf tests_output*
 
 cross-build:
 	./xbuild
