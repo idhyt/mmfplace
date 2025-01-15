@@ -8,7 +8,7 @@ use check::Checker;
 use config::CONFIG;
 use target::Target;
 
-mod check;
+pub mod check;
 mod meta;
 mod parse;
 mod target;
@@ -68,10 +68,15 @@ fn get_total_size(path: &PathBuf) -> usize {
         .count()
 }
 
-pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<()> {
+pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> Result<()> {
     unsafe {
         ISTEST = test;
     }
+    let output = if let Some(o) = output {
+        o
+    } else {
+        &PathBuf::from(format!("{}.mmfplace", input.to_str().unwrap()))
+    };
 
     let total = get_total_size(input);
 
