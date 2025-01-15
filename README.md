@@ -111,20 +111,24 @@ mmfplace.x86_64-unknown-linux-musl
 正式处理前建议先通过 `test` 模式进行测试, 看是否存在错误再进行整理, 命令如下:
 
 ```shell
-mmfplace --input=/path/to/directory --output=/tmp --logfile=/path/to/log.txt --test
+mmfplace place --input=/path/to/directory --logfile=/path/to/log.txt --test
 ```
 
 参数说明：
 
 ```
-Usage: mmfplace [OPTIONS] --input <INPUT> --output <OUTPUT>
+
+Usage: mmfplace [OPTIONS] <COMMAND>
+
+Commands:
+  place  place files into directories by datetime
+  dupf   find duplicate files
+  help   Print this message or the help of the given subcommand(s)
 
 Options:
-  -i, --input <INPUT>      input file/directory path
   -o, --output <OUTPUT>    output directory path
-      --logfile <LOGFILE>  custom the logfile path
   -v, --verbose            enable verbose logging
-      --test               test mode, do not copy/move file
+  -l, --logfile <LOGFILE>  option point to the logfile path, must have RW permissions
   -h, --help               Print help
   -V, --version            Print version
 ```
