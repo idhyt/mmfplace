@@ -91,7 +91,7 @@ pub async fn do_place(input: &PathBuf, output: &PathBuf, test: bool) -> Result<(
         let path = entry?.path().to_path_buf();
         let checker = Checker::new(&path);
         if checker.is_skip() {
-            log::info!("skip file: {:?}", path);
+            log::debug!("skip file: {:?}", path);
             continue;
         }
         index += 1;

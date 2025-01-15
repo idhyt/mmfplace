@@ -131,7 +131,7 @@ impl Target {
             // capture file extension from metadata
             if self.suffix.is_none() {
                 if let Some(t) = capture_type(&value) {
-                    log::info!(
+                    log::debug!(
                         "🏷️ capture file extension from metadata: {}, {:?}",
                         t,
                         self.path
@@ -160,7 +160,7 @@ impl Target {
 
     async fn get_all_datetime(&mut self, dup_sort: bool) -> Vec<FileDateTime> {
         let mut dts = if let Some(dts) = self.datetime_from_metedata().await {
-            log::info!("✨ success get date from metadata: {:?}", dts);
+            log::debug!("✨ success get date from metadata: {:?}", dts);
             dts
         } else {
             panic_with_test();
@@ -168,14 +168,14 @@ impl Target {
         };
 
         if let Some(dt) = get_earliest_datetime_from_attributes(&self.path) {
-            log::info!("✨ success get date(earliest) from attributes: {}", dt);
+            log::debug!("✨ success get date(earliest) from attributes: {}", dt);
             dts.push(dt);
         } else {
             panic_with_test();
         }
 
         if let Some(dt) = get_datetime_from_additional(&self.path) {
-            log::info!("✨ success get date from additional: {}", dt);
+            log::debug!("✨ success get date from additional: {}", dt);
             dts.push(dt);
         }
 
