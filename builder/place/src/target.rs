@@ -1,13 +1,13 @@
 use anyhow::Result;
-use filetime::{set_file_times, FileTime};
+// use filetime::{set_file_times, FileTime};
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use super::check::Checker;
 use super::meta::META;
 use super::parse::{
-    capture_type, get_datetime_from_additional, get_datetime_from_string,
-    get_earliest_datetime_from_attributes,
+    capture_type, get_datatime_from_metadata, get_datetime_from_additional,
+    get_datetime_from_string, get_earliest_datetime_from_attributes,
 };
 use super::{panic_with_test, FileDateTime, ISTEST};
 
@@ -193,6 +193,26 @@ impl Target {
         dts
     }
 
+    fn copy_time(&self, from: &PathBuf, to: &PathBuf) -> Result<()> {
+        let times = match get_datatime_from_metadata(from) {
+            Some(t) => t,
+            None => {
+                return Ok(());
+            }
+        };
+        assert!(times.len() >= 2);
+        let atime = times[0];
+        // TODO: 修改创建时间为最小暂时未实现，当前将修改时间设置为最小的时间
+        let mtime = if let Some(t) = times.iter().min() {
+            *t
+        } else {
+            times[1]
+        };
+        let dest = fs::File::options().write(true).open(&to)?;
+        dest.set_times(fs::FileTimes::new().set_accessed(atime).set_modified(mtime))?;
+        Ok(())
+    }
+
     pub fn copy(&self, output: impl AsRef<Path>) -> PathBuf {
         let dst = self.get_copy_path(output);
         if dst.is_file() {
@@ -219,16 +239,9 @@ impl Target {
         }
 
         // copy file
-        std::fs::copy(&self.path, &dst).unwrap();
-
-        // copy metadata
-        let metadata = std::fs::metadata(&self.path).unwrap();
-        // log::info!("src file time: {:#?}", metadata);
-        let atime = FileTime::from_last_access_time(&metadata);
-        let mtime = FileTime::from_last_modification_time(&metadata);
-        set_file_times(&dst, atime, mtime).unwrap();
-        // let metadata = std::fs::metadata(&dst_path)?;
-        // log::info!("dst file time: {:#?}", metadata);
+        fs::copy(&self.path, &dst).unwrap();
+        // copy datetime
+        self.copy_time(&self.path, &dst).unwrap();
 
         // set placed file
         Checker::new(&self.path).set_placed().unwrap();
@@ -356,7 +369,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_process() {
-        let path = get_root().join("tests/simple.jpg.png");
+        let path = get_root().join("tests/simple.jpg");
         let output = get_root().join("tests/output");
         let target = Target::new(&path, 1, 1).process(None).await.unwrap();
         println!("target: {:#?}", target);
@@ -366,6 +379,11 @@ mod tests {
         println!("copy from {:?} to {:?}", &path, &dst);
         assert!(dst.is_file());
 
-        std::fs::remove_dir_all(&output).unwrap();
+        let src_meta = std::fs::metadata(&path).unwrap();
+        let dst_meta = std::fs::metadata(&dst).unwrap();
+        println!("src_meta: {:#?}", src_meta);
+        println!("dst_meta: {:#?}", dst_meta);
+
+        // std::fs::remove_dir_all(&output).unwrap();
     }
 }

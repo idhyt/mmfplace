@@ -1,8 +1,8 @@
-use chrono::{DateTime, Datelike, NaiveDate, NaiveDateTime, TimeZone, Timelike, Utc};
-use filetime::FileTime;
-use std::path::PathBuf;
+use chrono::{DateTime, Datelike, Local, NaiveDate, NaiveDateTime, TimeZone, Timelike, Utc};
+// use filetime::FileTime;
+use std::{path::PathBuf, time::SystemTime};
 
-use super::FileDateTime;
+use super::{panic_with_test, FileDateTime};
 
 use config::{Parser, Strptime, CONFIG};
 
@@ -145,8 +145,7 @@ pub fn get_datetime_from_string(value: &str) -> Option<FileDateTime> {
     get_datetime_with_striptimes(&data_str, &CONFIG.striptimes)
 }
 
-/// 从文件属性中获取访问时间、创建时间、修改时间，并返回最早的时间
-pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateTime> {
+pub fn get_datatime_from_metadata(file: &PathBuf) -> Option<Vec<SystemTime>> {
     let metadata = std::fs::metadata(file);
     if metadata.is_err() {
         log::error!(
@@ -157,30 +156,54 @@ pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateT
         return None;
     }
     let metadata = metadata.unwrap();
-    let atime = FileTime::from_last_access_time(&metadata).unix_seconds();
-    let mtime = FileTime::from_last_modification_time(&metadata).unix_seconds();
-    let ctime = if let Some(v) = FileTime::from_creation_time(&metadata) {
-        v.unix_seconds()
+    let mut times = vec![];
+
+    if let Ok(atime) = metadata.accessed() {
+        times.push(atime);
     } else {
-        // log::debug!("not all Unix platforms have this field available");
-        mtime
-    };
-    // println!("atime: {}, mtime: {}, ctime: {}", atime, mtime, ctime);
-    if let Some(t) = vec![atime, mtime, ctime].iter().min() {
-        let dt = Utc.timestamp_opt(*t, 0).unwrap();
-        Some(FileDateTime {
-            year: dt.year() as u16,
-            month: dt.month() as u8,
-            day: dt.day() as u8,
-            hour: dt.hour() as u8,
-            minute: dt.minute() as u8,
-            second: dt.second() as u8,
-            timestamp: dt.timestamp() as i64,
-        })
-    } else {
-        log::error!("get attributes min timestamp failed for {}", file.display());
-        None
+        log::warn!("💡 last access time Not supported on this platform!");
     }
+    if let Ok(mtime) = metadata.modified() {
+        times.push(mtime);
+    } else {
+        log::warn!("💡 last modified time Not supported on this platform!");
+    }
+    if let Ok(ctime) = metadata.created() {
+        times.push(ctime);
+    } else {
+        log::warn!("💡 creation time Not supported on this platform!");
+    }
+
+    if times.is_empty() {
+        None
+    } else {
+        Some(times)
+    }
+}
+
+/// 从文件属性中获取访问时间、创建时间、修改时间，并返回最早的时间
+pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateTime> {
+    if let Some(times) = get_datatime_from_metadata(&file) {
+        if times.len() != 3 {
+            panic_with_test();
+        }
+
+        if let Some(dt) = times.into_iter().min() {
+            // let dt: DateTime<Utc> = dt.into();
+            let dt: DateTime<Local> = dt.into();
+            return Some(FileDateTime {
+                year: dt.year() as u16,
+                month: dt.month() as u8,
+                day: dt.day() as u8,
+                hour: dt.hour() as u8,
+                minute: dt.minute() as u8,
+                second: dt.second() as u8,
+                timestamp: dt.timestamp() as i64,
+            });
+        }
+    }
+    log::error!("get attributes min timestamp failed for {}", file.display());
+    None
 }
 
 /// 从文件名中获取时间
