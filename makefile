@@ -26,9 +26,9 @@ check-diff:
 
 host-tests: clean
 	rm -rf tests_output && mkdir -p tests_output
-	cd builder && cargo run -- -i ../tests -o ../tests_output
+	cd builder && cargo run -- place -i ../tests -o ../tests_output
 	rm -rf tests_output_tests && mkdir -p tests_output_tests
-	cd builder && cargo run -- -i ../tests_output -o ../tests_output_tests
+	cd builder && cargo run -- place -i ../tests_output -o ../tests_output_tests
 	make check-diff
 
 test: host-tests
