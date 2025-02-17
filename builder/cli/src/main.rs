@@ -26,7 +26,7 @@ enum Commands {
 #[derive(Parser, Debug)]
 #[clap(
     author = "idhyt",
-    version = "dirty (81242966c1 2024-05-20)",
+    version = "0.2.0 (dirty 2025-02-17)",
     about = "split multi-media file by earliest datetime",
     long_about = None
 )]
