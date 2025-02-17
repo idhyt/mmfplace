@@ -24,7 +24,11 @@ check-diff:
 		echo "\033[31m--- Test failed ---\033[0m";\
 	fi
 
-host-tests: clean
+debug-link:
+	mkdir -p builder/target/debug
+	cd builder/target/debug && ln -sf ../../../tools ./tools && ln -sf ../../config/src/default.toml ./config.toml
+
+host-tests: clean debug-link
 	rm -rf tests_output && mkdir -p tests_output
 	cd builder && cargo run -- place -i ../tests -o ../tests_output
 	rm -rf tests_output_tests && mkdir -p tests_output_tests
