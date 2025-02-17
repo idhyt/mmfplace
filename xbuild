@@ -50,7 +50,7 @@ EOF
 
     cd builder && cross build --release --target $platform -vv && cd ..
     cp builder/target/$platform/release/$name $output/$name
-    cp builder/config/src/default.yaml $output/config.yaml
+    cp builder/config/src/default.toml $output/config.toml
     cp -rf ./tools $output/tools
     cd ./dist && tar -czvf $dist.tar.gz $dist && rm -rf $dist && cd ..
     echo "Build success, output file: $output.tar.gz"
