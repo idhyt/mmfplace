@@ -17,11 +17,11 @@ pub struct MetadataReader {
 impl MetadataReader {
     pub fn new(tool_dir: Option<&PathBuf>) -> Self {
         let tool_dir = if let Some(t) = tool_dir {
-            t
+            t.to_path_buf()
         } else {
             let mut w = std::env::current_exe().unwrap();
             w.pop();
-            &w.join("tools")
+            w.join("tools")
         };
         assert!(
             tool_dir.is_dir(),

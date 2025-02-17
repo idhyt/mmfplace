@@ -73,9 +73,9 @@ pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> R
         ISTEST = test;
     }
     let output = if let Some(o) = output {
-        o
+        o.to_path_buf()
     } else {
-        &PathBuf::from(format!("{}.mmfplace", input.to_str().unwrap()))
+        PathBuf::from(format!("{}.mmfplace", input.to_str().unwrap()))
     };
 
     let total = get_total_size(input);
@@ -111,7 +111,7 @@ pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> R
         if handles.len() >= CONFIG.batch_size {
             for handle in handles.iter_mut() {
                 let target = handle.await??;
-                target.copy(output);
+                target.copy(&output);
             }
             handles.clear();
         }
@@ -121,7 +121,7 @@ pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> R
     if handles.len() > 0 {
         for handle in handles {
             let target = handle.await??;
-            target.copy(output);
+            target.copy(&output);
         }
     }
 
