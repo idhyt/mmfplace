@@ -48,7 +48,7 @@ EOF
     output=./dist/$dist
     [ -d "$output" ] || mkdir -p $output
 
-    cd builder && cross build --release --target $platform && cd ..
+    cd builder && cross build --release --target $platform -vv && cd ..
     cp builder/target/$platform/release/$name $output/$name
     cp builder/config/src/default.yaml $output/config.yaml
     cp -rf ./tools $output/tools
@@ -56,5 +56,4 @@ EOF
     echo "Build success, output file: $output.tar.gz"
 }
 
-# set_version && build
-set_version
+set_version && build
