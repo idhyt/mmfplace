@@ -171,7 +171,7 @@ pub fn get_datatime_from_metadata(file: &PathBuf) -> Option<Vec<SystemTime>> {
     if let Ok(ctime) = metadata.created() {
         times.push(ctime);
     } else {
-        log::warn!("💡 creation time Not supported on this platform!");
+        log::debug!("💡 creation time Not supported on this platform!");
     }
 
     if times.is_empty() {
@@ -184,7 +184,8 @@ pub fn get_datatime_from_metadata(file: &PathBuf) -> Option<Vec<SystemTime>> {
 /// 从文件属性中获取访问时间、创建时间、修改时间，并返回最早的时间
 pub fn get_earliest_datetime_from_attributes(file: &PathBuf) -> Option<FileDateTime> {
     if let Some(times) = get_datatime_from_metadata(&file) {
-        if times.len() != 3 {
+        // 多数平台无法获取创建时间，因此需要 3-1
+        if times.len() < (3 - 1) {
             panic_with_test();
         }
 
