@@ -14,6 +14,11 @@ fn capture_from_string(value: &str, parsers: &Vec<Parser>, check: bool) -> Optio
         }
         match parser.capture(&value) {
             Ok(t) => {
+                // bugfix like for "GPS Date Stamp =    ", ignore empty!
+                if t.trim().is_empty() {
+                    log::warn!("💡 capture {} from {} is empty", parser.regex, value);
+                    return None;
+                }
                 log::debug!("capture {} from {}", t, value);
                 return Some(t);
             }
