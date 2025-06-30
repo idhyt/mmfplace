@@ -75,6 +75,7 @@ blacklist = [
     # "2019:10:07 24:23:32"
     "2010:00:00",
     " 24:",
+    "[ICC Profile]",
 ]
 
 retain_suffix = [
