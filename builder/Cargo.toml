@@ -1,3 +1,3 @@
 [workspace]
-members = ["cli", "dupf", "config", "place", "utils"]
+members = ["cli", "dupf", "config", "place", "utils", "tools"]
 resolver = "2"

@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 utils = { path = "../utils" }
 config = { path = "../config" }
+tools = { path = "../tools" }
 
 clap = { version = "4.5.40", features = ["derive"] }
 log = "0.4.27"

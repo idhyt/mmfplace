@@ -1,0 +1,10 @@
+[package]
+name = "tools"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+log = "0.4.27"
+serde = { version = "1.0.219", features = ["derive"] }
+once_cell = "1.21.3"
+tokio = { version = "1.46.0", features = ["full"] }

@@ -4,7 +4,6 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use super::check::Checker;
-use super::meta::META;
 use super::parse::{
     capture_type, get_datatime_from_metadata, get_datetime_from_additional,
     get_datetime_from_string, get_earliest_datetime_from_attributes,
@@ -12,6 +11,7 @@ use super::parse::{
 use super::{panic_with_test, FileDateTime, ISTEST};
 
 use config::CONFIG;
+use tools::metadata::METADATA;
 use utils::crypto::get_file_md5;
 
 #[derive(Debug, Clone, Default)]
@@ -104,7 +104,7 @@ impl Target {
     async fn datetime_from_metedata(&mut self) -> Option<Vec<FileDateTime>> {
         let mut dts: Vec<FileDateTime> = Vec::new();
 
-        let texts = match META.read(&self.path).await {
+        let texts = match METADATA.read(&self.path).await {
             Ok(texts) => {
                 if texts.len() == 0 {
                     log::error!("no metadata found for {:?}", self.path);

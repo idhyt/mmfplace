@@ -9,7 +9,6 @@ use config::CONFIG;
 use target::Target;
 
 pub mod check;
-mod meta;
 mod parse;
 mod target;
 
