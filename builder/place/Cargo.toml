@@ -9,14 +9,14 @@ edition = "2021"
 utils = { path = "../utils" }
 config = { path = "../config" }
 
-clap = { version = "4.0.32", features = ["derive"] }
-log = "0.4.17"
-futures = "0.3"
-anyhow = "1.0.68"
-walkdir = "2.3.2"
-tokio = { version = "1.27.0", features = ["full"] }
-serde = { version = "1.0.152", features = ["derive"] }
-chrono = "0.4.31"
+clap = { version = "4.5.40", features = ["derive"] }
+log = "0.4.27"
+futures = "0.3.31"
+anyhow = "1.0.98"
+walkdir = "2.5.0"
+tokio = { version = "1.46.0", features = ["full"] }
+serde = { version = "1.0.219", features = ["derive"] }
+chrono = "0.4.41"
 # filetime = "0.2.25"
-regex = "1.7.1"
-lazy_static = "1.5.0"
+regex = "1.11.1"
+once_cell = "1.21.3"

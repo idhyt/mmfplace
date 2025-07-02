@@ -1,3 +1,4 @@
+#![allow(deprecated)]
 use chrono::{DateTime, Datelike, Local, NaiveDate, NaiveDateTime, TimeZone, Timelike, Utc};
 // use filetime::FileTime;
 use std::{path::PathBuf, time::SystemTime};
@@ -41,7 +42,6 @@ pub fn capture_date(value: &str) -> Option<String> {
 
 /// 解析所有可能的时间格式，格式见配置文件中的 `striptimes`
 // https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
-#[warn(deprecated)]
 fn fuzzy_strptime(value: &str, fmt: &str) -> Option<FileDateTime> {
     // like "2020-04-12" => Date = NaiveDate
     if value.len() == 10 {

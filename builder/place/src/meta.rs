@@ -1,12 +1,10 @@
 use anyhow::{anyhow, Result};
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::collections::HashSet;
 use std::path::PathBuf;
 use tokio::io::{AsyncBufReadExt, BufReader};
 
-lazy_static! {
-    pub static ref META: MetadataReader = MetadataReader::new(None);
-}
+pub static META: Lazy<MetadataReader> = Lazy::new(|| MetadataReader::new(None));
 
 #[derive(Debug)]
 pub struct MetadataReader {
