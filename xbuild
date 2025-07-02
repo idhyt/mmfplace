@@ -2,7 +2,7 @@
 # set -ex
 
 function set_version() {
-    version=${BUILD_VERSION:-0.2.0}
+    version=${BUILD_VERSION:-0.3.0}
     date=$(git show --pretty=format:"%ci %cr" | head -1 | cut -d " " -f1)
     commit=$(git rev-parse HEAD | cut -c1-10)
     # replace version = "0.1", to version = "0.1 (123456 2021-08-01)",
@@ -50,8 +50,8 @@ EOF
 
     cd builder && cross build --release --target $platform -vv && cd ..
     cp builder/target/$platform/release/$name $output/$name
-    cp builder/config/src/default.toml $output/config.toml
-    cp -rf ./tools $output/tools
+    # cp builder/config/src/default.toml $output/config.toml
+    # cp -rf ./tools $output/tools
     cd ./dist && tar -czvf $dist.tar.gz $dist && rm -rf $dist && cd ..
     echo "Build success, output file: $output.tar.gz"
 }
