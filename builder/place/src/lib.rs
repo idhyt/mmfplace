@@ -2,6 +2,8 @@ use anyhow::Result;
 use chrono::{Datelike, Timelike, Utc};
 use std::path::PathBuf;
 // use std::sync::Arc;
+use tracing::{debug, debug_span, info};
+use tracing_futures::Instrument;
 use walkdir::WalkDir;
 
 use check::Checker;
@@ -79,33 +81,41 @@ pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> R
 
     let total = get_total_size(input);
 
-    log::info!(
+    info!(
         "start process with:\n  input: {:?}\n  output: {:?}\n  test: {}\n  total: {}",
-        input,
-        output,
-        test,
-        total
+        input, output, test, total
     );
 
     let mut index = 0;
     let mut handles = Vec::new();
     // let aout = Arc::new(output.to_path_buf());
 
+    let root_span = debug_span!("process");
+    let _enter = root_span.enter();
+
     for entry in WalkDir::new(input) {
         let path = entry?.path().to_path_buf();
         let checker = Checker::new(&path);
         if checker.is_skip() {
-            log::debug!("skip file: {:?}", path);
+            debug!("skip file: {:?}", path);
             continue;
         }
         index += 1;
 
-        handles.push(tokio::spawn(async move {
-            Target::new(&path, index, total)
-                //.process(index, total, Arc::clone(&atout))
-                .process(None)
+        handles.push(tokio::spawn(
+            async move {
+                let span = debug_span!("async_task", path = ?path, index = index, total = total);
+                async {
+                    Target::new(&path, index, total)
+                        //.process(index, total, Arc::clone(&atout))
+                        .process(None)
+                        .await
+                }
+                .instrument(span)
                 .await
-        }));
+            }
+            .instrument(root_span.clone()),
+        ));
 
         if handles.len() >= CONFIG.batch_size {
             for handle in handles.iter_mut() {

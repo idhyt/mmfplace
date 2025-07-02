@@ -2,6 +2,7 @@ use anyhow::Result;
 // use filetime::{set_file_times, FileTime};
 use std::fs;
 use std::path::{Path, PathBuf};
+use tracing::{debug, error, info, warn};
 
 use super::check::Checker;
 use super::parse::{
@@ -107,34 +108,33 @@ impl Target {
         let texts = match METADATA.read(&self.path).await {
             Ok(texts) => {
                 if texts.len() == 0 {
-                    log::error!("no metadata found for {:?}", self.path);
+                    error!("no metadata found for {:?}", self.path);
                     return None;
                 }
                 texts
             }
             Err(e) => {
-                log::error!("read metadata {:?} failed with error: {}", self.path, e);
+                error!("read metadata {:?} failed with error: {}", self.path, e);
                 return None;
             }
         };
 
         'outer: for value in texts {
-            log::debug!("{}", value);
+            debug!("{}", value);
             // println!("> {}", value);
 
             for black_str in &CONFIG.blacklist {
                 if value.contains(black_str) {
-                    log::debug!("💡 {} contains black string {}, skip...", value, black_str);
+                    debug!("💡 {} contains black string {}, skip...", value, black_str);
                     continue 'outer;
                 }
             }
             // capture file extension from metadata
             if self.suffix.is_none() {
                 if let Some(t) = capture_type(&value) {
-                    log::debug!(
+                    debug!(
                         "🏷️ capture file extension from metadata: {}, {:?}",
-                        t,
-                        self.path
+                        t, self.path
                     );
                     // println!("capture file extension from metadata: {}", t);
                     self.set_suffix(Some(&t));
@@ -143,9 +143,9 @@ impl Target {
 
             // get date from metadata
             if let Some(dt) = get_datetime_from_string(&value) {
-                log::debug!("{} -> {}", value, dt);
+                debug!("{} -> {}", value, dt);
                 if dt.year < 1975 {
-                    log::warn!("💡 {} < 1975, {:?} skip...", dt.year, self.path);
+                    warn!("💡 {} < 1975, {:?} skip...", dt.year, self.path);
                 } else {
                     dts.push(dt);
                 }
@@ -160,7 +160,7 @@ impl Target {
 
     async fn get_all_datetime(&mut self, dup_sort: bool) -> Vec<FileDateTime> {
         let mut dts = if let Some(dts) = self.datetime_from_metedata().await {
-            log::debug!("✨ success get date from metadata: {:?}", dts);
+            debug!("✨ success get date from metadata: {:?}", dts);
             dts
         } else {
             panic_with_test();
@@ -168,14 +168,14 @@ impl Target {
         };
 
         if let Some(dt) = get_earliest_datetime_from_attributes(&self.path) {
-            log::debug!("✨ success get date(earliest) from attributes: {}", dt);
+            debug!("✨ success get date(earliest) from attributes: {}", dt);
             dts.push(dt);
         } else {
             panic_with_test();
         }
 
         if let Some(dt) = get_datetime_from_additional(&self.path) {
-            log::debug!("✨ success get date from additional: {}", dt);
+            debug!("✨ success get date from additional: {}", dt);
             dts.push(dt);
         }
 
@@ -216,7 +216,7 @@ impl Target {
     pub fn copy(&self, output: impl AsRef<Path>) -> PathBuf {
         let dst = self.get_copy_path(output);
         if dst.is_file() {
-            log::warn!(
+            warn!(
                 "💡[{}/{}] skip already exists {} -> {}",
                 self.index,
                 self.total,
@@ -228,12 +228,9 @@ impl Target {
         }
 
         if unsafe { ISTEST } {
-            log::info!(
+            info!(
                 "✅ [{}/{}] [TEST] skip copy {:?} -> {:?}",
-                self.index,
-                self.total,
-                self.path,
-                dst
+                self.index, self.total, self.path, dst
             );
             return dst;
         }
@@ -245,19 +242,17 @@ impl Target {
 
         // set placed file
         Checker::new(&self.path).set_placed().unwrap();
-        log::info!(
+        info!(
             "🚚 [{}/{}] success copy {:?} -> {:?}",
-            self.index,
-            self.total,
-            self.path,
-            dst
+            self.index, self.total, self.path, dst
         );
 
         dst
     }
 
+    // #[tracing::instrument]
     pub async fn process(mut self, output: Option<&PathBuf>) -> Result<Self> {
-        log::debug!("[{}/{}] process {:?}", self.index, self.total, self.path);
+        debug!("[{}/{}] process {:?}", self.index, self.total, self.path);
 
         let dts = self.get_all_datetime(true).await;
         if dts.len() == 1 {

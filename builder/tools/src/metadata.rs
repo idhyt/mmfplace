@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use std::io::{Error, ErrorKind, Result};
 use std::path::{Path, PathBuf};
 use tokio::io::{AsyncBufReadExt, BufReader};
+use tracing::{debug, error};
 
 const EXTRACTOR: &[u8] = include_bytes!("deps/metadata-extractor-2.19.0.jar");
 const XMPCORE: &[u8] = include_bytes!("deps/xmpcore-6.1.11.jar");
@@ -31,11 +32,11 @@ impl MetadataReader {
             tools.join("xmpcore-6.1.11.jar"),
         );
         if !extractor.is_file() {
-            log::debug!("Delivery the metadata-extractor {}", extractor.display());
+            debug!(path = ?extractor, "Delivery the metadata-extractor");
             std::fs::write(&extractor, EXTRACTOR).expect("Failed to write metadata-extractor.jar");
         }
         if !xmpcore.is_file() {
-            log::debug!("Delivery the xmpcore {}", xmpcore.display());
+            debug!(path = ?xmpcore, "Delivery the xmpcore.");
             std::fs::write(&xmpcore, XMPCORE).expect("Failed to write xmpcore.jar");
         }
 
@@ -46,6 +47,7 @@ impl MetadataReader {
         MetadataReader { extractor, xmpcore }
     }
 
+    // #[tracing::instrument]
     pub async fn read(&self, file: &Path) -> Result<HashSet<String>> {
         let mut readers: HashSet<String> = HashSet::new();
         let class_path = format!(
@@ -60,8 +62,7 @@ impl MetadataReader {
             "com.drew.imaging.ImageMetadataReader",
             file.to_str().unwrap(),
         ];
-
-        log::debug!("run command args: {:?}", args);
+        debug!(command=?args, "running metadata extractor.");
 
         let mut child = tokio::process::Command::new("java")
             // .current_dir(file_path.as_ref())
@@ -84,21 +85,21 @@ impl MetadataReader {
 
         tokio::spawn(async move {
             match child.wait().await {
-                Ok(status) => log::debug!("child status was: {}", status),
-                Err(err) => log::error!("child process encountered an error: {}", err),
+                Ok(s) => debug!(status=?s, "child process exist status"),
+                Err(e) => error!(error=?e, "child process encountered an error"),
             }
         });
 
         // stream did not contain valid UTF-8
         while let Some(line) = match reader.next_line().await {
             Ok(line) => Some(line),
-            Err(err) => {
-                log::debug!("error ignore: {}", err);
+            Err(_) => {
+                // debug!("error ignore: {}", err);
                 None
             }
         } {
             if let Some(l) = line {
-                log::debug!("{}", l);
+                debug!("{}", l);
                 if l.len() < 0xff {
                     readers.insert(l);
                 }
