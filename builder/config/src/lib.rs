@@ -1,11 +1,9 @@
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use regex::{Error, Regex};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-lazy_static! {
-    pub static ref CONFIG: Config = Config::new(None);
-}
+pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::new(None));
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Strptime {
@@ -58,7 +56,6 @@ impl Config {
             }
         };
         assert!(file.is_file(), "config.toml not found");
-        log::debug!("loading config from: {:?}", file);
         let content = std::fs::read_to_string(file).expect("failed to read config.toml");
         let cfg: Config = toml::from_str(&content).expect("failed to parse config.toml");
         cfg
