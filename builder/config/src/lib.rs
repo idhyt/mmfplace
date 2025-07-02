@@ -1,9 +1,10 @@
 use once_cell::sync::Lazy;
 use regex::{Error, Regex};
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
+use std::path::Path;
 
-pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::new(None));
+pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::new());
+const CONFIG_DEFAULT: &str = include_str!("default.toml");
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Strptime {
@@ -45,19 +46,27 @@ pub struct Config {
 
 impl Config {
     /// load config.toml
-    pub fn new(file: Option<PathBuf>) -> Self {
-        let file = match file {
-            Some(f) => f,
-            None => {
-                let mut work_dir =
-                    std::env::current_exe().expect("failed to get current execute directory");
-                work_dir.pop();
-                work_dir.join("config.toml")
-            }
+    pub fn new() -> Self {
+        let config = {
+            let mut work_dir =
+                std::env::current_exe().expect("failed to get current execute directory");
+            work_dir.pop();
+            work_dir.join("config.toml")
         };
-        assert!(file.is_file(), "config.toml not found");
-        let content = std::fs::read_to_string(file).expect("failed to read config.toml");
-        let cfg: Config = toml::from_str(&content).expect("failed to parse config.toml");
+        if !config.is_file() {
+            std::fs::write(&config, CONFIG_DEFAULT).expect("Failed to write config.toml");
+            log::warn!(
+                "🚨 The first run creates a default config file at {}",
+                config.display()
+            )
+        }
+        Self::load_from_file(config.as_path())
+    }
+
+    pub fn load_from_file(f: &Path) -> Self {
+        log::debug!("Loading config from: {}", f.display());
+        let content = std::fs::read_to_string(f).expect("Failed to read config.toml");
+        let cfg: Config = toml::from_str(&content).expect("Failed to parse config.toml");
         cfg
     }
 }
@@ -84,40 +93,28 @@ impl Parser {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
 
     #[test]
     fn test_config() {
-        let config_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-        let config_path = config_dir.join("src").join("default.toml");
-        println!("config file: {:?}", config_path);
-        assert!(config_path.is_file());
-        let config = Config::new(Some(config_path));
-        println!("config: {:#?}", config);
-        assert!(config.batch_size > 0);
-        assert!(!config.dateparse.is_empty());
-        assert!(!config.striptimes.is_empty());
-        assert!(!config.blacklist.is_empty());
-        assert!(!config.retain_suffix.is_empty());
-        assert!(!config.additionals.is_some());
+        assert!(CONFIG.batch_size > 0);
+        assert!(!CONFIG.dateparse.is_empty());
+        assert!(!CONFIG.striptimes.is_empty());
+        assert!(!CONFIG.blacklist.is_empty());
+        assert!(!CONFIG.retain_suffix.is_empty());
+        assert!(CONFIG.additionals.is_some());
     }
 
     #[test]
     fn test_capture() {
-        let config_dir = PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap());
-        let config_path = config_dir.join("src").join("default.toml");
-        println!("config file: {:?}", config_path);
-        assert!(config_path.is_file());
-        let config = Config::new(Some(config_path));
-        println!("config: {:#?}", config);
+        println!("config: {:#?}", CONFIG);
 
-        for parser in &config.dateparse {
+        for parser in &CONFIG.dateparse {
             let text = format!("{}2024-12-20", &parser.check);
             let c = parser.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
 
-        for parser in &config.typeparse {
+        for parser in &CONFIG.typeparse {
             let text = format!("{} = .file_type", &parser.check);
             let c = parser.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
