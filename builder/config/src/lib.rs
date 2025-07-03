@@ -12,28 +12,37 @@ pub struct Strptime {
     pub test: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Parser {
     /// check the string in target or not.
     pub check: String,
     /// the regex to match the string.
-    pub regex: String,
+    #[serde(deserialize_with = "deserialize_regex")]
+    pub regex: Regex,
     #[serde(default = "capture_index")]
     pub index: Option<u8>,
+}
+
+fn deserialize_regex<'de, D>(deserializer: D) -> Result<Regex, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let s = String::deserialize(deserializer)?;
+    Regex::new(&s).map_err(serde::de::Error::custom)
 }
 
 fn capture_index() -> Option<u8> {
     Some(1)
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Deserialize)]
 pub struct Additional {
     pub name: String,
     pub dateparse: Vec<Parser>,
     pub striptimes: Vec<Strptime>,
 }
 
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Deserialize)]
 pub struct Config {
     pub batch_size: usize,
     pub striptimes: Vec<Strptime>,
@@ -73,7 +82,8 @@ impl Config {
 
 impl Parser {
     pub fn capture(&self, text: &str) -> Result<String, Error> {
-        let re = Regex::new(&self.regex)?;
+        // let re = Regex::new(&self.regex)?;
+        let re = &self.regex;
         match re.captures(text) {
             Some(caps) => match caps.get(self.index.unwrap() as usize) {
                 Some(cap) => {
