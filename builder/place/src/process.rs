@@ -1,4 +1,5 @@
 use anyhow::Result;
+use chrono::{DateTime, Utc};
 use std::path::Path;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -14,6 +15,11 @@ use walkdir::WalkDir;
 use config::CONFIG;
 
 static mut IS_TEST: bool = false;
+
+struct FileDateTime {
+    path: PathBuf,
+    datetimes: Vec<DateTime<Utc>>,
+}
 
 pub async fn do_process(input: &Path, output: Option<&Path>, test: bool) -> Result<()> {
     unsafe {
@@ -37,26 +43,40 @@ pub async fn do_process(input: &Path, output: Option<&Path>, test: bool) -> Resu
 
     let concurrency: usize = CONFIG.batch_size;
     let channel_size: usize = 100;
-    let (tx, mut rx) = mpsc::channel::<PathBuf>(channel_size);
+    let (tx, mut rx) = mpsc::channel::<FileDateTime>(channel_size);
     let processed_count = Arc::new(AtomicUsize::new(0));
     let semaphore = Arc::new(Semaphore::new(concurrency));
 
+    let root_span = debug_span!("process");
+    let _enter = root_span.enter();
+
     let consumer = tokio::spawn({
         let processed_count = Arc::clone(&processed_count);
+        let root_span = root_span.clone();
         async move {
-            while let Some(path) = rx.recv().await {
-                if let Err(e) = process_file(path, &processed_count).await {
-                    eprintln!("处理文件失败: {}", e);
+            while let Some(fdt) = rx.recv().await {
+                let span = debug_span!("task_place", path = ?fdt.path);
+                async {
+                    while let Some(fdt) = rx.recv().await {
+                        if let Err(e) = process_file(fdt, &processed_count).await {
+                            eprintln!("处理文件失败: {}", e);
+                        }
+                    }
                 }
+                .instrument(span)
+                .await;
             }
             info!("finished");
         }
+        .instrument(root_span)
     });
 
     let producer = tokio::spawn({
         let input = input.to_path_buf();
         let tx = tx; // tx.clone();
         let semaphore = Arc::clone(&semaphore);
+        let root_span = root_span.clone();
+
         async move {
             let mut tasks = Vec::new();
             for entry in WalkDir::new(input)
@@ -67,17 +87,24 @@ pub async fn do_process(input: &Path, output: Option<&Path>, test: bool) -> Resu
                 let path = entry.path().to_path_buf();
                 let tx = tx.clone();
                 let semaphore = Arc::clone(&semaphore);
+                let root_span = root_span.clone();
 
-                let task = tokio::spawn(async move {
-                    let _permit = semaphore.acquire().await.unwrap();
-                    // todo: process file
-                    sleep(Duration::from_millis(2)).await;
-                    if tx.send(path).await.is_err() {
-                        eprintln!("通道已关闭，无法发送文件");
+                let task = tokio::spawn(
+                    async move {
+                        let span = debug_span!("task_parse", path = ?path);
+                        async {
+                            let _permit = semaphore.acquire().await.unwrap();
+                            let datetimes = get_datetimes(&path).await.unwrap_or(vec![]);
+                            if tx.send(FileDateTime { path, datetimes }).await.is_err() {
+                                debug!("通道已关闭，无法发送文件");
+                            }
+                            // drop(_permit);
+                        }
+                        .instrument(span)
+                        .await
                     }
-
-                    // drop(_permit);
-                });
+                    .instrument(root_span),
+                );
 
                 tasks.push(task);
 
@@ -102,13 +129,21 @@ pub async fn do_process(input: &Path, output: Option<&Path>, test: bool) -> Resu
     Ok(())
 }
 
-async fn process_file(path: PathBuf, processed_count: &Arc<AtomicUsize>) -> Result<()> {
-    info!(
+async fn get_datetimes(path: &PathBuf) -> Result<Vec<DateTime<Utc>>> {
+    // todo: process file
+    debug!("begin get_datetimes: {:?}", path);
+    sleep(Duration::from_millis(2)).await;
+    debug!("end get_datetimes: {:?}", path);
+    Ok(vec![])
+}
+
+async fn process_file(fdt: FileDateTime, processed_count: &Arc<AtomicUsize>) -> Result<()> {
+    debug!(
         "begin processing file: {:?}, count: {:?}",
-        path, processed_count
+        fdt.path, processed_count
     );
     sleep(Duration::from_millis(3)).await;
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
-    info!("finish processing file: {:?}, count: {}", path, count);
+    debug!("finish processing file: {:?}, count: {}", fdt.path, count);
     Ok(())
 }
