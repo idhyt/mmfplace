@@ -11,6 +11,7 @@ use config::CONFIG;
 use target::Target;
 
 pub mod check;
+mod db;
 mod parse;
 mod target;
 
