@@ -1,0 +1,11 @@
+[package]
+name = "dateparser"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+config = { path = "../config" }
+
+chrono = "0.4.41"
+anyhow = "1.0.98"
+once_cell = "1.21.3"
