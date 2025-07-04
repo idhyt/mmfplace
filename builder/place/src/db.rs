@@ -1,12 +1,13 @@
 use rusqlite::{Connection, Result};
+use serde::Serialize;
 use serde_json::json;
 use std::path::Path;
 use std::sync::{Mutex, OnceLock};
 use tracing::debug;
 
-struct FileHash<'a, 'b> {
-    parts: Vec<&'a str>,
-    hash: &'b str,
+pub struct FileHash<'a, 'b, T: AsRef<str> + 'a> {
+    pub parts: &'a [T],
+    pub hash: &'b str,
 }
 
 static DATABASE: OnceLock<Mutex<Connection>> = OnceLock::new();
@@ -44,7 +45,10 @@ pub fn insert(conn: &Connection, parts: &str, hash: &str) -> Result<usize> {
     )
 }
 
-pub fn insert_hash(conn: &Connection, fh: &FileHash) -> Result<usize> {
+pub fn insert_hash<'a, T>(conn: &Connection, fh: &FileHash<'a, '_, T>) -> Result<usize>
+where
+    T: AsRef<str> + 'a + Serialize,
+{
     insert(conn, &json!(fh.parts).to_string(), fh.hash)
 }
 
@@ -124,11 +128,11 @@ mod tests {
             // json!({"parts": ["path", "to", "file1"], "hash": "hash1"}),
             // json!({"parts": ["path", "to", "file1"], "hash": "hash1"}),
             FileHash {
-                parts: vec!["path", "to", "file1"],
+                parts: &vec!["path", "to", "file1"],
                 hash: "hash1",
             },
             FileHash {
-                parts: vec!["path", "to", "file2"],
+                parts: &vec!["path", "to", "file2"],
                 hash: "hash2",
             },
         ];
@@ -160,7 +164,7 @@ mod tests {
         let p = get_db_path("test_query_parts.db");
 
         let test = FileHash {
-            parts: vec!["path", "to", "file1"],
+            parts: &vec!["path", "to", "file1"],
             hash: "hash1",
         };
         {
