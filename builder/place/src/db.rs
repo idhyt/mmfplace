@@ -1,13 +1,27 @@
 use rusqlite::{Connection, Result};
 use serde_json::json;
 use std::path::Path;
+use std::sync::{Mutex, OnceLock};
+use tracing::debug;
 
 struct FileHash<'a, 'b> {
     parts: Vec<&'a str>,
     hash: &'b str,
 }
 
+static DATABASE: OnceLock<Mutex<Connection>> = OnceLock::new();
+
+pub fn get_connection() -> &'static Mutex<Connection> {
+    DATABASE.get_or_init(|| {
+        let mut work_dir = std::env::current_dir().unwrap();
+        work_dir.pop();
+        let path = work_dir.join("place.db");
+        Mutex::new(db_init(&path).unwrap())
+    })
+}
+
 pub fn db_init(p: &Path) -> Result<Connection> {
+    debug!(path = ?p, "Loading database");
     let conn = Connection::open(p)?;
     // 创建表（如果不存在）
     conn.execute(
@@ -54,8 +68,8 @@ mod tests {
     use super::*;
     use serde_json::json;
 
-    fn get_db_path() -> PathBuf {
-        let p = PathBuf::from("test.db");
+    fn get_db_path(n: &str) -> PathBuf {
+        let p = PathBuf::from(n);
         if p.exists() {
             std::fs::remove_file(&p).unwrap();
         }
@@ -64,10 +78,7 @@ mod tests {
 
     #[test]
     fn test_insert() {
-        let p = get_db_path();
-        let conn = db_init(&p).unwrap();
-        println!("conn: {:#?}", conn);
-
+        let p = get_db_path("test_insert.db");
         let data = [
             (
                 json!(["tmp", "test1", "file1"]).to_string(),
@@ -78,27 +89,33 @@ mod tests {
                 "hash2".to_string(),
             ),
         ];
-        for (parts, hash) in data.iter() {
-            let r = conn.execute(
-                "INSERT INTO data (parts, hash) VALUES (?, ?)",
-                [parts, hash],
-            );
-            println!("insert: {:#?}", r);
-            assert!(r.is_ok());
-            assert!(r.unwrap() == 1);
+        {
+            let conn = db_init(&p).unwrap();
+            println!("conn: {:#?}", conn);
+
+            for (parts, hash) in data.iter() {
+                let r = conn.execute(
+                    "INSERT INTO data (parts, hash) VALUES (?, ?)",
+                    [parts, hash],
+                );
+                println!("insert: {:#?}", r);
+                assert!(r.is_ok());
+                assert!(r.unwrap() == 1);
+            }
+            for (parts, hash) in data.iter() {
+                let r = conn.execute(
+                    "INSERT INTO data (parts, hash) VALUES (?, ?)",
+                    [parts, hash],
+                );
+                println!("insert: {:#?}", r);
+                assert!(r.is_err());
+                assert!(r
+                    .unwrap_err()
+                    .to_string()
+                    .contains("UNIQUE constraint failed: data.hash"));
+            }
         }
-        for (parts, hash) in data.iter() {
-            let r = conn.execute(
-                "INSERT INTO data (parts, hash) VALUES (?, ?)",
-                [parts, hash],
-            );
-            println!("insert: {:#?}", r);
-            assert!(r.is_err());
-            assert!(r
-                .unwrap_err()
-                .to_string()
-                .contains("UNIQUE constraint failed: data.hash"));
-        }
+        std::fs::remove_file(p).unwrap();
     }
 
     #[test]
@@ -115,46 +132,55 @@ mod tests {
                 hash: "hash2",
             },
         ];
-        let p = get_db_path();
-        let conn = db_init(&p).unwrap();
-        for test in tests.iter() {
-            let r = insert_hash(&conn, &test);
-            println!("insert: {:#?}", r);
-            assert!(r.is_ok());
-            assert!(r.unwrap() == 1);
+        let p = get_db_path("test_insert_hash.db");
+        {
+            let conn = db_init(&p).unwrap();
+            for test in tests.iter() {
+                let r = insert_hash(&conn, &test);
+                println!("insert: {:#?}", r);
+                assert!(r.is_ok());
+                assert!(r.unwrap() == 1);
+            }
+            for test in tests.iter() {
+                let r = insert_hash(&conn, &test);
+                println!("insert: {:#?}", r);
+                assert!(r.is_err());
+                assert!(r
+                    .unwrap_err()
+                    .to_string()
+                    .contains("UNIQUE constraint failed: data.hash"));
+            }
         }
-        for test in tests.iter() {
-            let r = insert_hash(&conn, &test);
-            println!("insert: {:#?}", r);
-            assert!(r.is_err());
-            assert!(r
-                .unwrap_err()
-                .to_string()
-                .contains("UNIQUE constraint failed: data.hash"));
-        }
+
+        std::fs::remove_file(p).unwrap();
     }
 
     #[test]
     fn test_query_parts() {
-        let p = get_db_path();
-        let conn = db_init(&p).unwrap();
+        let p = get_db_path("test_query_parts.db");
+
         let test = FileHash {
             parts: vec!["path", "to", "file1"],
             hash: "hash1",
         };
-        let r = insert_hash(&conn, &test);
-        println!("insert: {:#?}", r);
-        assert!(r.is_ok());
-        assert!(r.unwrap() == 1);
+        {
+            let conn = db_init(&p).unwrap();
+            let r = insert_hash(&conn, &test);
+            println!("insert: {:#?}", r);
+            assert!(r.is_ok());
+            assert!(r.unwrap() == 1);
 
-        let r = query_parts(&conn, "hash1");
-        println!("query: {:#?}", r);
-        assert!(r.is_ok());
-        assert!(r.unwrap().unwrap().len() == 3);
+            let r = query_parts(&conn, "hash1");
+            println!("query: {:#?}", r);
+            assert!(r.is_ok());
+            assert!(r.unwrap().unwrap().len() == 3);
 
-        let r = query_parts(&conn, "hash2");
-        println!("query: {:#?}", r);
-        assert!(r.is_ok());
-        assert!(r.unwrap().is_none());
+            let r = query_parts(&conn, "hash2");
+            println!("query: {:#?}", r);
+            assert!(r.is_ok());
+            assert!(r.unwrap().is_none());
+        }
+
+        std::fs::remove_file(p).unwrap();
     }
 }
