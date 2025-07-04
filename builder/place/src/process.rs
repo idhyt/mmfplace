@@ -7,10 +7,8 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use std::time::Duration;
 use tokio::sync::mpsc;
 use tokio::sync::Semaphore;
-use tokio::time::sleep;
 use tracing::{debug, debug_span, info, warn};
 use tracing_futures::Instrument;
 use walkdir::WalkDir;
@@ -18,9 +16,8 @@ use walkdir::WalkDir;
 use crate::db::{get_connection, insert_hash, query_parts, FileHash};
 
 use config::CONFIG;
+use tools::metadata_extractor;
 use utils::crypto::get_file_md5;
-
-static mut IS_TEST: bool = false;
 
 #[derive(Debug, Clone, Default)]
 struct Target {
@@ -184,8 +181,9 @@ async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
         return Ok(Some(target));
     }
     // 获取文件元数据并解析出所有时间格式
-    // TODO
-    sleep(Duration::from_millis(2)).await;
+    let _readers = metadata_extractor(&target.path).await?;
+    // TODO: 解析时间
+
     Ok(None)
 }
 

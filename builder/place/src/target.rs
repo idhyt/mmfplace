@@ -12,7 +12,7 @@ use super::parse::{
 use super::{panic_with_test, FileDateTime, ISTEST};
 
 use config::CONFIG;
-use tools::metadata::METADATA;
+use tools::metadata_extractor;
 use utils::crypto::get_file_md5;
 
 #[derive(Debug, Clone, Default)]
@@ -105,7 +105,7 @@ impl Target {
     async fn datetime_from_metedata(&mut self) -> Option<Vec<FileDateTime>> {
         let mut dts: Vec<FileDateTime> = Vec::new();
 
-        let texts = match METADATA.read(&self.path).await {
+        let texts = match metadata_extractor(&self.path).await {
             Ok(texts) => {
                 if texts.len() == 0 {
                     error!("no metadata found for {:?}", self.path);
