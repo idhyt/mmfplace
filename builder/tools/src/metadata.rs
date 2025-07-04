@@ -7,7 +7,7 @@ use tracing::{debug, error};
 
 const EXTRACTOR: &[u8] = include_bytes!("deps/metadata-extractor-2.19.0.jar");
 const XMPCORE: &[u8] = include_bytes!("deps/xmpcore-6.1.11.jar");
-pub static METADATA: Lazy<MetadataReader> = Lazy::new(|| MetadataReader::new());
+pub(crate) static METADATA: Lazy<MetadataReader> = Lazy::new(|| MetadataReader::new());
 
 #[derive(Debug)]
 pub struct MetadataReader {
@@ -48,7 +48,7 @@ impl MetadataReader {
     }
 
     // #[tracing::instrument]
-    pub async fn read(&self, file: &Path) -> Result<HashSet<String>> {
+    pub(crate) async fn read(&self, file: &Path) -> Result<HashSet<String>> {
         let mut readers: HashSet<String> = HashSet::new();
         let class_path = format!(
             "{xc_jar}{c}{me_jar}",
@@ -101,7 +101,13 @@ impl MetadataReader {
             if let Some(l) = line {
                 debug!("{}", l);
                 if l.len() < 0xff {
-                    readers.insert(l);
+                    readers.insert(
+                        // 将类似 🦀 非 ascii 使用 - 替换
+                        // 之所有不使用 retain(|c| c.is_ascii()) 是有可能出现在时间中间
+                        l.chars()
+                            .map(|c| if c.is_ascii() { c } else { '-' })
+                            .collect(),
+                    );
                 }
             }
         }
