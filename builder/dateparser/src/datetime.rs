@@ -1,6 +1,8 @@
 use anyhow::{Result, anyhow};
 use chrono::prelude::*;
 use chrono::{DateTime, NaiveDate, NaiveDateTime, TimeZone, Utc};
+use once_cell::sync::Lazy;
+use regex::Regex;
 
 use config::CONFIG;
 
@@ -29,6 +31,7 @@ where
             .or_else(|_| self.rfc3339(input))
             .or_else(|_| self.rfc2822(input))
             .or_else(|_| self.non_standard(input))
+            .or_else(|_| self.force_ymd(input))
     }
 
     // 没有时区信息的日期 "2020-04-12" => Date = NaiveDate
@@ -142,5 +145,20 @@ where
             }
         }
         Err(anyhow!("other or non-standard failed"))
+    }
+
+    pub(crate) fn force_ymd(&self, input: &str) -> Result<DateTime<Utc>> {
+        static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\d{4}[-:/]\d{2}[-:/]\d{2})").unwrap());
+
+        if let Some(caps) = RE.captures(input) {
+            if let Some(c) = caps.get(0) {
+                let date = c.as_str().replacen(":", "-", 2).replacen("/", "-", 2);
+
+                if let Ok(d) = NaiveDate::parse_from_str(date.trim(), "%Y-%m-%d") {
+                    return Ok(Utc.from_utc_datetime(&d.and_hms_opt(0, 0, 0).unwrap()));
+                }
+            }
+        }
+        Err(anyhow!("Force parsed with ymd failed"))
     }
 }

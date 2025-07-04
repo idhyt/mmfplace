@@ -9,3 +9,4 @@ config = { path = "../config" }
 chrono = "0.4.41"
 anyhow = "1.0.98"
 once_cell = "1.21.3"
+regex = "1.11.1"

@@ -37,4 +37,32 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn test_force_ymd() {
+        let parser = Parse::new(&Local, None);
+
+        let tests = vec![
+            ("2020-01-01", "2020-01-01 00:00:00 UTC"),
+            ("2020/01/01T00:00:00Z", "2020-01-01 00:00:00 UTC"),
+            ("2020:01:01T00:00:00+08:00", "2020-01-01 00:00:00 UTC"),
+            (
+                "some thing... 2020:01:01T00:00:00+08:00",
+                "2020-01-01 00:00:00 UTC",
+            ),
+            (
+                "some thing2020:01:01222T00:00:00+08:00",
+                "2020-01-01 00:00:00 UTC",
+            ),
+            (
+                "some thing222222020:01:011111T00:00:00+08:00",
+                "2020-01-01 00:00:00 UTC",
+            ),
+        ];
+        for (test, want) in tests {
+            let got = parser.force_ymd(test).unwrap();
+            println!("{} -> {}", test, got);
+            assert_eq!(got.to_string(), want);
+        }
+    }
 }
