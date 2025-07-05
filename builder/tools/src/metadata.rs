@@ -57,6 +57,7 @@ impl MetadataReader {
             xc_jar = self.xmpcore.display()
         );
         let args = vec![
+            "-Dfile.encoding=UTF-8",
             "-cp",
             &class_path,
             "com.drew.imaging.ImageMetadataReader",
@@ -67,21 +68,17 @@ impl MetadataReader {
         let mut child = tokio::process::Command::new("java")
             // .current_dir(file_path.as_ref())
             .args(args)
-            .stderr(std::process::Stdio::piped())
+            // .stdin(std::process::Stdio::null())
+            // .stderr(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
             .spawn()?;
 
-        let stdout = match child.stdout.take() {
-            Some(stdout) => stdout,
-            None => {
-                return Err(Error::new(
-                    ErrorKind::BrokenPipe,
-                    "child did not have a handle to stdout",
-                ));
-            }
-        };
-
-        let mut reader = BufReader::new(stdout).lines();
+        let stdout = child.stdout.take().ok_or_else(|| {
+            Error::new(
+                ErrorKind::BrokenPipe,
+                "child did not have a handle to stdout",
+            )
+        })?;
 
         tokio::spawn(async move {
             match child.wait().await {
@@ -90,26 +87,27 @@ impl MetadataReader {
             }
         });
 
-        // stream did not contain valid UTF-8
-        while let Some(line) = match reader.next_line().await {
-            Ok(line) => Some(line),
-            Err(_) => {
-                // debug!("error ignore: {}", err);
-                None
+        let mut reader = BufReader::new(stdout);
+        let mut buf = Vec::new();
+
+        // maybe error for stream did not contain valid UTF-8
+        while reader.read_until(b'\n', &mut buf).await? > 0 {
+            // let line = match String::from_utf8(buf.clone()) {
+            //     Ok(line) => line,
+            //     Err(e) => {
+            //         error!(error=?e, "convert to utf-8 string error");
+            //         continue;
+            //     }
+            // };
+            let line = String::from_utf8_lossy(&buf).trim().to_string();
+            debug!("{}", line);
+            // 将类似  Unicode 🦀 非 ascii 使用 - 替换
+            // 之所有不使用 retain(|c| c.is_ascii()) 是有可能出现在时间中间
+            let line = line.replace(|c: char| !c.is_ascii(), "-");
+            if line.len() < 0xff {
+                readers.insert(line);
             }
-        } {
-            if let Some(l) = line {
-                debug!("{}", l);
-                if l.len() < 0xff {
-                    readers.insert(
-                        // 将类似 🦀 非 ascii 使用 - 替换
-                        // 之所有不使用 retain(|c| c.is_ascii()) 是有可能出现在时间中间
-                        l.chars()
-                            .map(|c| if c.is_ascii() { c } else { '-' })
-                            .collect(),
-                    );
-                }
-            }
+            buf.clear();
         }
         Ok(readers)
     }
