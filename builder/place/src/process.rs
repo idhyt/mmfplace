@@ -137,7 +137,7 @@ pub async fn do_process() -> Result<()> {
 // 计算文件hash -> 判断hash是否在数据库中 -> 存在 -> 获取parts部分拼接路径是否存在 -> 存在跳过/不存在拷贝
 //                                      -> 不存在 -> 解析所有时间(元数据+文件属性) -> 取最早 -> 插入数据库 -> 拷贝文件
 async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
-    info!("🚀 begin parse file: {:?}", path);
+    debug!("🚀 begin parse file: {:?}", path);
     let target = Target::new(path);
 
     // if test mode, don't check exists
@@ -198,7 +198,7 @@ async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
 async fn do_place(target: Target, processed_count: &Arc<AtomicUsize>) -> Result<()> {
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
     debug!(
-        "🚚 begin place file: {:?}, count: {:?}",
+        "🚀 begin place file: {:?}, count: {:?}",
         target.path, processed_count
     );
     let generation = |o: &Path, p: &Vec<String>| {
@@ -247,14 +247,14 @@ async fn do_place(target: Target, processed_count: &Arc<AtomicUsize>) -> Result<
     let need_copy = {
         if copy_path.is_file() {
             if target.hash == get_file_md5(&copy_path).unwrap() {
-                info!(file=?copy_path, "skip with same hash");
+                info!(file=?copy_path, "🚚 copy skip with same hash");
                 false
             } else {
-                warn!(file=?copy_path, "overwrite with different hash");
+                warn!(file=?copy_path, "🚚 copy overwrite with different hash");
                 true
             }
         } else {
-            info!(file=?copy_path, "copy with not exist");
+            info!(file=?copy_path, "🚚 copy with file not exist");
             true
         }
     };
