@@ -83,6 +83,10 @@ ignore = [
     # "2010:00:00",
     # " 24:",
     "[ICC Profile]",
+    # TODO: [File] File Modified Date = 周三 7月 02 18:59:40 +08:00 2025
+    # unsupported chinese date format in windows_cn
+    # but we can get this data from file attributes
+    "[File] File Modified Date",
 ]
 
 [typeregex]
