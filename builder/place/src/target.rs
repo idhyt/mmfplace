@@ -11,17 +11,17 @@ pub struct Target {
     // target file path
     pub path: PathBuf,
     // parsed datetime from metadata
-    datetimes: Vec<DateTime<Utc>>,
+    pub datetimes: Vec<DateTime<Utc>>,
     // hash with md5
     pub hash: String,
     // the original file
-    extension: String,
+    pub extension: String,
     // the file name without extension
-    name: String,
+    pub name: String,
     // the file parsed type
     pub type_: Option<String>,
     // the earliest datetime
-    earliest: DateTime<Utc>,
+    pub earliest: DateTime<Utc>,
     // datetime from file attributes
     // [accessed, modified, created]
     pub attrtimes: Vec<Option<SystemTime>>,

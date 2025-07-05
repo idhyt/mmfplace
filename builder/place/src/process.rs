@@ -12,9 +12,9 @@ use tracing::{debug, debug_span, info, warn};
 use tracing_futures::Instrument;
 use walkdir::WalkDir;
 
-use crate::db::{get_connection, insert_hash, query_parts, FileHash};
-
+use super::db::{get_connection, insert_hash, query_parts, FileHash};
 use super::target::Target;
+
 use config::CONFIG;
 use tools::metadata_extractor;
 use utils::crypto::get_file_md5;
@@ -320,4 +320,40 @@ fn copy_file_with_times(src: &Path, dst: &Path, times: &Vec<Option<SystemTime>>)
         .open(dst)?
         .set_times(new_times)?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::prelude::*;
+    use chrono::Utc;
+
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
+
+    #[tokio::test]
+    async fn test_do_parse() {
+        let path = get_root().join("tests").join("simple.jpg");
+        let target = do_parse(path).await.unwrap().unwrap();
+        println!("target: {:#?}", target);
+        assert_eq!(Some("jpg".to_string()), target.type_);
+        assert_eq!(target.datetimes.len(), 3);
+        assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
+        assert_eq!(target.name, "simple");
+        assert_eq!(
+            target.earliest,
+            Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
+        );
+        assert!(target.attrtimes.len() >= 2);
+        let (parts, name) = (target.get_parts(0), target.get_name(0));
+        println!("parts: {:?}, name: {}", parts, name);
+        assert_eq!(parts, vec!["2002", "11", "16", "simple.jpg"]);
+        assert_eq!(name, "simple.jpg");
+    }
 }
