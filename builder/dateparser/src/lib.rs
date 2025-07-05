@@ -58,6 +58,11 @@ mod tests {
                 "some thing222222020:01:011111T00:00:00+08:00",
                 "2020-01-01 00:00:00 UTC",
             ),
+            // // TODO, unimplemented like string "[File] File Modified Date = 周三 7月 02 18:59:40 +08:00 2025"
+            // (
+            //     "周三 7月 02 18:59:40 +08:00 2025",
+            //     "2025-07-02 00:00:00 UTC",
+            // ),
         ];
         for (test, want) in tests {
             let got = parser.force_ymd(test).unwrap();
