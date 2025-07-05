@@ -1,141 +1,29 @@
 use anyhow::Result;
-use chrono::{Datelike, Timelike, Utc};
 use std::path::PathBuf;
-// use std::sync::Arc;
-use tracing::{debug, debug_span, info};
-use tracing_futures::Instrument;
-use walkdir::WalkDir;
+use tracing::info;
 
-use check::Checker;
-use config::CONFIG;
-use target::Target;
-
-pub mod check;
 mod db;
-mod parse;
+mod process;
 mod target;
 
-static mut ISTEST: bool = false;
-
-pub fn panic_with_test() {
-    if unsafe { ISTEST } {
-        panic!("-------- panic in testing mode, try to run with -v to see the detail --------");
-    }
-}
-
-#[derive(Debug, Clone, Default)]
-pub struct FileDateTime {
-    pub year: u16,
-    pub month: u8,
-    pub day: u8,
-    pub hour: u8,
-    pub minute: u8,
-    pub second: u8,
-    pub timestamp: i64,
-}
-
-impl FileDateTime {
-    pub fn new() -> Self {
-        let now = Utc::now();
-        Self {
-            year: now.year() as u16,
-            month: now.month() as u8,
-            day: now.day() as u8,
-            hour: now.hour() as u8,
-            minute: now.minute() as u8,
-            second: now.second() as u8,
-            timestamp: now.timestamp() as i64,
-        }
-    }
-}
-
-// impl display for FileDateTime
-impl std::fmt::Display for FileDateTime {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{:04}:{:02}:{:02} {:02}:{:02}:{:02}, {}",
-            self.year, self.month, self.day, self.hour, self.minute, self.second, self.timestamp
-        )
-    }
-}
-
-fn get_total_size(path: &PathBuf) -> usize {
-    WalkDir::new(path)
-        .into_iter()
-        .filter(|e| {
-            let p = e.as_ref().unwrap().path().to_path_buf();
-            !Checker::new(&p).is_skip()
-        })
-        .count()
-}
-
 pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> Result<()> {
-    unsafe {
-        ISTEST = test;
-    }
     let output = if let Some(o) = output {
-        o.to_path_buf()
+        o.canonicalize()?
     } else {
-        PathBuf::from(format!("{}.mmfplace", input.to_str().unwrap()))
+        input.with_extension("mmfplace").canonicalize()?
     };
-
-    let total = get_total_size(input);
-
-    info!(
-        "start process with:\n  input: {:?}\n  output: {:?}\n  test: {}\n  total: {}",
-        input, output, test, total
-    );
-
-    let mut index = 0;
-    let mut handles = Vec::new();
-    // let aout = Arc::new(output.to_path_buf());
-
-    let root_span = debug_span!("process");
-    let _enter = root_span.enter();
-
-    for entry in WalkDir::new(input) {
-        let path = entry?.path().to_path_buf();
-        let checker = Checker::new(&path);
-        if checker.is_skip() {
-            debug!("skip file: {:?}", path);
-            continue;
-        }
-        index += 1;
-
-        handles.push(tokio::spawn(
-            async move {
-                let span = debug_span!("async_task", path = ?path, index = index, total = total);
-                async {
-                    Target::new(&path, index, total)
-                        //.process(index, total, Arc::clone(&atout))
-                        .process(None)
-                        .await
-                }
-                .instrument(span)
-                .await
-            }
-            .instrument(root_span.clone()),
-        ));
-
-        if handles.len() >= CONFIG.batch_size {
-            for handle in handles.iter_mut() {
-                let target = handle.await??;
-                target.copy(&output);
-            }
-            handles.clear();
-        }
+    if !output.is_dir() {
+        std::fs::create_dir_all(&output)?;
     }
-
-    // wait for all handles done
-    if handles.len() > 0 {
-        for handle in handles {
-            let target = handle.await??;
-            target.copy(&output);
-        }
-    }
-
-    Ok(())
+    let total = walkdir::WalkDir::new(&input)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|e| e.file_type().is_file())
+        .count();
+    info!(input=?input, total=total, output=?output, test=test, "start process");
+    // init temp data
+    process::temp_init(input.to_path_buf(), output, test);
+    process::do_process().await
 }
 
 #[cfg(test)]
@@ -150,11 +38,99 @@ mod tests {
             .unwrap()
             .to_path_buf()
     }
+}
+
+/*
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
     #[test]
-    fn test_get_total_size() {
-        let path = get_root().join("tests");
-        let total = get_total_size(&path);
-        println!("total: {}", total);
-        // assert_eq!(total, 3);
+    fn test_target_new() {
+        let path = get_root().join("tests/simple.jpg");
+        println!("path: {:?}", path);
+        let target = Target::new(&path, 1, 1);
+        println!("{}", target);
+        assert_eq!(target.path, path);
+        assert_eq!(target.extension, "jpg");
+    }
+
+    #[test]
+    fn test_target_get_name() {
+        let path = get_root().join("tests/simple.jpg");
+        let target = Target::new(&path, 1, 1);
+        let name = target.get_name();
+        println!("target: {}, name: {}", target, name);
+        let check = format!("{}.{}.jpg", target.datetime.second, target.hash);
+        println!("check: {}", check);
+        assert!(name.contains(&check));
+        let name = target.get_name();
+        println!("target: {}, name: {}", target, name);
+        assert!(name.contains("a18932e314dbb4c81c6fd0e282d81d16.jpg"));
+    }
+
+    #[tokio::test]
+    async fn test_date_from_metedata() {
+        let path = get_root().join("tests/simple.jpg.png");
+        let mut target = Target::new(&path, 1, 1);
+        let dts = target.datetime_from_metedata().await.unwrap();
+        println!("dts: {:?}", dts);
+        assert!(dts.len() == 4);
+        println!("target: {:#?}", target);
+        assert!(target.extension == "png");
+        assert!(target.suffix == Some("jpg".to_string()));
+    }
+
+    #[tokio::test]
+    async fn test_get_all_datetime() {
+        let path = get_root().join("tests/simple.jpg.png");
+        let mut target = Target::new(&path, 1, 1);
+        let dts = target.get_all_datetime(false).await;
+        println!("dts: {:#?}", dts);
+        assert!(dts.len() == 5);
+        let mut sorts = vec![];
+        for index in 0..dts.len() - 1 {
+            if dts[index].timestamp < dts[index + 1].timestamp {
+                sorts.push(true);
+            } else {
+                sorts.push(false);
+            }
+        }
+        println!("sorts: {:?}", sorts);
+        assert!(!sorts.iter().all(|x| *x));
+
+        let dts = target.get_all_datetime(true).await;
+        println!("dts: {:#?}", dts);
+        assert!(dts.len() == 3);
+        assert!(dts[0].timestamp < dts[1].timestamp);
+        assert!(dts[1].timestamp < dts[2].timestamp);
+    }
+
+    #[tokio::test]
+    async fn test_process() {
+        let path = get_root().join("tests/simple.jpg");
+        let output = get_root().join("tests/output");
+        let target = Target::new(&path, 1, 1).process(None).await.unwrap();
+        println!("target: {:#?}", target);
+        assert!(target.datetime.timestamp == 1037460421);
+
+        let dst = target.copy(&output);
+        println!("copy from {:?} to {:?}", &path, &dst);
+        assert!(dst.is_file());
+
+        let src_meta = std::fs::metadata(&path).unwrap();
+        let dst_meta = std::fs::metadata(&dst).unwrap();
+        println!("src_meta: {:#?}", src_meta);
+        println!("dst_meta: {:#?}", dst_meta);
+
+        // std::fs::remove_dir_all(&output).unwrap();
     }
 }
+*/

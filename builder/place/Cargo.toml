@@ -9,6 +9,7 @@ edition = "2021"
 utils = { path = "../utils" }
 config = { path = "../config" }
 tools = { path = "../tools" }
+dateparser = { path = "../dateparser" }
 
 clap = { version = "4.5.40", features = ["derive"] }
 log = "0.4.27"
