@@ -3,7 +3,7 @@ use serde::Serialize;
 use serde_json::json;
 use std::path::Path;
 use std::sync::{Mutex, OnceLock};
-use tracing::debug;
+use tracing::info;
 
 pub struct FileHash<'a, 'b, T: AsRef<str> + 'a> {
     pub parts: &'a [T],
@@ -22,7 +22,7 @@ pub fn get_connection() -> &'static Mutex<Connection> {
 }
 
 pub fn db_init(p: &Path) -> Result<Connection> {
-    debug!(path = ?p, "Loading database");
+    info!(path = ?p, "Loading database once");
     let conn = Connection::open(p)?;
     // 创建表（如果不存在）
     conn.execute(

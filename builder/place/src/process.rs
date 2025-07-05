@@ -69,7 +69,7 @@ pub async fn do_process() -> Result<()> {
                 .instrument(span)
                 .await;
             }
-            info!("finished");
+            info!("finished consumer");
         }
         .instrument(root_span)
     });
@@ -119,10 +119,9 @@ pub async fn do_process() -> Result<()> {
                     tasks = Vec::new();
                 }
             }
-
             futures::future::join_all(tasks).await;
-
-            drop(tx);
+            // drop(tx);
+            info!("finished producer");
         }
     });
 
@@ -130,7 +129,7 @@ pub async fn do_process() -> Result<()> {
     // consumer.await?;
     let _ = tokio::join!(producer, consumer);
 
-    info!("所有文件处理完成");
+    info!("all done");
 
     Ok(())
 }
@@ -140,9 +139,15 @@ pub async fn do_process() -> Result<()> {
 async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
     info!("🚀 begin parse file: {:?}", path);
     let target = Target::new(path);
+
+    // if test mode, don't check exists
     let parts = {
-        let conn = get_connection().lock().unwrap();
-        query_parts(&conn, &target.hash)?
+        if temp_get().test {
+            None
+        } else {
+            let conn = get_connection().lock().unwrap();
+            query_parts(&conn, &target.hash)?
+        }
     };
     // 如果查到，说明之前已处理过了，则不再进行元数据解析
     if parts.is_some() {
@@ -242,14 +247,14 @@ async fn do_place(target: Target, processed_count: &Arc<AtomicUsize>) -> Result<
     let need_copy = {
         if copy_path.is_file() {
             if target.hash == get_file_md5(&copy_path).unwrap() {
-                info!(path=?copy_path, "skip with same hash");
+                info!(file=?copy_path, "skip with same hash");
                 false
             } else {
-                warn!(path=?copy_path, "overwrite with different hash");
+                warn!(file=?copy_path, "overwrite with different hash");
                 true
             }
         } else {
-            info!(path=?copy_path, "copy with not exist");
+            info!(file=?copy_path, "copy with not exist");
             true
         }
     };
@@ -272,10 +277,10 @@ async fn do_place(target: Target, processed_count: &Arc<AtomicUsize>) -> Result<
                 hash: &target.hash,
             },
         )?;
-        debug!(path=?copy_path, "success insert hash");
+        debug!(file=?copy_path, "success insert hash");
     }
 
-    info!(from=?target.path, to=?copy_path, count=count, "🎉 success finish");
+    info!(from=?target.path, to=?copy_path, count=count, "✅ success place finish");
     Ok(())
 }
 
