@@ -60,10 +60,8 @@ pub async fn do_process() -> Result<()> {
             while let Some(fdt) = rx.recv().await {
                 let span = debug_span!("task_place", file = ?fdt.path);
                 async {
-                    while let Some(fdt) = rx.recv().await {
-                        if let Err(e) = do_place(fdt, &processed_count).await {
-                            eprintln!("处理文件失败: {}", e);
-                        }
+                    if let Err(e) = do_place(fdt, &processed_count).await {
+                        eprintln!("处理文件失败: {}", e);
                     }
                 }
                 .instrument(span)
