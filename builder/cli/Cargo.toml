@@ -13,4 +13,3 @@ tokio = "1.46.0"
 utils = { path = "../utils" }
 config = { path = "../config" }
 place = { path = "../place" }
-dupf = { path = "../dupf" }

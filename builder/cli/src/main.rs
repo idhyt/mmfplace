@@ -14,12 +14,12 @@ enum Commands {
         #[arg(long, default_value = "false")]
         test: bool,
     },
-    /// find duplicate files
-    Dupf {
-        /// input file/directory path
-        #[arg(short, long, value_hint = ValueHint::FilePath)]
-        input: PathBuf,
-    },
+    // /// find duplicate files
+    // Dupf {
+    //     /// input file/directory path
+    //     #[arg(short, long, value_hint = ValueHint::FilePath)]
+    //     input: PathBuf,
+    // },
 }
 
 /// Simple program to greet a person
@@ -58,10 +58,9 @@ async fn main() {
                 log::error!("process error: {}", e);
                 std::process::exit(1);
             }
-        }
-        Commands::Dupf { input } => {
-            dupf::process(input, &args.output);
-        }
+        } // Commands::Dupf { input } => {
+          //     dupf::process(input, &args.output);
+          // }
     };
     std::process::exit(0);
 }
