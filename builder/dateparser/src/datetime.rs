@@ -39,7 +39,7 @@ where
     // { "fmt" = "%Y:%m:%d", "test" = "2010:06:24" },
     fn ymd(&self, input: &str) -> Result<DateTime<Utc>> {
         if input.len() == 10 {
-            for strip in CONFIG.striptimes.iter() {
+            for strip in CONFIG.dateparse.list.iter() {
                 if strip.fmt.len() == 8 {
                     if let Ok(d) = NaiveDate::parse_from_str(input, &strip.fmt) {
                         // NaiveDate 转为 DateTime<Utc>
@@ -57,7 +57,7 @@ where
     // { "fmt" = "%Y/%m/%d %H:%M:%S", "test" = "2017/08/16 12:18:36" },
     pub fn ymd_hms(&self, input: &str) -> Result<DateTime<Utc>> {
         if input.len() == 19 {
-            for strip in CONFIG.striptimes.iter() {
+            for strip in CONFIG.dateparse.list.iter() {
                 if strip.fmt.len() == 17 {
                     if let Ok(dt) = NaiveDateTime::parse_from_str(input, &strip.fmt) {
                         // NaiveDateTime 转为 DateTime<Utc>
@@ -75,7 +75,7 @@ where
     // { "fmt" = "%Y-%m-%d %H:%M:%S% %Z", "test" = "2017-08-16 12:18:36 UTC" },
     fn ymd_hms_tz(&self, input: &str) -> Result<DateTime<Utc>> {
         if input.len() > 19 {
-            for strip in CONFIG.striptimes.iter() {
+            for strip in CONFIG.dateparse.list.iter() {
                 if strip.fmt.len() > 17 {
                     if let Ok(dt) = DateTime::parse_from_str(input, &strip.fmt) {
                         // DateTime<Tz> 转为 DateTime<Utc>
@@ -131,7 +131,7 @@ where
     //
     fn non_standard(&self, input: &str) -> Result<DateTime<Utc>> {
         // dbg!("non-standard: {}", input);
-        for strip in CONFIG.striptimes.iter() {
+        for strip in CONFIG.dateparse.list.iter() {
             if strip.fmt.len() > 9 {
                 if let Ok(dt) = DateTime::parse_from_str(input, &strip.fmt) {
                     // DateTime<Tz> 转为 DateTime<Utc>

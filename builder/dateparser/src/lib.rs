@@ -28,7 +28,7 @@ mod tests {
 
     #[test]
     fn test_parse() {
-        for strip in CONFIG.striptimes.iter() {
+        for strip in CONFIG.dateparse.list.iter() {
             dbg!(strip);
             let t = parse(&strip.test).unwrap();
             assert!(
