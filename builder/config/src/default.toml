@@ -1,12 +1,14 @@
-# batch size
-batch_size = 20
+# batch concurrency size
+batch_size = 10
 
 # https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
 # "2020-04-12" => Date = NaiveDate
 # "22:10" => Time = NaiveTime
 # "2020-04-12 22:10:57" => Date + Time = NaiveDateTime
 # "2020-04-12 22:10:57+02:00" => Date + Time + TimeZone = DateTime<Tz>
-striptimes = [
+[dateparse]
+# striptime format https://docs.rs/chrono/latest/chrono/format/strftime/index.html
+list = [
     # .naivedate: &naivedate
     { "fmt" = "%Y-%m-%d", "test" = "2002-06-20" },
     { "fmt" = "%Y:%m:%d", "test" = "2010:06:24" },
@@ -42,11 +44,11 @@ striptimes = [
 ]
 
 
-# strips of metadata-extractor tag check
+# regex of metadata-extractor tag check
 # directory.getcheck() tag.getTagcheck() tag.getDescription()
 # [FileFile Modified Date = Wed Nov 30 05:58:56 +08:00 2022
-# striptime format https://docs.rs/chrono/latest/chrono/format/strftime/index.html
-dateparse = [
+[dateregex]
+list = [
     # [ICC Profile] Profile Date/Time = 2022:01:01 00:00:00
     # inaccurate see: https://photo.stackexchange.com/questions/82495/what-does-the-exif-icc-profile-date-mean
     # - check: "] Profile Date/Time"
@@ -74,29 +76,20 @@ dateparse = [
     { "check" = "] GPS Date Stamp = ", "regex" = "GPS Date Stamp = (.*)" },
 ]
 
-typeparse = [
-    { "check" = "Expected File Name Extension", "regex" = "Expected File Name Extension = (.*)" },
-]
-
-blacklist = [
+ignore = [
     # [Exif SubIFD] Date/Time Original =     :  :     :  :
-    ":  :     :  :",
+    # ":  :     :  :",
     # "2019:10:07 24:23:32"
-    "2010:00:00",
-    " 24:",
+    # "2010:00:00",
+    # " 24:",
     "[ICC Profile]",
 ]
 
-retain_suffix = [
+[typeregex]
+list = [
+    { "check" = "Expected File Name Extension", "regex" = "Expected File Name Extension = (.*)" },
+]
+"ignore" = [
     # iphone
     "heic",
-]
-
-# some experimental extend trait
-additionals = [
-    { "name" = "filename", dateparse = [
-        { "check" = "not check", "regex" = "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}).*" },
-    ], striptimes = [
-        { "fmt" = "%Y-%m-%d-%H-%M-%S", "test" = "2018-05-02-13-13-39-01.jpg" },
-    ] },
 ]

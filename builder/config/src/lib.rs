@@ -7,13 +7,13 @@ pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::new());
 const CONFIG_DEFAULT: &str = include_str!("default.toml");
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Strptime {
+pub struct StripTime {
     pub fmt: String,
     pub test: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct Parser {
+pub struct Capture {
     /// check the string in target or not.
     pub check: String,
     /// the regex to match the string.
@@ -21,6 +21,24 @@ pub struct Parser {
     pub regex: Regex,
     #[serde(default = "capture_index")]
     pub index: Option<u8>,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct DateParse {
+    pub ignore: Option<Vec<String>>,
+    pub list: Vec<StripTime>,
+}
+
+#[derive(Debug, Default, Clone, Deserialize)]
+pub struct DateRegex {
+    pub ignore: Option<Vec<String>>,
+    pub list: Vec<Capture>,
+}
+
+#[derive(Debug, Default, Clone, Deserialize)]
+pub struct TypeRegex {
+    pub ignore: Option<Vec<String>>,
+    pub list: Vec<Capture>,
 }
 
 fn deserialize_regex<'de, D>(deserializer: D) -> Result<Regex, D::Error>
@@ -35,22 +53,12 @@ fn capture_index() -> Option<u8> {
     Some(1)
 }
 
-#[derive(Debug, Clone, Deserialize)]
-pub struct Additional {
-    pub name: String,
-    pub dateparse: Vec<Parser>,
-    pub striptimes: Vec<Strptime>,
-}
-
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct Config {
     pub batch_size: usize,
-    pub striptimes: Vec<Strptime>,
-    pub dateparse: Vec<Parser>,
-    pub typeparse: Vec<Parser>,
-    pub blacklist: Vec<String>,
-    pub retain_suffix: Vec<String>,
-    pub additionals: Option<Vec<Additional>>,
+    pub dateparse: DateParse,
+    pub dateregex: DateRegex,
+    pub typeregex: TypeRegex,
 }
 
 impl Config {
@@ -80,7 +88,7 @@ impl Config {
     }
 }
 
-impl Parser {
+impl Capture {
     pub fn capture(&self, text: &str) -> Result<String, Error> {
         // let re = Regex::new(&self.regex)?;
         let re = &self.regex;
@@ -107,26 +115,26 @@ mod tests {
     #[test]
     fn test_config() {
         assert!(CONFIG.batch_size > 0);
-        assert!(!CONFIG.dateparse.is_empty());
-        assert!(!CONFIG.striptimes.is_empty());
-        assert!(!CONFIG.blacklist.is_empty());
-        assert!(!CONFIG.retain_suffix.is_empty());
-        assert!(CONFIG.additionals.is_some());
+        assert!(!CONFIG.dateparse.list.is_empty());
+        assert!(!CONFIG.dateregex.list.is_empty());
+        assert!(CONFIG.dateregex.ignore.is_some());
+        assert!(!CONFIG.typeregex.list.is_empty());
+        assert!(CONFIG.typeregex.ignore.is_some());
     }
 
     #[test]
-    fn test_capture() {
+    fn test_date_regex() {
         println!("config: {:#?}", CONFIG);
 
-        for parser in &CONFIG.dateparse {
-            let text = format!("{}2024-12-20", &parser.check);
-            let c = parser.capture(&text).unwrap();
+        for capture in &CONFIG.dateregex.list {
+            let text = format!("{}2024-12-20", &capture.check);
+            let c = capture.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
 
-        for parser in &CONFIG.typeparse {
-            let text = format!("{} = .file_type", &parser.check);
-            let c = parser.capture(&text).unwrap();
+        for capture in &CONFIG.typeregex.list {
+            let text = format!("{} = .file_type", &capture.check);
+            let c = capture.capture(&text).unwrap();
             println!("text: {}, result: {:?}", text, c);
         }
     }
