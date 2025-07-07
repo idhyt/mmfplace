@@ -49,18 +49,19 @@ impl Target {
         target
     }
 
-    // 重名文件添加序号
-    pub fn get_name(&self, i: usize) -> String {
+    // 重名文件添加序号，是/否重命名文件
+    pub fn get_name(&self, i: usize, rename: Option<&str>) -> String {
+        let name = if let Some(n) = rename { n } else { &self.name };
         if i == 0 {
             format!(
                 "{}.{}",
-                self.name,
+                name,
                 self.type_.as_ref().map_or(&self.extension, |s| &s)
             )
         } else {
             format!(
                 "{}_{:02}.{}",
-                self.name,
+                name,
                 i,
                 self.type_.as_ref().map_or(&self.extension, |s| &s)
             )
@@ -117,7 +118,7 @@ impl Target {
         info!(file=?self.path, earliest = ?self.earliest, "🎉 success set earliest datetime");
     }
 
-    pub fn get_output(&mut self, dir: &Path) -> Result<Option<PathBuf>> {
+    pub fn get_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<Option<PathBuf>> {
         let generation = |o: &Path, p: &Vec<String>| {
             p.iter().fold(o.to_owned(), |mut path, p| {
                 path.push(p);
@@ -139,8 +140,21 @@ impl Target {
                     format!("{:02}", self.earliest.month()),
                     "".to_string(),
                 ];
+                let name: Option<String> = {
+                    if rename_with_ymd {
+                        Some(format!(
+                            "{}-{:02}-{:02}",
+                            self.earliest.year(),
+                            self.earliest.month(),
+                            self.earliest.day()
+                        ))
+                    } else {
+                        None
+                    }
+                };
+
                 let output = (0..1000).find_map(|i| {
-                    parts[2] = self.get_name(i);
+                    parts[2] = self.get_name(i, name.as_deref());
                     let check = generation(dir, &parts);
                     // 文件不存在，表明该路径可用
                     if !check.is_file() {
@@ -212,5 +226,12 @@ mod tests {
         assert_eq!(target.hash, "a6cc791ccd13f0dea507b0eb0f2c1b47");
         assert_eq!(target.extension, "gif");
         assert_eq!(target.name, "小鸡动画");
+    }
+
+    #[test]
+    fn test_get_name() {
+        let path = get_root().join("tests").join("2025/07/小鸡动画.gif");
+        let target = Target::new(path);
+        assert_eq!(target.get_name(1, Some("abc")), "abc_01.gif");
     }
 }

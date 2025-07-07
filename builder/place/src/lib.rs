@@ -6,7 +6,12 @@ mod db;
 mod process;
 mod target;
 
-pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> Result<()> {
+pub async fn process(
+    input: &PathBuf,
+    output: &Option<PathBuf>,
+    test: bool,
+    rename_with_ymd: bool,
+) -> Result<()> {
     let output = if let Some(o) = output {
         o
     } else {
@@ -24,6 +29,6 @@ pub async fn process(input: &PathBuf, output: &Option<PathBuf>, test: bool) -> R
         .count();
     info!(input=?input, total=total, output=?output, test=test, "start process");
     // init temp data
-    process::temp_init(input, output, test);
+    process::temp_init(input, output, test, rename_with_ymd);
     process::do_process().await
 }

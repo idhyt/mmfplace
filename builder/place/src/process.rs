@@ -24,16 +24,18 @@ struct TempData {
     input: PathBuf,
     output: PathBuf,
     test: bool,
+    rename: bool,
 }
 
 static TEMPDATA: OnceCell<TempData> = OnceCell::new();
 
-pub fn temp_init(input: PathBuf, output: PathBuf, test: bool) {
+pub fn temp_init(input: PathBuf, output: PathBuf, test: bool, rename: bool) {
     TEMPDATA
         .set(TempData {
             input,
             output,
             test,
+            rename,
         })
         .expect("TempData is already initialized")
 }
@@ -202,9 +204,8 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
         "🚀 begin place file: {:?}, count: {:?}",
         target.path, processed_count
     );
-    let output = temp_get().output.to_owned();
     // let mut target = target;
-    let copy_path = target.get_output(&output)?;
+    let copy_path = target.get_output(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
         info!(from=?target.path, to=?copy_path, count=count, "✅ success test finish");
@@ -298,7 +299,7 @@ mod tests {
         let tests = get_root().join("tests");
         let input = tests.join("2002/11/simple.png");
         let output = get_root().join("tests");
-        temp_init(input.clone(), output.clone(), true);
+        temp_init(input.clone(), output.clone(), true, false);
         let mut target = do_parse(input.clone()).await.unwrap();
         println!("target: {:#?}", target);
         assert_eq!("simple", target.name);
@@ -312,7 +313,7 @@ mod tests {
         );
         assert!(target.attrtimes.len() >= 2);
 
-        let copy_path = target.get_output(&output).unwrap();
+        let copy_path = target.get_output(&output, false).unwrap();
         println!("copy_path: {:?}", copy_path);
         assert!(copy_path.is_some());
         let copy_path = copy_path.unwrap();
@@ -334,12 +335,18 @@ mod tests {
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
 
-        let copy_path = target.get_output(&output).unwrap();
+        let copy_path = target.get_output(&output, false).unwrap();
         println!("copy_path: {:?}", copy_path);
         assert!(copy_path.is_some());
         let copy_path = copy_path.unwrap();
         assert_eq!(copy_path, output.join("2002/11/simple_02.jpg"));
-        assert_eq!(target.parts.unwrap(), vec!["2002", "11", "simple_02.jpg"]);
+        assert_eq!(
+            *target.parts.as_ref().unwrap(),
+            vec!["2002", "11", "simple_02.jpg"]
+        );
+
+        let copy_path = target.get_output(&output, true).unwrap();
+        assert_eq!(copy_path, Some(output.join("2002/11/2002-11-16.jpg")));
 
         std::fs::remove_file(&dup_file).unwrap();
     }

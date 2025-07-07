@@ -13,6 +13,9 @@ enum Commands {
         /// test mode, do not copy/move file
         #[arg(long, default_value = "false")]
         test: bool,
+        /// rename the file name by datetime(%Y-%m-%d)
+        #[arg(long, default_value = "false")]
+        rename_with_ymd: bool,
     },
     // /// find duplicate files
     // Dupf {
@@ -53,8 +56,12 @@ async fn main() {
     log::debug!("args: {:#?}", args);
 
     match &args.command {
-        Commands::Place { input, test } => {
-            if let Err(e) = place::process(input, &args.output, *test).await {
+        Commands::Place {
+            input,
+            test,
+            rename_with_ymd,
+        } => {
+            if let Err(e) = place::process(input, &args.output, *test, *rename_with_ymd).await {
                 log::error!("process error: {}", e);
                 std::process::exit(1);
             }
