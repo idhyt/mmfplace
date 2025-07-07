@@ -1,6 +1,7 @@
+use anyhow::Result;
 use chrono::prelude::*;
 use chrono::{DateTime, Utc};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 use tracing::{debug, error, info, warn};
 
@@ -10,6 +11,8 @@ use utils::crypto::get_file_md5;
 pub struct Target {
     // target file path
     pub path: PathBuf,
+    // the path parts of the target placed
+    pub parts: Option<Vec<String>>,
     // parsed datetime from metadata
     pub datetimes: Vec<DateTime<Utc>>,
     // hash with md5
@@ -25,6 +28,8 @@ pub struct Target {
     // datetime from file attributes
     // [accessed, modified, created]
     pub attrtimes: Vec<Option<SystemTime>>,
+    // whether the file has been dealt with before
+    pub dealt: bool,
 }
 
 impl Target {
@@ -62,13 +67,115 @@ impl Target {
         }
     }
 
-    pub fn get_parts(&self, i: usize) -> Vec<String> {
-        vec![
-            self.earliest.year().to_string(),
-            self.earliest.month().to_string(),
-            self.earliest.day().to_string(),
-            self.get_name(i),
-        ]
+    // pub fn get_parts(&self, i: usize) -> Vec<String> {
+    // vec![
+    //     self.earliest.year().to_string(),
+    //     self.earliest.month().to_string(),
+    //     // self.earliest.day().to_string(),
+    //     self.get_name(i),
+    // ]
+    // }
+
+    // pub fn set_parts(&mut self) {
+    //     if self.parts.is_some() {
+    //         error!(file=?self.path, "parts already set and here is unreachable");
+    //         panic!("parts already set and here is unreachable");
+    //     }
+
+    //     let generation = |o: &Path, p: &Vec<String>| {
+    //         p.iter().fold(o.to_owned(), |mut path, p| {
+    //             path.push(p);
+    //             path
+    //         })
+    //     };
+
+    //     // 之前没处理过，生成路径，有可能文件重名，循环生成
+    //     for i in 0..1000 {
+    //         let parts = self.get_parts(i);
+    //         let check = generation(dir, &parts);
+    //         if !check.is_file() {
+    //             return Ok(check);
+    //         } else {
+    //             debug!(
+    //                 file = ?check,
+    //                 count = i+1,
+    //                 "already exist"
+    //             )
+    //         }
+    //     }
+    //     error!(file=?self.path, "output generate too many tries");
+    // }
+
+    pub fn get_output(&mut self, dir: &Path) -> Result<Option<PathBuf>> {
+        let generation = |o: &Path, p: &Vec<String>| {
+            p.iter().fold(o.to_owned(), |mut path, p| {
+                path.push(p);
+                path
+            })
+        };
+
+        let output = {
+            // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
+            if self.dealt {
+                generation(dir, self.parts.as_ref().unwrap())
+            }
+            // parse阶段没有标记，说明之前没处理过，生成新路径，并设置新的parts
+            // 有可能文件重名，循环生成
+            else {
+                let mut parts: Vec<String> = vec![
+                    self.earliest.year().to_string(),
+                    self.earliest.month().to_string(),
+                    "".to_string(),
+                ];
+                let output = (0..1000).find_map(|i| {
+                    parts[2] = self.get_name(i);
+                    let check = generation(dir, &parts);
+                    // 文件不存在，表明该路径可用
+                    if !check.is_file() {
+                        Some(check)
+                    } else {
+                        debug!(
+                            file = ?check,
+                            count = i+1,
+                            "already exist"
+                        );
+                        None
+                    }
+                });
+                // 如果循环1000次文件都存在，一定是有问题(存在大量的相同文件名且hash不同)
+                if output.is_none() {
+                    error!(file=?self.path, "output generate too many tries");
+                    return Err(anyhow::anyhow!(
+                        "output generate too many tries, file={}",
+                        self.path.display()
+                    ));
+                }
+                // 更新 parts
+                self.parts = Some(parts);
+                output.unwrap()
+            }
+        };
+
+        // 判断是否需要拷贝
+        if output.is_file() {
+            // 文件存在且hash相同，则跳过
+            if self.hash == get_file_md5(&output).unwrap() {
+                info!(file=?output, "🚚 copy skip with same hash");
+                return Ok(None);
+            }
+            // 文件存在，hash不同，被修改过，则直接覆盖
+            else {
+                warn!(file=?output, "🚚 copy overwrite with different hash");
+                return Ok(Some(output));
+            }
+        }
+        // 文件不存在，两种情况：
+        // 1. 正常的逻辑流程，之前没处理过
+        // 2. 之前被处理过，但是被删除了
+        else {
+            info!(file=?output, "🚚 copy with file not exist");
+            return Ok(Some(output));
+        }
     }
 
     pub fn add_datetime(&mut self, dt: DateTime<Utc>) {

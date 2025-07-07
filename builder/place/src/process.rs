@@ -17,7 +17,6 @@ use super::target::Target;
 
 use config::CONFIG;
 use tools::metadata_extractor;
-use utils::crypto::get_file_md5;
 
 // 临时共享数据，我不知道该取什么名字hhh...
 #[derive(Debug, Clone, Default)]
@@ -136,24 +135,25 @@ pub async fn do_process() -> Result<()> {
 //                                      -> 不存在 -> 解析所有时间(元数据+文件属性) -> 取最早 -> 插入数据库 -> 拷贝文件
 async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
     debug!("🚀 begin parse file: {:?}", path);
-    let target = Target::new(path);
+    let mut target = Target::new(path);
 
     // if test mode, don't check exists
-    let parts = {
-        if temp_get().test {
-            None
-        } else {
+    if temp_get().test {
+        debug!(file=?target.path, "💡 test mode, skip exists check");
+    } else {
+        target.parts = {
             let conn = get_connection().lock().unwrap();
             query_parts(&conn, &target.hash)?
         }
-    };
+    }
+
     // 如果查到，说明之前已处理过了，则不再进行元数据解析
-    if parts.is_some() {
-        debug!(hash = target.hash, "file is already parsed");
+    if target.parts.is_some() {
+        target.dealt = true;
+        debug!(file = ?target.path, "file is already dealt before");
         return Ok(Some(target));
     }
 
-    let mut target = target;
     // 获取文件元数据并解析出所有时间格式
     let texts = metadata_extractor(&target.path).await?;
     'outer: for text in texts.iter() {
@@ -199,86 +199,36 @@ async fn do_place(target: Target, processed_count: &Arc<AtomicUsize>) -> Result<
         "🚀 begin place file: {:?}, count: {:?}",
         target.path, processed_count
     );
-    let generation = |o: &Path, p: &Vec<String>| {
-        p.iter().fold(o.to_owned(), |mut path, p| {
-            path.push(p);
-            path
-        })
-    };
     let output = temp_get().output.to_owned();
-
-    let (parts, exist) = {
-        let find = {
-            let conn = get_connection().lock().unwrap();
-            query_parts(&conn, &target.hash)?
-        };
-        if let Some(parts) = find {
-            // 找到，则说明已经处理过了
-            (Some(parts), true)
-        } else {
-            // 没找到，生成
-            let mut parts = None;
-            // 有可能文件重名，循环生成
-            for i in 0..1000 {
-                let got = target.get_parts(i);
-                let check = generation(&output, &got);
-                if !check.is_file() {
-                    parts = Some(got);
-                    break;
-                }
-                debug!(
-                    exist = ?check,
-                    count = i+1,
-                    "already exist"
-                )
-            }
-            (parts, false)
-        }
-    };
-
-    if parts.is_none() {
-        return Err(anyhow::anyhow!("parts is none"));
-    }
-    let parts = parts.unwrap();
-
-    let copy_path = generation(&output, &parts);
-    let need_copy = {
-        if copy_path.is_file() {
-            if target.hash == get_file_md5(&copy_path).unwrap() {
-                info!(file=?copy_path, "🚚 copy skip with same hash");
-                false
-            } else {
-                warn!(file=?copy_path, "🚚 copy overwrite with different hash");
-                true
-            }
-        } else {
-            info!(file=?copy_path, "🚚 copy with file not exist");
-            true
-        }
-    };
+    let mut target = target;
+    let copy_path = target.get_output(&output)?;
 
     if temp_get().test {
         info!(from=?target.path, to=?copy_path, count=count, "✅ success test finish");
         return Ok(());
     }
 
-    if need_copy {
-        copy_file_with_times(&target.path, &copy_path, &target.attrtimes)?;
-    }
-    if !exist {
-        // 插入数据库
-        let conn = get_connection().lock().unwrap();
-        insert_hash(
-            &conn,
-            &FileHash {
-                parts: &parts,
-                hash: &target.hash,
-            },
-        )?;
-        debug!(file=?copy_path, "success insert hash");
+    // 需要复制文件
+    if let Some(o) = copy_path {
+        copy_file_with_times(&target.path, &o, &target.attrtimes)?;
+        // 之前没有处理过
+        if !target.dealt {
+            // 插入数据库
+            let conn = get_connection().lock().unwrap();
+            insert_hash(
+                &conn,
+                &FileHash {
+                    parts: &target.parts.unwrap(),
+                    hash: &target.hash,
+                },
+            )?;
+            debug!(file=?o, "success insert hash");
+        }
+        info!(from=?target.path, to=?o, count=count, "✅ success place finish");
+    } else {
+        info!(count = count, "✅ success place finish with skip copy");
     }
 
-    info!(from=?target.path, to=?copy_path, count=count, "✅ success place finish");
     Ok(())
 }
 
@@ -343,7 +293,9 @@ mod tests {
     #[tokio::test]
     async fn test_do_parse() {
         let path = get_root().join("tests").join("simple.jpg");
-        let target = do_parse(path).await.unwrap().unwrap();
+        let output = get_root().join("tests").join("output");
+        temp_init(path.clone(), output.clone(), true);
+        let mut target = do_parse(path).await.unwrap().unwrap();
         println!("target: {:#?}", target);
         assert_eq!(Some("jpg".to_string()), target.type_);
         assert_eq!(target.datetimes.len(), 3);
@@ -354,9 +306,12 @@ mod tests {
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
         assert!(target.attrtimes.len() >= 2);
-        let (parts, name) = (target.get_parts(0), target.get_name(0));
+        let output = target.get_output(&output).unwrap();
+        println!("output: {:?}", output);
+        assert!(output.is_some());
+        let (parts, name) = (target.parts.as_ref().unwrap(), target.get_name(0));
         println!("parts: {:?}, name: {}", parts, name);
-        assert_eq!(parts, vec!["2002", "11", "16", "simple.jpg"]);
+        assert_eq!(*parts, vec!["2002", "11", "simple.jpg"]);
         assert_eq!(name, "simple.jpg");
     }
 }
