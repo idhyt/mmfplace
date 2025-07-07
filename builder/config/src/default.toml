@@ -96,4 +96,5 @@ list = [
 "ignore" = [
     # iphone
     "heic",
+    "heif",
 ]
