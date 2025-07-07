@@ -46,9 +46,18 @@ pub fn get_file_md5(path: &PathBuf) -> HasherRet<String> {
 mod tests {
     use super::*;
 
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
+
     #[test]
     fn test_md5() {
-        let path = PathBuf::from("/tmp/mmfplace-tests/simple.jpg");
+        let path = get_root().join("tests/2002/11/simple.jpg");
         let md5 = get_file_md5(&path).unwrap();
         println!("md5: {}", md5);
         assert_eq!(md5, "a18932e314dbb4c81c6fd0e282d81d16");

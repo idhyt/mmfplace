@@ -118,13 +118,22 @@ mod tests {
 
     use super::*;
 
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
+
     #[tokio::test]
     async fn test_read() {
         println!("Metadata {:#?}", METADATA);
         assert!(METADATA.extractor.is_file());
         assert!(METADATA.xmpcore.is_file());
 
-        let test = PathBuf::from("tests/simple.jpg");
+        let test = get_root().join("tests/2002/11/simple.jpg");
         let readers = METADATA.read(test.as_path()).await.unwrap();
         println!("{:#?}", readers);
         assert!(readers.len() > 1);
