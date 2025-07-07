@@ -8,7 +8,7 @@ use std::sync::Arc;
 use std::time::SystemTime;
 use tokio::sync::mpsc;
 use tokio::sync::Semaphore;
-use tracing::{debug, debug_span, info, warn};
+use tracing::{debug, debug_span, error, info, warn};
 use tracing_futures::Instrument;
 use walkdir::WalkDir;
 
@@ -94,12 +94,15 @@ pub async fn do_process() -> Result<()> {
                         let span = debug_span!("task_parse", file = ?path);
                         async {
                             let _permit = semaphore.acquire().await.unwrap();
-                            if let Some(t) = do_parse(path).await.unwrap() {
-                                if tx.send(t).await.is_err() {
-                                    debug!("通道已关闭，无法发送文件");
+                            match do_parse(path).await {
+                                Ok(t) => {
+                                    if tx.send(t).await.is_err() {
+                                        error!("close channel, could not send task");
+                                    }
                                 }
-                            } else {
-                                // 已经处理过的文件，将忽略
+                                Err(e) => {
+                                    error!(error=%e, "parse error");
+                                }
                             }
                             // drop(_permit);
                         }
@@ -133,7 +136,7 @@ pub async fn do_process() -> Result<()> {
 
 // 计算文件hash -> 判断hash是否在数据库中 -> 存在 -> 获取parts部分拼接路径是否存在 -> 存在跳过/不存在拷贝
 //                                      -> 不存在 -> 解析所有时间(元数据+文件属性) -> 取最早 -> 插入数据库 -> 拷贝文件
-async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
+async fn do_parse(path: PathBuf) -> Result<Target> {
     debug!("🚀 begin parse file: {:?}", path);
     let mut target = Target::new(path);
 
@@ -151,7 +154,7 @@ async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
     if target.parts.is_some() {
         target.dealt = true;
         debug!(file = ?target.path, "file is already dealt before");
-        return Ok(Some(target));
+        return Ok(target);
     }
 
     // 获取文件元数据并解析出所有时间格式
@@ -190,17 +193,17 @@ async fn do_parse(path: PathBuf) -> Result<Option<Target>> {
     }
     target.set_earliest();
 
-    Ok(Some(target))
+    Ok(target)
 }
 
-async fn do_place(target: Target, processed_count: &Arc<AtomicUsize>) -> Result<()> {
+async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Result<()> {
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
     debug!(
         "🚀 begin place file: {:?}, count: {:?}",
         target.path, processed_count
     );
     let output = temp_get().output.to_owned();
-    let mut target = target;
+    // let mut target = target;
     let copy_path = target.get_output(&output)?;
 
     if temp_get().test {
@@ -292,26 +295,52 @@ mod tests {
 
     #[tokio::test]
     async fn test_do_parse() {
-        let path = get_root().join("tests").join("simple.jpg");
-        let output = get_root().join("tests").join("output");
-        temp_init(path.clone(), output.clone(), true);
-        let mut target = do_parse(path).await.unwrap().unwrap();
+        let tests = get_root().join("tests");
+        let input = tests.join("2002/11/simple.png");
+        let output = get_root().join("tests");
+        temp_init(input.clone(), output.clone(), true);
+        let mut target = do_parse(input.clone()).await.unwrap();
         println!("target: {:#?}", target);
+        assert_eq!("simple", target.name);
+        assert_eq!("png", target.extension);
         assert_eq!(Some("jpg".to_string()), target.type_);
         assert_eq!(target.datetimes.len(), 3);
         assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
-        assert_eq!(target.name, "simple");
         assert_eq!(
             target.earliest,
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
         assert!(target.attrtimes.len() >= 2);
-        let output = target.get_output(&output).unwrap();
-        println!("output: {:?}", output);
-        assert!(output.is_some());
-        let (parts, name) = (target.parts.as_ref().unwrap(), target.get_name(0));
-        println!("parts: {:?}, name: {}", parts, name);
-        assert_eq!(*parts, vec!["2002", "11", "simple.jpg"]);
-        assert_eq!(name, "simple.jpg");
+
+        let copy_path = target.get_output(&output).unwrap();
+        println!("copy_path: {:?}", copy_path);
+        assert!(copy_path.is_some());
+        let copy_path = copy_path.unwrap();
+        assert_eq!(copy_path, output.join("2002/11/simple_01.jpg"));
+        assert_eq!(target.parts.unwrap(), vec!["2002", "11", "simple_01.jpg"]);
+
+        // now we copy to a new file
+        let dup_file = input.with_file_name("simple_01.jpg");
+        std::fs::copy(&input, &dup_file).unwrap();
+        let input = tests.join("2002/11/simple.jpg");
+        let mut target = do_parse(input.clone()).await.unwrap();
+        println!("new target: {:#?}", target);
+        assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
+        assert_eq!("simple", target.name);
+        assert_eq!("jpg", target.extension);
+        assert_eq!(Some("jpg".to_string()), target.type_);
+        assert_eq!(
+            target.earliest,
+            Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
+        );
+
+        let copy_path = target.get_output(&output).unwrap();
+        println!("copy_path: {:?}", copy_path);
+        assert!(copy_path.is_some());
+        let copy_path = copy_path.unwrap();
+        assert_eq!(copy_path, output.join("2002/11/simple_02.jpg"));
+        assert_eq!(target.parts.unwrap(), vec!["2002", "11", "simple_02.jpg"]);
+
+        std::fs::remove_file(&dup_file).unwrap();
     }
 }

@@ -67,44 +67,55 @@ impl Target {
         }
     }
 
-    // pub fn get_parts(&self, i: usize) -> Vec<String> {
-    // vec![
-    //     self.earliest.year().to_string(),
-    //     self.earliest.month().to_string(),
-    //     // self.earliest.day().to_string(),
-    //     self.get_name(i),
-    // ]
-    // }
+    pub fn add_datetime(&mut self, dt: DateTime<Utc>) {
+        self.datetimes.push(dt);
+    }
 
-    // pub fn set_parts(&mut self) {
-    //     if self.parts.is_some() {
-    //         error!(file=?self.path, "parts already set and here is unreachable");
-    //         panic!("parts already set and here is unreachable");
-    //     }
+    pub fn set_attrtimes(&mut self) {
+        let meta = std::fs::metadata(&self.path).unwrap();
+        if let Ok(atime) = meta.accessed() {
+            self.attrtimes.push(Some(atime));
+        } else {
+            warn!(file=?self.path, "💡 accessed time not found");
+            self.attrtimes.push(None);
+        }
+        if let Ok(mtime) = meta.modified() {
+            self.attrtimes.push(Some(mtime));
+        } else {
+            warn!(file=?self.path, "💡 modified time not found");
+            self.attrtimes.push(None);
+        }
+        // #[cfg(windows)] only support in Windows
+        if let Ok(ctime) = meta.created() {
+            self.attrtimes.push(Some(ctime));
+        } else {
+            debug!(file=?self.path, "💡 created time not found(Non-Windows?)");
+            self.attrtimes.push(None);
+        }
+    }
 
-    //     let generation = |o: &Path, p: &Vec<String>| {
-    //         p.iter().fold(o.to_owned(), |mut path, p| {
-    //             path.push(p);
-    //             path
-    //         })
-    //     };
+    pub fn set_earliest(&mut self) {
+        if self.datetimes.is_empty() {
+            // should panic?
+            warn!(file=?self.path, "💡 datetime not found by dateparser")
+        }
+        let mut all = self
+            .attrtimes
+            .iter()
+            .filter_map(|ost| ost.as_ref().map(|st| DateTime::<Utc>::from(*st)))
+            .collect::<Vec<DateTime<Utc>>>();
+        all.extend(self.datetimes.clone());
 
-    //     // 之前没处理过，生成路径，有可能文件重名，循环生成
-    //     for i in 0..1000 {
-    //         let parts = self.get_parts(i);
-    //         let check = generation(dir, &parts);
-    //         if !check.is_file() {
-    //             return Ok(check);
-    //         } else {
-    //             debug!(
-    //                 file = ?check,
-    //                 count = i+1,
-    //                 "already exist"
-    //             )
-    //         }
-    //     }
-    //     error!(file=?self.path, "output generate too many tries");
-    // }
+        if all.is_empty() {
+            // self.earliest = Utc::now();
+            // should panic
+            error!(file=?self.path, "💥 datetime not found by dateparser and attributes!");
+            panic!()
+        }
+        // min
+        self.earliest = all.into_iter().min().unwrap();
+        info!(file=?self.path, earliest = ?self.earliest, "🎉 success set earliest datetime");
+    }
 
     pub fn get_output(&mut self, dir: &Path) -> Result<Option<PathBuf>> {
         let generation = |o: &Path, p: &Vec<String>| {
@@ -124,7 +135,8 @@ impl Target {
             else {
                 let mut parts: Vec<String> = vec![
                     self.earliest.year().to_string(),
-                    self.earliest.month().to_string(),
+                    // self.earliest.month().to_string(),
+                    format!("{:02}", self.earliest.month()),
                     "".to_string(),
                 ];
                 let output = (0..1000).find_map(|i| {
@@ -177,54 +189,28 @@ impl Target {
             return Ok(Some(output));
         }
     }
+}
 
-    pub fn add_datetime(&mut self, dt: DateTime<Utc>) {
-        self.datetimes.push(dt);
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn get_root() -> PathBuf {
+        PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
     }
 
-    pub fn set_attrtimes(&mut self) {
-        let meta = std::fs::metadata(&self.path).unwrap();
-        if let Ok(atime) = meta.accessed() {
-            self.attrtimes.push(Some(atime));
-        } else {
-            warn!(file=?self.path, "💡 accessed time not found");
-            self.attrtimes.push(None);
-        }
-        if let Ok(mtime) = meta.modified() {
-            self.attrtimes.push(Some(mtime));
-        } else {
-            warn!(file=?self.path, "💡 modified time not found");
-            self.attrtimes.push(None);
-        }
-        // #[cfg(windows)] only support in Windows
-        if let Ok(ctime) = meta.created() {
-            self.attrtimes.push(Some(ctime));
-        } else {
-            debug!(file=?self.path, "💡 created time not found(Non-Windows?)");
-            self.attrtimes.push(None);
-        }
-    }
-
-    pub fn set_earliest(&mut self) {
-        if self.datetimes.is_empty() {
-            // should panic?
-            warn!(file=?self.path, "💡 datetime not found by dateparser")
-        }
-        let mut all = self
-            .attrtimes
-            .iter()
-            .filter_map(|ost| ost.as_ref().map(|st| DateTime::<Utc>::from(*st)))
-            .collect::<Vec<DateTime<Utc>>>();
-        all.extend(self.datetimes.clone());
-
-        if all.is_empty() {
-            // self.earliest = Utc::now();
-            // should panic
-            error!(file=?self.path, "💥 datetime not found by dateparser and attributes!");
-            panic!()
-        }
-        // min
-        self.earliest = all.into_iter().min().unwrap();
-        info!(file=?self.path, earliest = ?self.earliest, "🎉 success set earliest datetime");
+    #[test]
+    fn test_target() {
+        let path = get_root().join("tests").join("2025/07/小鸡动画.gif");
+        let target = Target::new(path);
+        println!("target: {:#?}", target);
+        assert_eq!(target.hash, "a6cc791ccd13f0dea507b0eb0f2c1b47");
+        assert_eq!(target.extension, "gif");
+        assert_eq!(target.name, "小鸡动画");
     }
 }
