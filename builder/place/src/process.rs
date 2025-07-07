@@ -159,6 +159,17 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
         return Ok(target);
     }
 
+    // 是否需要获取文件类型
+    let captype = CONFIG
+        .typeregex
+        .ignore
+        .as_ref()
+        .map_or(true, |ignore| !ignore.contains(&target.extension));
+    if !captype {
+        debug!(file = ?target.path, "💡 the file type is ignored");
+        target.type_ = Some(target.extension.clone());
+    }
+
     // 获取文件元数据并解析出所有时间格式
     let texts = metadata_extractor(&target.path).await?;
     'outer: for text in texts.iter() {
