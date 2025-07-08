@@ -16,6 +16,10 @@ use super::target::Target;
 use config::CONFIG;
 use tools::metadata_extractor;
 
+fn error_with_exit() -> ! {
+    std::process::exit(1);
+}
+
 // 临时共享数据，我不知道该取什么名字hhh...
 #[derive(Debug, Clone, Default)]
 struct TempData {
@@ -42,6 +46,14 @@ fn temp_get() -> &'static TempData {
 }
 
 pub async fn do_process() -> Result<()> {
+    let (input, output, test) = (&temp_get().input, &temp_get().output, temp_get().test);
+    let total = walkdir::WalkDir::new(input)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|e| e.file_type().is_file())
+        .count();
+    info!(input=?input, total=total, output=?output, test=test, "start process");
+
     // MPSC mode
     let concurrency: usize = CONFIG.batch_size;
     let channel_size: usize = 100;
@@ -61,7 +73,7 @@ pub async fn do_process() -> Result<()> {
                 async {
                     if let Err(e) = do_place(fdt, &processed_count).await {
                         error!(error=%e, "place error");
-                        panic!("place error");
+                        error_with_exit();
                     }
                 }
                 .instrument(span)
@@ -73,7 +85,7 @@ pub async fn do_process() -> Result<()> {
     });
 
     let producer = tokio::spawn({
-        let input = temp_get().input.clone();
+        // let input = temp_get().input.clone();
         let tx = tx; // tx.clone();
         let semaphore = Arc::clone(&semaphore);
         let root_span = root_span.clone();
@@ -97,14 +109,14 @@ pub async fn do_process() -> Result<()> {
                             let _permit = semaphore.acquire().await.unwrap();
                             match do_parse(path).await {
                                 Ok(t) => {
-                                    if tx.send(t).await.is_err() {
-                                        error!("close channel, could not send task");
-                                        panic!("close channel");
+                                    if let Err(e) = tx.send(t).await {
+                                        error!("send task error: {:#?}", e);
+                                        error_with_exit();
                                     }
                                 }
                                 Err(e) => {
                                     error!(error=%e, "parse error");
-                                    panic!("parse error");
+                                    error_with_exit();
                                 }
                             }
                             // drop(_permit);
@@ -133,7 +145,6 @@ pub async fn do_process() -> Result<()> {
     let _ = tokio::join!(producer, consumer);
 
     info!("all done");
-
     Ok(())
 }
 
@@ -217,22 +228,32 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
     target.set_output(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
-        info!(from=?target.path, to=?target.output, count=count, "✅ success test finish");
-        return Ok(());
-    }
-
-    target.copy_with_times()?;
-    if !target.dealt {
-        // 插入数据库
-        let conn = get_connection().lock().unwrap();
-        insert_hash(
-            &conn,
-            &FileHash {
-                parts: &target.parts.unwrap(),
-                hash: &target.hash,
-            },
-        )?;
-        debug!(file=?target.output, "success insert hash");
+        // info!(from=?target.path, to=?target.output, count=count, "✅ success test finish");
+    } else {
+        target.copy_with_times()?;
+        if !target.dealt {
+            // 插入数据库
+            let conn = get_connection().lock().unwrap();
+            // bugfix: 并发中如果AB文件hash相同，第一次处理，A和B都没处理过，最后插入数据库会造成同hash
+            if query_parts(&conn, &target.hash)?.is_none() {
+                insert_hash(
+                    &conn,
+                    &FileHash {
+                        parts: &target.parts.unwrap(),
+                        hash: &target.hash,
+                    },
+                )
+                .map_err(|e| {
+                    anyhow::anyhow!(
+                        "insert hash error file={:?}, hash={} error={:?}",
+                        target.path,
+                        target.hash,
+                        e
+                    )
+                })?;
+                debug!(file=?target.output, "success insert hash");
+            }
+        }
     }
     info!(from=?target.path, to=?target.output, count=count, "✅ success place finish");
     Ok(())
