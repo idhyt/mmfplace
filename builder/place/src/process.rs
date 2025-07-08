@@ -1,11 +1,9 @@
 use anyhow::Result;
 use chrono::Datelike;
 use once_cell::sync::OnceCell;
-use std::path::Path;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use std::time::SystemTime;
 use tokio::sync::mpsc;
 use tokio::sync::Semaphore;
 use tracing::{debug, debug_span, error, info, warn};
@@ -140,7 +138,7 @@ pub async fn do_process() -> Result<()> {
 //                                      -> 不存在 -> 解析所有时间(元数据+文件属性) -> 取最早 -> 插入数据库 -> 拷贝文件
 async fn do_parse(path: PathBuf) -> Result<Target> {
     debug!("🚀 begin parse file: {:?}", path);
-    let mut target = Target::new(path);
+    let mut target = Target::new(path)?;
 
     // if test mode, don't check exists
     if temp_get().test {
@@ -200,11 +198,11 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
                 warn!(file=?target.path, datetime=%dt, "💡 skip the datetime < 1975");
             } else {
                 info!(text = text, datetime = %dt, "🎉 success parse datetime from metadata");
-                target.add_datetime(dt);
+                target.tinfo.parsedtimes.push(dt);
             }
         }
     }
-    target.set_earliest();
+    target.set_earliest()?;
 
     Ok(target)
 }
@@ -225,7 +223,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
 
     // 需要复制文件
     if let Some(o) = copy_path {
-        copy_file_with_times(&target.path, &o, &target.attrtimes)?;
+        target.copy_file_with_times(&o)?;
         // 之前没有处理过
         if !target.dealt {
             // 插入数据库
@@ -244,49 +242,6 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
         info!(count = count, "✅ success place finish with skip copy");
     }
 
-    Ok(())
-}
-
-fn copy_file_with_times(src: &Path, dst: &Path, times: &Vec<Option<SystemTime>>) -> Result<()> {
-    let dir = dst.parent().unwrap();
-    if !dir.exists() {
-        std::fs::create_dir_all(dir)?;
-    }
-    std::fs::copy(src, dst)?;
-
-    if times.len() != 3 {
-        return Err(anyhow::anyhow!("the attributes time invalid! {:?}", times));
-    }
-    let mut new_times = std::fs::FileTimes::new();
-    if let Some(atime) = times[0] {
-        new_times = new_times.set_accessed(atime);
-    }
-    if let Some(mtime) = times[1] {
-        new_times = new_times.set_accessed(mtime);
-    }
-    if let Some(ctime) = times[2] {
-        new_times = new_times.set_accessed(ctime);
-    }
-
-    // if let Ok(atime) = src_meta.accessed() {
-    //     times = times.set_accessed(atime);
-    // } else {
-    //     warn!(file=?src, "💡 accessed time not found");
-    // }
-    // if let Ok(mtime) = src_meta.modified() {
-    //     times = times.set_modified(mtime);
-    // } else {
-    //     warn!(file=?src, "💡 modified time not found");
-    // }
-    // if let Ok(ctime) = src_meta.created() {
-    //     times = times.set_created(ctime);
-    // } else {
-    //     warn!(file=?src, "💡 created time not found");
-    // }
-    std::fs::File::options()
-        .write(true)
-        .open(dst)?
-        .set_times(new_times)?;
     Ok(())
 }
 
@@ -316,13 +271,13 @@ mod tests {
         assert_eq!("simple", target.name);
         assert_eq!("png", target.extension);
         assert_eq!(Some("jpg".to_string()), target.type_);
-        assert_eq!(target.datetimes.len(), 3);
+        assert_eq!(target.tinfo.parsedtimes.len(), 3);
         assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
         assert_eq!(
-            target.earliest,
+            target.tinfo.earliest,
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
-        assert!(target.attrtimes.len() >= 2);
+        assert!(target.tinfo.attrtimes.len() >= 2);
 
         let copy_path = target.get_output(&output, false).unwrap();
         println!("copy_path: {:?}", copy_path);
@@ -342,7 +297,7 @@ mod tests {
         assert_eq!("jpg", target.extension);
         assert_eq!(Some("jpg".to_string()), target.type_);
         assert_eq!(
-            target.earliest,
+            target.tinfo.earliest,
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
 

@@ -7,14 +7,36 @@ use tracing::{debug, error, info, warn};
 
 use utils::crypto::get_file_md5;
 
+#[derive(Debug, Clone)]
+pub struct TimeInfo {
+    // parsed datetime from metadata
+    pub parsedtimes: Vec<DateTime<Utc>>,
+    // datetime from file attributes
+    // [accessed, modified, created]
+    pub attrtimes: Vec<Option<SystemTime>>,
+    // the earliest datetime, minimum of parsedtimes and attrtimes
+    pub earliest: DateTime<Utc>,
+}
+
+impl Default for TimeInfo {
+    fn default() -> Self {
+        let now = SystemTime::now();
+        TimeInfo {
+            parsedtimes: Vec::new(),
+            attrtimes: Vec::new(),
+            earliest: DateTime::<Utc>::from(now),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct Target {
     // target file path
     pub path: PathBuf,
     // the path parts of the target placed
     pub parts: Option<Vec<String>>,
-    // parsed datetime from metadata
-    pub datetimes: Vec<DateTime<Utc>>,
+    // // parsed datetime from metadata
+    // pub datetimes: Vec<DateTime<Utc>>,
     // hash with md5
     pub hash: String,
     // the original file
@@ -23,19 +45,21 @@ pub struct Target {
     pub name: String,
     // the file parsed type
     pub type_: Option<String>,
-    // the earliest datetime
-    pub earliest: DateTime<Utc>,
-    // datetime from file attributes
-    // [accessed, modified, created]
-    pub attrtimes: Vec<Option<SystemTime>>,
-    // whether the file has been dealt with before
+    // the target file times info
+    pub tinfo: TimeInfo,
+    // // the earliest datetime
+    // pub earliest: DateTime<Utc>,
+    // // datetime from file attributes
+    // // [accessed, modified, created]
+    // pub attrtimes: Vec<Option<SystemTime>>,
+    // // whether the file has been dealt with before
     pub dealt: bool,
 }
 
 impl Target {
-    pub fn new(path: PathBuf) -> Self {
+    pub fn new(path: PathBuf) -> Result<Self> {
         let mut target = Target {
-            hash: get_file_md5(&path).unwrap(),
+            hash: get_file_md5(&path)?,
             extension: path
                 .extension()
                 .map_or("bin".to_string(), |e| e.to_string_lossy().to_lowercase()),
@@ -45,8 +69,8 @@ impl Target {
             path,
             ..Default::default()
         };
-        target.set_attrtimes();
-        target
+        target.set_attrtimes()?;
+        Ok(target)
     }
 
     // 重名文件添加序号，是/否重命名文件
@@ -68,54 +92,59 @@ impl Target {
         }
     }
 
-    pub fn add_datetime(&mut self, dt: DateTime<Utc>) {
-        self.datetimes.push(dt);
-    }
-
-    pub fn set_attrtimes(&mut self) {
-        let meta = std::fs::metadata(&self.path).unwrap();
-        if let Ok(atime) = meta.accessed() {
-            self.attrtimes.push(Some(atime));
-        } else {
-            warn!(file=?self.path, "💡 accessed time not found");
-            self.attrtimes.push(None);
-        }
-        if let Ok(mtime) = meta.modified() {
-            self.attrtimes.push(Some(mtime));
-        } else {
-            warn!(file=?self.path, "💡 modified time not found");
-            self.attrtimes.push(None);
-        }
+    fn set_attrtimes(&mut self) -> Result<()> {
+        let meta = std::fs::metadata(&self.path)?;
+        // if let Ok(atime) = meta.accessed() {
+        //     self.tinfo.attrtimes.push(Some(atime));
+        // } else {
+        //     warn!(file=?self.path, "💡 accessed time not found");
+        //     self.tinfo.attrtimes.push(None);
+        // }
+        // if let Ok(mtime) = meta.modified() {
+        //     self.tinfo.attrtimes.push(Some(mtime));
+        // } else {
+        //     warn!(file=?self.path, "💡 modified time not found");
+        //     self.tinfo.attrtimes.push(None);
+        // }
+        self.tinfo.attrtimes.push(Some(meta.accessed()?));
+        self.tinfo.attrtimes.push(Some(meta.modified()?));
         // #[cfg(windows)] only support in Windows
         if let Ok(ctime) = meta.created() {
-            self.attrtimes.push(Some(ctime));
+            self.tinfo.attrtimes.push(Some(ctime));
         } else {
             debug!(file=?self.path, "💡 created time not found(Non-Windows?)");
-            self.attrtimes.push(None);
+            self.tinfo.attrtimes.push(None);
         }
+        Ok(())
     }
 
-    pub fn set_earliest(&mut self) {
-        if self.datetimes.is_empty() {
-            // should panic?
-            warn!(file=?self.path, "💡 datetime not found by dateparser")
-        }
-        let mut all = self
-            .attrtimes
-            .iter()
-            .filter_map(|ost| ost.as_ref().map(|st| DateTime::<Utc>::from(*st)))
-            .collect::<Vec<DateTime<Utc>>>();
-        all.extend(self.datetimes.clone());
+    pub fn set_earliest(&mut self) -> Result<()> {
+        // 最少包含 mtime 和 atime
+        let attr_min = DateTime::<Utc>::from(
+            *self
+                .tinfo
+                .attrtimes
+                .iter()
+                .flatten()
+                .min()
+                .ok_or(anyhow::anyhow!("min time not found in attrtimes"))?,
+        );
 
-        if all.is_empty() {
-            // self.earliest = Utc::now();
-            // should panic
-            error!(file=?self.path, "💥 datetime not found by dateparser and attributes!");
-            panic!()
+        if self.tinfo.parsedtimes.is_empty() {
+            // should panic?
+            // warn!(file=?self.path, "💡 datetime not found by dateparser");
+            self.tinfo.earliest = attr_min;
+            debug!(file=?self.path, "💡 time not found by dateparser, use the attrtimes as earliest time");
+        } else {
+            self.tinfo.earliest = self
+                .tinfo
+                .parsedtimes
+                .iter()
+                .fold(attr_min, |m, dt| *dt.min(&m));
+            debug!(file=?self.path, "use the minimum time of attrtimes and dateparser");
         }
-        // min
-        self.earliest = all.into_iter().min().unwrap();
-        info!(file=?self.path, earliest = ?self.earliest, "🎉 success set earliest datetime");
+        info!(file=?self.path, earliest = ?self.tinfo.earliest, "🎉 success set earliest datetime");
+        Ok(())
     }
 
     pub fn get_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<Option<PathBuf>> {
@@ -135,18 +164,18 @@ impl Target {
             // 有可能文件重名，循环生成
             else {
                 let mut parts: Vec<String> = vec![
-                    self.earliest.year().to_string(),
-                    // self.earliest.month().to_string(),
-                    format!("{:02}", self.earliest.month()),
+                    self.tinfo.earliest.year().to_string(),
+                    // self.tinfo.earliest.month().to_string(),
+                    format!("{:02}", self.tinfo.earliest.month()),
                     "".to_string(),
                 ];
                 let name: Option<String> = {
                     if rename_with_ymd {
                         Some(format!(
                             "{}-{:02}-{:02}",
-                            self.earliest.year(),
-                            self.earliest.month(),
-                            self.earliest.day()
+                            self.tinfo.earliest.year(),
+                            self.tinfo.earliest.month(),
+                            self.tinfo.earliest.day()
                         ))
                     } else {
                         None
@@ -203,6 +232,35 @@ impl Target {
             return Ok(Some(output));
         }
     }
+
+    pub fn copy_file_with_times(&self, dst: &Path) -> Result<()> {
+        let dir = dst.parent().ok_or(anyhow::anyhow!(
+            "the output parent directory not found {:?}",
+            &dst
+        ))?;
+        if !dir.exists() {
+            std::fs::create_dir_all(dir)?;
+        }
+        std::fs::copy(&self.path, dst)?;
+
+        // we set the all time to min
+        let st: SystemTime = self.tinfo.earliest.into();
+        if cfg!(target_os = "windows") {
+            use std::os::windows::fs::FileTimesExt;
+            std::fs::File::options().write(true).open(dst)?.set_times(
+                std::fs::FileTimes::new()
+                    .set_accessed(st)
+                    .set_modified(st)
+                    .set_created(st),
+            )?;
+        } else {
+            std::fs::File::options()
+                .write(true)
+                .open(dst)?
+                .set_times(std::fs::FileTimes::new().set_accessed(st).set_modified(st))?;
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -221,7 +279,7 @@ mod tests {
     #[test]
     fn test_target() {
         let path = get_root().join("tests").join("2025/07/小鸡动画.gif");
-        let target = Target::new(path);
+        let target = Target::new(path).unwrap();
         println!("target: {:#?}", target);
         assert_eq!(target.hash, "a6cc791ccd13f0dea507b0eb0f2c1b47");
         assert_eq!(target.extension, "gif");
@@ -231,7 +289,7 @@ mod tests {
     #[test]
     fn test_get_name() {
         let path = get_root().join("tests").join("2025/07/小鸡动画.gif");
-        let target = Target::new(path);
+        let target = Target::new(path).unwrap();
         assert_eq!(target.get_name(1, Some("abc")), "abc_01.gif");
     }
 }
