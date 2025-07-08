@@ -60,7 +60,8 @@ pub async fn do_process() -> Result<()> {
                 let span = debug_span!("task_place", file = ?fdt.path);
                 async {
                     if let Err(e) = do_place(fdt, &processed_count).await {
-                        eprintln!("处理文件失败: {}", e);
+                        error!(error=%e, "place error");
+                        panic!("place error");
                     }
                 }
                 .instrument(span)
@@ -98,10 +99,12 @@ pub async fn do_process() -> Result<()> {
                                 Ok(t) => {
                                     if tx.send(t).await.is_err() {
                                         error!("close channel, could not send task");
+                                        panic!("close channel");
                                     }
                                 }
                                 Err(e) => {
                                     error!(error=%e, "parse error");
+                                    panic!("parse error");
                                 }
                             }
                             // drop(_permit);
@@ -115,7 +118,7 @@ pub async fn do_process() -> Result<()> {
                 tasks.push(task);
 
                 if tasks.len() >= channel_size {
-                    futures::future::join_all(tasks).await;
+                    let _ = futures::future::join_all(tasks).await;
                     tasks = Vec::new();
                 }
             }
@@ -137,7 +140,7 @@ pub async fn do_process() -> Result<()> {
 // 计算文件hash -> 判断hash是否在数据库中 -> 存在 -> 获取parts部分拼接路径是否存在 -> 存在跳过/不存在拷贝
 //                                      -> 不存在 -> 解析所有时间(元数据+文件属性) -> 取最早 -> 插入数据库 -> 拷贝文件
 async fn do_parse(path: PathBuf) -> Result<Target> {
-    debug!("🚀 begin parse file: {:?}", path);
+    debug!(file=?path, "🚀 begin parse file");
     let mut target = Target::new(path)?;
 
     // if test mode, don't check exists
@@ -163,6 +166,7 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
         .ignore
         .as_ref()
         .map_or(true, |ignore| !ignore.contains(&target.extension));
+    // 如果需要忽略，则设置type字段，后边逻辑将跳过获取文件类型
     if !captype {
         debug!(file = ?target.path, "💡 the file type is ignored");
         target.type_ = Some(target.extension.clone());
@@ -197,7 +201,7 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
             if dt.year() < 1975 {
                 warn!(file=?target.path, datetime=%dt, "💡 skip the datetime < 1975");
             } else {
-                info!(text = text, datetime = %dt, "🎉 success parse datetime from metadata");
+                info!(text = text, datetime = %dt, "🎉 success parse datetime from text");
                 target.tinfo.parsedtimes.push(dt);
             }
         }
@@ -209,39 +213,28 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
 
 async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Result<()> {
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
-    debug!(
-        "🚀 begin place file: {:?}, count: {:?}",
-        target.path, processed_count
-    );
-    // let mut target = target;
-    let copy_path = target.get_output(&temp_get().output, temp_get().rename)?;
+    debug!(file=?target.path, "🚀 begin place {} file", count);
+    target.set_output(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
-        info!(from=?target.path, to=?copy_path, count=count, "✅ success test finish");
+        info!(from=?target.path, to=?target.output, count=count, "✅ success test finish");
         return Ok(());
     }
 
-    // 需要复制文件
-    if let Some(o) = copy_path {
-        target.copy_file_with_times(&o)?;
-        // 之前没有处理过
-        if !target.dealt {
-            // 插入数据库
-            let conn = get_connection().lock().unwrap();
-            insert_hash(
-                &conn,
-                &FileHash {
-                    parts: &target.parts.unwrap(),
-                    hash: &target.hash,
-                },
-            )?;
-            debug!(file=?o, "success insert hash");
-        }
-        info!(from=?target.path, to=?o, count=count, "✅ success place finish");
-    } else {
-        info!(count = count, "✅ success place finish with skip copy");
+    target.copy_with_times()?;
+    if !target.dealt {
+        // 插入数据库
+        let conn = get_connection().lock().unwrap();
+        insert_hash(
+            &conn,
+            &FileHash {
+                parts: &target.parts.unwrap(),
+                hash: &target.hash,
+            },
+        )?;
+        debug!(file=?target.output, "success insert hash");
     }
-
+    info!(from=?target.path, to=?target.output, count=count, "✅ success place finish");
     Ok(())
 }
 
@@ -279,10 +272,9 @@ mod tests {
         );
         assert!(target.tinfo.attrtimes.len() >= 2);
 
-        let copy_path = target.get_output(&output, false).unwrap();
+        target.set_output(&output, false).unwrap();
+        let copy_path = target.output.clone();
         println!("copy_path: {:?}", copy_path);
-        assert!(copy_path.is_some());
-        let copy_path = copy_path.unwrap();
         assert_eq!(copy_path, output.join("2002/11/simple_01.jpg"));
         assert_eq!(target.parts.unwrap(), vec!["2002", "11", "simple_01.jpg"]);
 
@@ -301,18 +293,18 @@ mod tests {
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
 
-        let copy_path = target.get_output(&output, false).unwrap();
+        target.set_output(&output, false).unwrap();
+        let copy_path = target.output.clone();
         println!("copy_path: {:?}", copy_path);
-        assert!(copy_path.is_some());
-        let copy_path = copy_path.unwrap();
         assert_eq!(copy_path, output.join("2002/11/simple_02.jpg"));
         assert_eq!(
             *target.parts.as_ref().unwrap(),
             vec!["2002", "11", "simple_02.jpg"]
         );
 
-        let copy_path = target.get_output(&output, true).unwrap();
-        assert_eq!(copy_path, Some(output.join("2002/11/2002-11-16.jpg")));
+        target.set_output(&output, true).unwrap();
+        let copy_path = target.output.clone();
+        assert_eq!(copy_path, output.join("2002/11/2002-11-16.jpg"));
 
         std::fs::remove_file(&dup_file).unwrap();
     }

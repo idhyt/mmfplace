@@ -54,6 +54,8 @@ pub struct Target {
     // pub attrtimes: Vec<Option<SystemTime>>,
     // // whether the file has been dealt with before
     pub dealt: bool,
+    // the output path
+    pub output: PathBuf,
 }
 
 impl Target {
@@ -134,7 +136,7 @@ impl Target {
             // should panic?
             // warn!(file=?self.path, "💡 datetime not found by dateparser");
             self.tinfo.earliest = attr_min;
-            debug!(file=?self.path, "💡 time not found by dateparser, use the attrtimes as earliest time");
+            warn!(file=?self.path, "💡 time not found by dateparser, use the attrtimes as earliest time");
         } else {
             self.tinfo.earliest = self
                 .tinfo
@@ -147,7 +149,7 @@ impl Target {
         Ok(())
     }
 
-    pub fn get_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<Option<PathBuf>> {
+    pub fn set_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
         let generation = |o: &Path, p: &Vec<String>| {
             p.iter().fold(o.to_owned(), |mut path, p| {
                 path.push(p);
@@ -155,109 +157,115 @@ impl Target {
             })
         };
 
-        let output = {
-            // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
-            if self.dealt {
-                generation(dir, self.parts.as_ref().unwrap())
-            }
-            // parse阶段没有标记，说明之前没处理过，生成新路径，并设置新的parts
-            // 有可能文件重名，循环生成
-            else {
-                let mut parts: Vec<String> = vec![
-                    self.tinfo.earliest.year().to_string(),
-                    // self.tinfo.earliest.month().to_string(),
-                    format!("{:02}", self.tinfo.earliest.month()),
-                    "".to_string(),
-                ];
-                let name: Option<String> = {
-                    if rename_with_ymd {
-                        Some(format!(
-                            "{}-{:02}-{:02}",
-                            self.tinfo.earliest.year(),
-                            self.tinfo.earliest.month(),
-                            self.tinfo.earliest.day()
-                        ))
-                    } else {
-                        None
-                    }
-                };
+        // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
+        if self.dealt {
+            self.output = generation(dir, self.parts.as_ref().unwrap());
+            return Ok(());
+        }
 
-                let output = (0..1000).find_map(|i| {
-                    parts[2] = self.get_name(i, name.as_deref());
-                    let check = generation(dir, &parts);
-                    // 文件不存在，表明该路径可用
-                    if !check.is_file() {
-                        Some(check)
-                    } else {
-                        debug!(
-                            file = ?check,
-                            count = i+1,
-                            "already exist"
-                        );
-                        None
-                    }
-                });
-                // 如果循环1000次文件都存在，一定是有问题(存在大量的相同文件名且hash不同)
-                if output.is_none() {
-                    error!(file=?self.path, "output generate too many tries");
-                    return Err(anyhow::anyhow!(
-                        "output generate too many tries, file={}",
-                        self.path.display()
-                    ));
-                }
-                // 更新 parts
-                self.parts = Some(parts);
-                output.unwrap()
+        // parse阶段没有标记，说明之前没处理过，生成新路径，并设置新的parts
+        let mut parts: Vec<String> = vec![
+            self.tinfo.earliest.year().to_string(),
+            // self.tinfo.earliest.month().to_string(),
+            format!("{:02}", self.tinfo.earliest.month()),
+            "".to_string(),
+        ];
+        // 保留文件名格式
+        let name: Option<String> = {
+            if rename_with_ymd {
+                Some(format!(
+                    "{}-{:02}-{:02}",
+                    self.tinfo.earliest.year(),
+                    self.tinfo.earliest.month(),
+                    self.tinfo.earliest.day()
+                ))
+            } else {
+                None
             }
         };
+        // 有可能文件重名，循环生成
+        for i in 0..1000 {
+            parts[2] = self.get_name(i, name.as_deref());
+            let check = generation(dir, &parts);
+            // 文件不存在，表明该路径可用
+            if !check.is_file() {
+                self.output = check;
+                // 更新 parts
+                self.parts = Some(parts);
+                return Ok(());
+            }
+            debug!(
+                file = ?check,
+                count = i+1,
+                "already exist"
+            );
+        }
 
-        // 判断是否需要拷贝
-        if output.is_file() {
-            // 文件存在且hash相同，则跳过
-            if self.hash == get_file_md5(&output).unwrap() {
-                info!(file=?output, "🚚 copy skip with same hash");
-                return Ok(None);
-            }
-            // 文件存在，hash不同，被修改过，则直接覆盖
-            else {
-                warn!(file=?output, "🚚 copy overwrite with different hash");
-                return Ok(Some(output));
-            }
-        }
-        // 文件不存在，两种情况：
-        // 1. 正常的逻辑流程，之前没处理过
-        // 2. 之前被处理过，但是被删除了
-        else {
-            info!(file=?output, "🚚 copy with file not exist");
-            return Ok(Some(output));
-        }
+        // 如果循环1000次文件都存在，一定是有问题(存在大量的相同文件名且hash不同)
+        error!(file=?self.path, "output generate too many tries");
+        Err(anyhow::anyhow!(
+            "output generate too many tries, file={}",
+            self.path.display()
+        ))
     }
 
-    pub fn copy_file_with_times(&self, dst: &Path) -> Result<()> {
-        let dir = dst.parent().ok_or(anyhow::anyhow!(
+    pub fn copy_with_times(&self) -> Result<()> {
+        let output = &self.output;
+        // 判断是否需要拷贝
+        let need_copy = {
+            if output.is_file() {
+                // 文件存在且hash相同，则跳过
+                if self.hash == get_file_md5(&output)? {
+                    info!(file=?output, "🚚 copy skip with same hash");
+                    false
+                }
+                // 文件存在，hash不同，被修改过，则直接覆盖
+                else {
+                    warn!(file=?output, "🚚 copy overwrite with different hash");
+                    true
+                }
+            }
+            // 文件不存在，两种情况：
+            // 1. 正常的逻辑流程，之前没处理过
+            // 2. 之前被处理过，但是被删除了
+            else {
+                info!(file=?output, "🚚 copy with file not exist");
+                true
+            }
+        };
+        // 不需要拷贝文件，直接返回
+        if !need_copy {
+            return Ok(());
+        }
+
+        // 创建文件夹并赋值
+        let dir = output.parent().ok_or(anyhow::anyhow!(
             "the output parent directory not found {:?}",
-            &dst
+            &output
         ))?;
-        if !dir.exists() {
+        if !dir.is_dir() {
             std::fs::create_dir_all(dir)?;
         }
-        std::fs::copy(&self.path, dst)?;
+        std::fs::copy(&self.path, output)?;
 
-        // we set the all time to min
+        // 设置拷贝文件的属性到最早时间
         let st: SystemTime = self.tinfo.earliest.into();
         if cfg!(target_os = "windows") {
             use std::os::windows::fs::FileTimesExt;
-            std::fs::File::options().write(true).open(dst)?.set_times(
-                std::fs::FileTimes::new()
-                    .set_accessed(st)
-                    .set_modified(st)
-                    .set_created(st),
-            )?;
+            std::fs::File::options()
+                .write(true)
+                .open(output)?
+                .set_times(
+                    std::fs::FileTimes::new()
+                        .set_accessed(st)
+                        .set_modified(st)
+                        .set_created(st),
+                )?
         } else {
             std::fs::File::options()
                 .write(true)
-                .open(dst)?
-                .set_times(std::fs::FileTimes::new().set_accessed(st).set_modified(st))?;
+                .open(output)?
+                .set_times(std::fs::FileTimes::new().set_accessed(st).set_modified(st))?
         }
         Ok(())
     }
