@@ -62,7 +62,6 @@ fn query<'a>(conn: &Connection, hash: &str) -> Result<Option<FileInfo<'a, String
     let mut stmt = conn.prepare("SELECT parts, hash, earliest FROM data WHERE hash = ?")?;
     let mut rows = stmt.query([hash])?;
     if let Some(row) = rows.next()? {
-        println!("row: {:#?}", row);
         let parts_json: String = row.get(0)?;
         let hash: String = row.get(1)?;
         let earliest: i64 = row.get(2)?;
