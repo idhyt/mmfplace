@@ -270,7 +270,8 @@ impl Target {
 
         // 设置拷贝文件的属性到最早时间
         let st: SystemTime = self.tinfo.earliest.into();
-        if cfg!(target_os = "windows") {
+        #[cfg(target_os = "windows")]
+        {
             use std::os::windows::fs::FileTimesExt;
             std::fs::File::options()
                 .write(true)
@@ -281,7 +282,9 @@ impl Target {
                         .set_modified(st)
                         .set_created(st),
                 )?
-        } else {
+        }
+        #[cfg(any(target_os = "linux", target_os = "macos"))]
+        {
             std::fs::File::options()
                 .write(true)
                 .open(output)?
