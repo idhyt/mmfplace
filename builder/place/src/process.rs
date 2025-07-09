@@ -297,16 +297,17 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
         // 时间晚，则丢弃
         else {
             // 检查下原始文件是否存在，如果不存在，则需要复制过去
-            if !history_file.is_file() {
-                warn!(file=?history_file, "⚠️ history file not exists, restore it");
+            // 更新 output
+            target.output = history_file;
+            if !target.output.is_file() {
+                warn!(file=?target.output, "⚠️ history file not exists, restore it");
                 let systime: SystemTime = UNIX_EPOCH + Duration::from_secs(history.earliest as u64);
                 // 更新 earliest
                 target.tinfo.earliest = systime.into();
-                // 更新 output
-                target.output = history_file;
+                // 复制
                 target.copy_with_times()?;
             }
-            info!(from=?target.path, to=?target.output, count=count, "✅ success place (>history) finish");
+            info!(from=?target.path, to=?target.output, count=count, "✅ success place (>=history) finish");
         }
     }
     Ok(())
