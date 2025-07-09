@@ -1,6 +1,6 @@
 [source.crates-io]
 registry = "https://github.com/rust-lang/crates.io-index"
-replace-with = 'tuna'
+replace-with = 'ustc'
 
 [source.tuna]
 registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
@@ -16,3 +16,6 @@ registry = "https://code.aliyun.com/rustcc/crates.io-index.git"
 
 [net]
 git-fetch-with-cli = true
+
+[http]
+check-revoke = false
