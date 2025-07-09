@@ -1,13 +1,25 @@
 use rusqlite::{Connection, Result};
 use serde::Serialize;
 use serde_json::json;
+use std::borrow::Cow;
 use std::path::Path;
 use std::sync::{Mutex, OnceLock};
 use tracing::info;
 
-pub struct FileHash<'a, 'b, T: AsRef<str> + 'a> {
-    pub parts: &'a [T],
-    pub hash: &'b str,
+// pub struct FileInfo<'a, 'b, T: AsRef<str> + 'a> {
+//     pub parts: &'a [T],
+//     pub hash: &'b str,
+//     // the DateTime<Local> timestamp
+//     pub earliest: i64,
+// }
+
+#[derive(Debug)]
+pub struct FileInfo<'a, T: AsRef<str> + Clone + ToOwned + 'static> {
+    // pub parts: Vec<Cow<'static, T>>,
+    pub parts: Cow<'a, [T]>,
+    pub hash: Cow<'a, str>,
+    // the DateTime<Local> timestamp
+    pub earliest: i64,
 }
 
 static DATABASE: OnceLock<Mutex<Connection>> = OnceLock::new();
@@ -29,6 +41,7 @@ pub fn db_init(p: &Path) -> Result<Connection> {
         "CREATE TABLE IF NOT EXISTS data (
             id INTEGER PRIMARY KEY,
             parts TEXT NOT NULL,    -- json list
+            earliest INTEGER NOT NULL,
             hash TEXT NOT NULL UNIQUE
         )",
         [], // 无参数
@@ -38,36 +51,82 @@ pub fn db_init(p: &Path) -> Result<Connection> {
     Ok(conn)
 }
 
-pub fn insert(conn: &Connection, parts: &str, hash: &str) -> Result<usize> {
+fn insert(conn: &Connection, parts: &str, hash: &str, earliest: i64) -> Result<usize> {
     conn.execute(
-        "INSERT INTO data (parts, hash) VALUES (?, ?)",
-        [parts, hash],
+        "INSERT INTO data (parts, hash, earliest) VALUES (?, ?, ?)",
+        rusqlite::params![parts, hash, earliest],
     )
 }
 
-pub fn insert_hash<'a, T>(conn: &Connection, fh: &FileHash<'a, '_, T>) -> Result<usize>
-where
-    T: AsRef<str> + 'a + Serialize,
-{
-    insert(conn, &json!(fh.parts).to_string(), fh.hash)
-}
-
-pub fn query_parts(conn: &Connection, hash: &str) -> Result<Option<Vec<String>>> {
-    let mut stmt = conn.prepare("SELECT parts FROM data WHERE hash = ?")?;
+fn query<'a>(conn: &Connection, hash: &str) -> Result<Option<FileInfo<'a, String>>> {
+    let mut stmt = conn.prepare("SELECT parts, hash, earliest FROM data WHERE hash = ?")?;
     let mut rows = stmt.query([hash])?;
     if let Some(row) = rows.next()? {
-        let parts: String = row.get(0)?;
-        return Ok(Some(serde_json::from_str(&parts).map_err(|e| {
+        println!("row: {:#?}", row);
+        let parts_json: String = row.get(0)?;
+        let hash: String = row.get(1)?;
+        let earliest: i64 = row.get(2)?;
+
+        let parts: Vec<String> = serde_json::from_str(&parts_json).map_err(|e| {
             rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(e))
-        })?));
+        })?;
+
+        Ok(Some(FileInfo {
+            parts: Cow::Owned(parts),
+            hash: Cow::Owned(hash),
+            earliest,
+        }))
+    } else {
+        Ok(None)
     }
-    Ok(None)
+}
+
+// fn update<T>(conn: &Connection, hash: &str, parts: &[T], earliest: i64) -> Result<usize>
+// where T:AsRef<str> + Clone + ToOwned + 'static + Serialize
+fn update(conn: &Connection, hash: &str, parts: &str, earliest: i64) -> Result<usize> {
+    // let parts = serde_json::to_string(parts).map_err(|e| {
+    //             rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(e))
+    //         })?;
+    let mut stmt = conn.prepare("UPDATE data SET parts = ?, earliest = ? WHERE hash = ?")?;
+    stmt.execute(rusqlite::params![parts, earliest, hash])
+        .map_err(|e| {
+            rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(e))
+        })
+}
+
+pub fn insert_finfo<T>(conn: &Connection, fh: &FileInfo<T>) -> Result<usize>
+where
+    T: AsRef<str> + 'static + Serialize + Clone,
+{
+    insert(
+        conn,
+        &json!(fh.parts).to_string(),
+        fh.hash.as_ref(),
+        fh.earliest,
+    )
+}
+
+pub fn query_finfo<'a>(conn: &Connection, hash: &str) -> Result<Option<FileInfo<'a, String>>> {
+    query(conn, hash)
+}
+
+pub fn update_finfo<T>(conn: &Connection, finfo: &FileInfo<T>) -> Result<usize>
+where
+    T: AsRef<str> + 'static + Serialize + Clone,
+{
+    let parts = serde_json::to_string(&finfo.parts).map_err(|e| {
+        rusqlite::Error::FromSqlConversionFailure(0, rusqlite::types::Type::Text, Box::new(e))
+    })?;
+    update(conn, &finfo.hash, &parts, finfo.earliest)
 }
 
 // test
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
+    use std::{
+        path::PathBuf,
+        time::{SystemTime, UNIX_EPOCH},
+    };
 
     use super::*;
     use serde_json::json;
@@ -87,30 +146,33 @@ mod tests {
             (
                 json!(["tmp", "test1", "file1"]).to_string(),
                 "hash1".to_string(),
+                SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs(),
             ),
             (
                 json!(["tmp", "test2", "file2"]).to_string(),
                 "hash2".to_string(),
+                SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs()
+                    + 60 * 60 * 24,
             ),
         ];
         {
             let conn = db_init(&p).unwrap();
             println!("conn: {:#?}", conn);
 
-            for (parts, hash) in data.iter() {
-                let r = conn.execute(
-                    "INSERT INTO data (parts, hash) VALUES (?, ?)",
-                    [parts, hash],
-                );
+            for (parts, hash, timestamp) in data.iter() {
+                let r = insert(&conn, &parts, &hash, *timestamp as i64);
                 println!("insert: {:#?}", r);
                 assert!(r.is_ok());
                 assert!(r.unwrap() == 1);
             }
-            for (parts, hash) in data.iter() {
-                let r = conn.execute(
-                    "INSERT INTO data (parts, hash) VALUES (?, ?)",
-                    [parts, hash],
-                );
+            for (parts, hash, timestamp) in data.iter() {
+                let r = insert(&conn, &parts, &hash, *timestamp as i64);
                 println!("insert: {:#?}", r);
                 assert!(r.is_err());
                 assert!(r
@@ -123,30 +185,33 @@ mod tests {
     }
 
     #[test]
-    fn test_insert_hash() {
+    fn test_insert_finfo() {
+        let (parts1, parts2) = (vec!["path", "to", "file1"], vec!["path", "to", "file2"]);
         let tests = [
             // json!({"parts": ["path", "to", "file1"], "hash": "hash1"}),
             // json!({"parts": ["path", "to", "file1"], "hash": "hash1"}),
-            FileHash {
-                parts: &vec!["path", "to", "file1"],
-                hash: "hash1",
+            FileInfo {
+                parts: Cow::Borrowed(&parts1),
+                hash: Cow::Borrowed("hash1"),
+                earliest: 0,
             },
-            FileHash {
-                parts: &vec!["path", "to", "file2"],
-                hash: "hash2",
+            FileInfo {
+                parts: Cow::Borrowed(&parts2),
+                hash: Cow::Borrowed("hash2"),
+                earliest: 0,
             },
         ];
-        let p = get_db_path("test_insert_hash.db");
+        let p = get_db_path("test_insert_finfo.db");
         {
             let conn = db_init(&p).unwrap();
             for test in tests.iter() {
-                let r = insert_hash(&conn, &test);
+                let r = insert_finfo(&conn, &test);
                 println!("insert: {:#?}", r);
                 assert!(r.is_ok());
                 assert!(r.unwrap() == 1);
             }
             for test in tests.iter() {
-                let r = insert_hash(&conn, &test);
+                let r = insert_finfo(&conn, &test);
                 println!("insert: {:#?}", r);
                 assert!(r.is_err());
                 assert!(r
@@ -160,29 +225,70 @@ mod tests {
     }
 
     #[test]
-    fn test_query_parts() {
-        let p = get_db_path("test_query_parts.db");
-
-        let test = FileHash {
-            parts: &vec!["path", "to", "file1"],
-            hash: "hash1",
+    fn test_query() {
+        let p = get_db_path("test_query.db");
+        let parts = vec!["path", "to", "file1"];
+        let test = FileInfo {
+            parts: Cow::Borrowed(&parts),
+            hash: Cow::Borrowed("hash1"),
+            earliest: 123,
         };
         {
             let conn = db_init(&p).unwrap();
-            let r = insert_hash(&conn, &test);
+            let r = insert_finfo(&conn, &test);
             println!("insert: {:#?}", r);
             assert!(r.is_ok());
             assert!(r.unwrap() == 1);
 
-            let r = query_parts(&conn, "hash1");
+            let r = query_finfo(&conn, "hash1");
             println!("query: {:#?}", r);
             assert!(r.is_ok());
-            assert!(r.unwrap().unwrap().len() == 3);
+            let r = r.unwrap().unwrap();
+            assert!(r.parts.len() == 3);
+            assert!(r.hash == "hash1");
+            assert!(r.earliest == 123);
 
-            let r = query_parts(&conn, "hash2");
+            let r = query_finfo(&conn, "hash2");
             println!("query: {:#?}", r);
             assert!(r.is_ok());
             assert!(r.unwrap().is_none());
+        }
+
+        std::fs::remove_file(p).unwrap();
+    }
+
+    #[test]
+    fn test_update() {
+        let p = get_db_path("test_update.db");
+        let parts = vec!["path", "to", "file1"];
+        let hash = "hash1";
+        let earliest = 123;
+        {
+            let conn = db_init(&p).unwrap();
+            let test = FileInfo {
+                parts: Cow::Borrowed(&parts),
+                hash: Cow::Borrowed(&hash),
+                earliest: earliest,
+            };
+            let r = insert_finfo(&conn, &test);
+            println!("insert: {:#?}", r);
+            assert!(r.is_ok());
+            assert!(r.unwrap() == 1);
+
+            let mut test = test;
+            let parts2 = vec!["path", "to", "file2"];
+            test.earliest = 456;
+            test.parts = Cow::Borrowed(&parts2);
+            let r = update_finfo(&conn, &test);
+            println!("update_finfo: {:#?}", r);
+            assert!(r.unwrap() == 1);
+
+            let r = query_finfo(&conn, &test.hash);
+            println!("query_finfo: {:#?}", r);
+            assert!(r.is_ok());
+            let r = r.unwrap().unwrap();
+            assert!(r.parts == parts2);
+            assert!(r.earliest == 456);
         }
 
         std::fs::remove_file(p).unwrap();
