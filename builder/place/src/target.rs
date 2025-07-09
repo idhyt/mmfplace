@@ -324,7 +324,7 @@ mod tests {
     #[test]
     fn test_output_gen() {
         let path = get_root().join("tests");
-        let gen = OUTPUT_GEN(
+        let output = OUTPUT_GEN(
             path.as_path(),
             &vec![
                 "2025".to_string(),
@@ -332,7 +332,7 @@ mod tests {
                 "小鸡动画.gif".to_string(),
             ],
         );
-        println!("gen: {:?}", gen);
-        assert_eq!(gen, path.join("2025").join("07").join("小鸡动画_01.gif"));
+        println!("general output: {:?}", output);
+        assert_eq!(output, path.join("2025").join("07").join("小鸡动画.gif"));
     }
 }

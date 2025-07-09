@@ -1,17 +1,19 @@
 use anyhow::Result;
 use chrono::Datelike;
 use once_cell::sync::OnceCell;
+use std::borrow::Cow;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tokio::sync::mpsc;
 use tokio::sync::Semaphore;
 use tracing::{debug, debug_span, error, info, warn};
 use tracing_futures::Instrument;
 use walkdir::WalkDir;
 
-use super::db::{get_connection, insert_hash, query_parts, FileHash};
-use super::target::Target;
+use super::db::{get_connection, insert_finfo, query_finfo, update_finfo, FileInfo};
+use super::target::{Target, OUTPUT_GEN};
 
 use config::CONFIG;
 use tools::metadata_extractor;
@@ -160,7 +162,12 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
     } else {
         target.parts = {
             let conn = get_connection().lock().unwrap();
-            query_parts(&conn, &target.hash)?
+            // let finfo = query_finfo(&conn, &target.hash)?;
+            if let Some(fi) = query_finfo(&conn, &target.hash)? {
+                Some(fi.parts.into())
+            } else {
+                None
+            }
         }
     }
 
@@ -232,37 +239,76 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
     target.set_output(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
-        // info!(from=?target.path, to=?target.output, count=count, "✅ success test finish");
-    } else {
+        info!(from=?target.path, to=?target.output, count=count, "✅ success test finish");
+        return Ok(());
+    }
+
+    // 在解析阶段，如果在数据库中找打同 hash，说明之前处理过了，会标记字段 dealt=true，并使用处理过的 parts 作为路径
+    // 当字段 dealt=false 时，说明当前走了解析流程
+    // 但是在并发过程中，会存在相同 hash 的 /path/to/A 和 /path/to/B 同时被处理
+
+    // 没有走 parse 流程，使用的历史 parts, 数据库不需要处理，直接拷贝即可
+    if target.dealt {
         target.copy_with_times()?;
-        if !target.dealt {
-            // 插入数据库
-            let conn = get_connection().lock().unwrap();
-            // bugfix: 并发中如果AB文件hash相同，第一次处理，A和B都没处理过，最后插入数据库会造成同hash
-            if let Some(parts) = query_parts(&conn, &target.hash)? {
-                warn!(file=?target.path, parts=?parts, "⚠️ hash already exists in concurrent process");
-                // TODO, should compare earliest time and update it
-            } else {
-                insert_hash(
-                    &conn,
-                    &FileHash {
-                        parts: &target.parts.unwrap(),
-                        hash: &target.hash,
-                    },
+        info!(from=?target.path, to=?target.output, count=count, "✅ success place with history parsed finish");
+        return Ok(());
+    }
+
+    // 处理并发中可能存在同 hash
+    {
+        let parts = target.parts.as_ref().unwrap();
+        let finfo = FileInfo {
+            parts: Cow::Borrowed(parts),
+            hash: Cow::Borrowed(&target.hash),
+            earliest: target.tinfo.earliest.timestamp(),
+        };
+        let conn = get_connection().lock().unwrap();
+        // 先查是否存在
+        let find = query_finfo(&conn, &target.hash)?;
+        if find.is_none() {
+            // 不存在直接插入数据库即可
+            insert_finfo(&conn, &finfo).map_err(|e| {
+                anyhow::anyhow!(
+                    "insert hash error file={:?}, hash={} error={:?}",
+                    target.path,
+                    target.hash,
+                    e
                 )
-                .map_err(|e| {
-                    anyhow::anyhow!(
-                        "insert hash error file={:?}, hash={} error={:?}",
-                        target.path,
-                        target.hash,
-                        e
-                    )
-                })?;
-                debug!(file=?target.output, hash=target.hash, "success insert hash");
+            })?;
+            target.copy_with_times()?;
+            info!(from=?target.path, to=?target.output, count=count, "✅ success place with new parsed finish");
+            return Ok(());
+        }
+
+        let history = find.unwrap();
+        info!(current=?parts, history=?history.parts, "same hash file found, compare the time and overwrite it");
+        let history_file = OUTPUT_GEN(&temp_get().output, &history.parts.to_vec());
+        // 如果已经存在了，比对 eraiest time，如果当前的更早，则更新，否则直接丢弃
+        if finfo.earliest < history.earliest {
+            // 删除原来的文件
+            if history_file.is_file() {
+                std::fs::remove_file(&history_file)?;
             }
+            // 更新数据库
+            update_finfo(&conn, &finfo)?;
+            target.copy_with_times()?;
+            info!(from=?target.path, to=?target.output, count=count, "✅ success place (<history) update finish");
+        }
+        // 时间晚，则丢弃
+        else {
+            // 检查下原始文件是否存在，如果不存在，则需要复制过去
+            if !history_file.is_file() {
+                warn!(file=?history_file, "⚠️ history file not exists, restore it");
+                let systime: SystemTime = UNIX_EPOCH + Duration::from_secs(history.earliest as u64);
+                // 更新 earliest
+                target.tinfo.earliest = systime.into();
+                // 更新 output
+                target.output = history_file;
+                target.copy_with_times()?;
+            }
+            info!(from=?target.path, to=?target.output, count=count, "✅ success place (>history) finish");
         }
     }
-    info!(from=?target.path, to=?target.output, count=count, "✅ success place finish");
     Ok(())
 }
 
