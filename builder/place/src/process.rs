@@ -29,17 +29,19 @@ struct TempData {
     output: PathBuf,
     test: bool,
     rename: bool,
+    total: usize,
 }
 
 static TEMPDATA: OnceCell<TempData> = OnceCell::new();
 
-pub fn temp_init(input: PathBuf, output: PathBuf, test: bool, rename: bool) {
+fn temp_init(input: PathBuf, output: PathBuf, test: bool, rename: bool, total: usize) {
     TEMPDATA
         .set(TempData {
             input,
             output,
             test,
             rename,
+            total,
         })
         .expect("TempData is already initialized")
 }
@@ -47,13 +49,20 @@ fn temp_get() -> &'static TempData {
     TEMPDATA.get().expect("TempData is not initialized")
 }
 
-pub async fn do_process() -> Result<()> {
-    let (input, output, test) = (&temp_get().input, &temp_get().output, temp_get().test);
-    let total = walkdir::WalkDir::new(input)
+pub async fn do_process(
+    input: PathBuf,
+    output: PathBuf,
+    test: bool,
+    rename_with_ymd: bool,
+) -> Result<()> {
+    // let (input, output, test) = (&temp_get().input, &temp_get().output, temp_get().test);
+    let total = walkdir::WalkDir::new(&input)
         .into_iter()
         .filter_map(Result::ok)
         .filter(|e| e.file_type().is_file())
         .count();
+    temp_init(input, output, test, rename_with_ymd, total);
+    let (input, output, test) = (&temp_get().input, &temp_get().output, temp_get().test);
     info!(input=?input, total=total, output=?output, test=test, "start process");
 
     // MPSC mode
@@ -235,11 +244,12 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
 
 async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Result<()> {
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
+    let total = temp_get().total;
     debug!(file=?target.path, "🚀 begin place {} file", count);
     target.set_output(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
-        info!(from=?target.path, to=?target.output, count=count, "✅ success test finish");
+        info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success test finish");
         return Ok(());
     }
 
@@ -250,7 +260,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
     // 没有走 parse 流程，使用的历史 parts, 数据库不需要处理，直接拷贝即可
     if target.dealt {
         target.copy_with_times()?;
-        info!(from=?target.path, to=?target.output, count=count, "✅ success place with history parsed finish");
+        info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place with history parsed finish");
         return Ok(());
     }
 
@@ -276,7 +286,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
                 )
             })?;
             target.copy_with_times()?;
-            info!(from=?target.path, to=?target.output, count=count, "✅ success place with new parsed finish");
+            info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place with new parsed finish");
             return Ok(());
         }
 
@@ -292,7 +302,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
             // 更新数据库
             update_finfo(&conn, &finfo)?;
             target.copy_with_times()?;
-            info!(from=?target.path, to=?target.output, count=count, "✅ success place (<history) update finish");
+            info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place (<history) update finish");
         }
         // 时间晚，则丢弃
         else {
@@ -307,7 +317,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
                 // 复制
                 target.copy_with_times()?;
             }
-            info!(from=?target.path, to=?target.output, count=count, "✅ success place (>=history) finish");
+            info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place (>=history) finish");
         }
     }
     Ok(())
@@ -333,7 +343,7 @@ mod tests {
         let tests = get_root().join("tests");
         let input = tests.join("2002/11/simple.png");
         let output = get_root().join("tests");
-        temp_init(input.clone(), output.clone(), true, false);
+        temp_init(input.clone(), output.clone(), true, false, 1);
         let mut target = do_parse(input.clone()).await.unwrap();
         println!("target: {:#?}", target);
         assert_eq!("simple", target.name);

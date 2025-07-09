@@ -21,6 +21,5 @@ pub async fn process(
     }
     let (input, output) = (input.canonicalize()?, output.canonicalize()?);
     // init temp data
-    process::temp_init(input, output, test, rename_with_ymd);
-    process::do_process().await
+    process::do_process(input, output, test, rename_with_ymd).await
 }
