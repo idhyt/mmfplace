@@ -10,21 +10,22 @@ use utils::crypto::get_file_md5;
 #[derive(Debug, Clone)]
 pub struct TimeInfo {
     // parsed datetime from metadata
+    // all datetime parsed as to utc
     pub parsedtimes: Vec<DateTime<Utc>>,
     // datetime from file attributes
     // [accessed, modified, created]
     pub attrtimes: Vec<Option<SystemTime>>,
     // the earliest datetime, minimum of parsedtimes and attrtimes
-    pub earliest: DateTime<Utc>,
+    // set it to system local time
+    pub earliest: DateTime<Local>,
 }
 
 impl Default for TimeInfo {
     fn default() -> Self {
-        let now = SystemTime::now();
         TimeInfo {
             parsedtimes: Vec::new(),
             attrtimes: Vec::new(),
-            earliest: DateTime::<Utc>::from(now),
+            earliest: DateTime::<Local>::from(SystemTime::now()),
         }
     }
 }
@@ -44,7 +45,7 @@ pub struct Target {
     // the file name without extension
     pub name: String,
     // the file parsed type
-    pub type_: Option<String>,
+    pub ftype: Option<String>,
     // the target file times info
     pub tinfo: TimeInfo,
     // // the earliest datetime
@@ -82,14 +83,14 @@ impl Target {
             format!(
                 "{}.{}",
                 name,
-                self.type_.as_ref().map_or(&self.extension, |s| &s)
+                self.ftype.as_ref().map_or(&self.extension, |s| &s)
             )
         } else {
             format!(
                 "{}_{:02}.{}",
                 name,
                 i,
-                self.type_.as_ref().map_or(&self.extension, |s| &s)
+                self.ftype.as_ref().map_or(&self.extension, |s| &s)
             )
         }
     }
@@ -122,7 +123,7 @@ impl Target {
 
     pub fn set_earliest(&mut self) -> Result<()> {
         // 最少包含 mtime 和 atime
-        let attr_min = DateTime::<Utc>::from(
+        let attr_min = DateTime::<Local>::from(
             *self
                 .tinfo
                 .attrtimes
@@ -138,11 +139,19 @@ impl Target {
             self.tinfo.earliest = attr_min;
             warn!(file=?self.path, "💡 time not found by dateparser, use the attrtimes as earliest time");
         } else {
-            self.tinfo.earliest = self
+            // self.tinfo.earliest = self
+            //     .tinfo
+            //     .parsedtimes
+            //     .iter()
+            //     .fold(attr_min, |m, dt| *dt.min(&m));
+            let parsed_min = self
                 .tinfo
                 .parsedtimes
                 .iter()
-                .fold(attr_min, |m, dt| *dt.min(&m));
+                .min()
+                .ok_or(anyhow::anyhow!("min time not found in parsedtimes"))?
+                .with_timezone(&Local);
+            self.tinfo.earliest = parsed_min.min(attr_min);
             debug!(file=?self.path, "use the minimum time of attrtimes and dateparser");
         }
         info!(file=?self.path, earliest = ?self.tinfo.earliest, "🎉 success set earliest datetime");

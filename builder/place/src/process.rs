@@ -180,7 +180,7 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
     // 如果需要忽略，则设置type字段，后边逻辑将跳过获取文件类型
     if !captype {
         debug!(file = ?target.path, "💡 the file type is ignored");
-        target.type_ = Some(target.extension.clone());
+        target.ftype = Some(target.extension.clone());
     }
 
     // 获取文件元数据并解析出所有时间格式
@@ -197,11 +197,15 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
         }
 
         // 获取文件type
-        if target.type_.is_none() {
+        if target.ftype.is_none() {
             for capture in &CONFIG.typeregex.list {
                 if let Ok(t) = capture.capture(text) {
-                    info!(file=?target.path, type_=t, "🎉 success parse filetype from metadata");
-                    target.type_ = Some(t);
+                    info!(
+                        text = text,
+                        ftype = t,
+                        "🎉 success parse filetype from text"
+                    );
+                    target.ftype = Some(t);
                     break;
                 }
             }
@@ -235,7 +239,10 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
             // 插入数据库
             let conn = get_connection().lock().unwrap();
             // bugfix: 并发中如果AB文件hash相同，第一次处理，A和B都没处理过，最后插入数据库会造成同hash
-            if query_parts(&conn, &target.hash)?.is_none() {
+            if let Some(parts) = query_parts(&conn, &target.hash)? {
+                warn!(file=?target.path, parts=?parts, "⚠️ hash already exists in concurrent process");
+                // TODO, should compare earliest time and update it
+            } else {
                 insert_hash(
                     &conn,
                     &FileHash {
@@ -251,7 +258,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
                         e
                     )
                 })?;
-                debug!(file=?target.output, "success insert hash");
+                debug!(file=?target.output, hash=target.hash, "success insert hash");
             }
         }
     }
@@ -284,7 +291,7 @@ mod tests {
         println!("target: {:#?}", target);
         assert_eq!("simple", target.name);
         assert_eq!("png", target.extension);
-        assert_eq!(Some("jpg".to_string()), target.type_);
+        assert_eq!(Some("jpg".to_string()), target.ftype);
         assert_eq!(target.tinfo.parsedtimes.len(), 3);
         assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
         assert_eq!(
@@ -308,7 +315,7 @@ mod tests {
         assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
         assert_eq!("simple", target.name);
         assert_eq!("jpg", target.extension);
-        assert_eq!(Some("jpg".to_string()), target.type_);
+        assert_eq!(Some("jpg".to_string()), target.ftype);
         assert_eq!(
             target.tinfo.earliest,
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
