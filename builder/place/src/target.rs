@@ -1,11 +1,22 @@
 use anyhow::Result;
 use chrono::prelude::*;
 use chrono::{DateTime, Utc};
+use once_cell::sync::Lazy;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 use tracing::{debug, error, info, warn};
 
 use utils::crypto::get_file_md5;
+
+// output generation
+pub static OUTPUT_GEN: Lazy<fn(&Path, &Vec<String>) -> PathBuf> = Lazy::new(|| {
+    |o, p| {
+        p.iter().fold(o.to_owned(), |mut path, p| {
+            path.push(p);
+            path
+        })
+    }
+});
 
 #[derive(Debug, Clone)]
 pub struct TimeInfo {
@@ -159,16 +170,16 @@ impl Target {
     }
 
     pub fn set_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
-        let generation = |o: &Path, p: &Vec<String>| {
-            p.iter().fold(o.to_owned(), |mut path, p| {
-                path.push(p);
-                path
-            })
-        };
+        // let generation = |o: &Path, p: &Vec<String>| {
+        //     p.iter().fold(o.to_owned(), |mut path, p| {
+        //         path.push(p);
+        //         path
+        //     })
+        // };
 
         // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
         if self.dealt {
-            self.output = generation(dir, self.parts.as_ref().unwrap());
+            self.output = OUTPUT_GEN(dir, self.parts.as_ref().unwrap());
             return Ok(());
         }
 
@@ -195,7 +206,7 @@ impl Target {
         // 有可能文件重名，循环生成
         for i in 0..1000 {
             parts[2] = self.get_name(i, name.as_deref());
-            let check = generation(dir, &parts);
+            let check = OUTPUT_GEN(dir, &parts);
             // 文件不存在，表明该路径可用
             if !check.is_file() {
                 self.output = check;
@@ -308,5 +319,20 @@ mod tests {
         let path = get_root().join("tests").join("2025/07/小鸡动画.gif");
         let target = Target::new(path).unwrap();
         assert_eq!(target.get_name(1, Some("abc")), "abc_01.gif");
+    }
+
+    #[test]
+    fn test_output_gen() {
+        let path = get_root().join("tests");
+        let gen = OUTPUT_GEN(
+            path.as_path(),
+            &vec![
+                "2025".to_string(),
+                "07".to_string(),
+                "小鸡动画.gif".to_string(),
+            ],
+        );
+        println!("gen: {:?}", gen);
+        assert_eq!(gen, path.join("2025").join("07").join("小鸡动画_01.gif"));
     }
 }
