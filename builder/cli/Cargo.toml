@@ -2,14 +2,22 @@
 name = "mmfplace"
 version = "0.3.0"
 edition = "2021"
+authors = ["idhyt3r@gmail.com"]
+license = "GPLv3"
+description = "Album archive based on the earliest date (derived from file metadata and properties)"
+readme = "README.md"
+homepage = "https://github.com/idhyt/mmfplace"
+repository = "https://github.com/idhyt/mmfplace"
+keywords = ["album", "photo", "archive", "metadata-extractor"]
+categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-log = "0.4.27"
 clap = "4.5.40"
 tokio = "1.46.0"
 
 utils = { path = "../utils" }
 config = { path = "../config" }
 place = { path = "../place" }
+tracing = "0.1.41"

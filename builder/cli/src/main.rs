@@ -29,7 +29,7 @@ enum Commands {
 #[derive(Parser, Debug)]
 #[clap(
     author = "idhyt",
-    version = "0.3.0 (dirty)",
+    version = "0.3.0 (non-release)",
     about = "split multi-media file by earliest datetime",
     long_about = None
 )]
@@ -53,7 +53,7 @@ async fn main() {
     // env_logger::init();
     let args = Cli::parse();
     setup_tracing(args.verbose, &args.logfile).expect("Failed to setup tracing");
-    log::debug!("args: {:#?}", args);
+    tracing::debug!("args: {:#?}", args);
 
     match &args.command {
         Commands::Place {
@@ -62,7 +62,7 @@ async fn main() {
             rename_with_ymd,
         } => {
             if let Err(e) = place::process(input, &args.output, *test, *rename_with_ymd).await {
-                log::error!("process error: {}", e);
+                tracing::error!(error = ?e, "process failed");
                 std::process::exit(1);
             }
         } // Commands::Dupf { input } => {
