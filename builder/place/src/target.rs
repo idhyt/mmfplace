@@ -226,14 +226,10 @@ impl Target {
         Ok(self.tinfo.earliest.unwrap())
     }
 
-    // 尝试最大 1000 次设置 output 字段，并更新 parts 字段
-    // 如果历史处理过 (dealt = true)，使用的历史 parts 直接生成 output
+    // 尝试最大 1000 次设置 output 字段，并更新 parts 字段，正常的元数据解析流程只会调用一次
     pub fn set_output_parts(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
-        // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
-        // TODO bugfix: 如果之前没有设置 `rename_with_ymd` 现在设置了，则是否需要将原来的路径删掉使用新路径？
-        if self.dealt {
-            self.output = OUTPUT_GEN(dir, self.get_parts()?);
-            return Ok(());
+        if self.parts.is_some() {
+            return Err(anyhow::anyhow!("Unexpected parts already set"));
         }
 
         let earliest = self.get_earliest()?;

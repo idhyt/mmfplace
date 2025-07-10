@@ -242,10 +242,9 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
     let total = temp_get().total;
     debug!(file=?target.path, "🚀 begin place {} file", count);
-    // 尝试最大 1000 次 来设置 parts 和 output
-    target.set_output_parts(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
+        target.set_output_parts(&temp_get().output, temp_get().rename)?;
         info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success test finish");
         return Ok(());
     }
@@ -256,11 +255,18 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
 
     // 没有走 parse 流程，使用的历史 parts, 数据库不需要处理，直接拷贝即可
     if target.dealt {
-        // parts 和 earliest 在 parsed 阶段设置, output 在上边设置
+        // // TODO: 如果之前没有设置 `rename_with_ymd` 现在设置了，则是否需要将原来的路径删掉使用新路径？
+        // let parts = target.get_parts()?;
+        // let earliest = target.get_earliest()?;
+        // 设置 output, parts 和 earliest 在 parsed 阶段设置
+        target.output = OUTPUT_GEN(&temp_get().output, target.get_parts()?);
         target.copy_with_times()?;
         info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place with history parsed finish");
         return Ok(());
     }
+
+    // 尝试最大 1000 次 来设置 parts 和 output
+    target.set_output_parts(&temp_get().output, temp_get().rename)?;
 
     // 处理并发中可能存在同 hash
     {
@@ -389,6 +395,7 @@ mod tests {
             vec!["2002", "11", "simple_02.jpg"]
         );
 
+        target.set_parts(None);
         target.set_output_parts(&output, true).unwrap();
         let copy_path = target.output.clone();
         assert_eq!(copy_path, output.join("2002/11/2002-11-16.jpg"));
