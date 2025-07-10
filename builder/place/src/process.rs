@@ -242,10 +242,8 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
     let total = temp_get().total;
     debug!(file=?target.path, "🚀 begin place {} file", count);
-
-    // 尝试最大 1000 次设置 output 字段，并更新 parts 字段
-    // 如果历史处理过 (dealt = true)，使用的历史 parts 直接生成 output
-    target.set_output(&temp_get().output, temp_get().rename)?;
+    // 尝试最大 1000 次 来设置 parts 和 output
+    target.set_output_parts(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
         info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success test finish");
@@ -258,6 +256,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
 
     // 没有走 parse 流程，使用的历史 parts, 数据库不需要处理，直接拷贝即可
     if target.dealt {
+        // parts 和 earliest 在 parsed 阶段设置, output 在上边设置
         target.copy_with_times()?;
         info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place with history parsed finish");
         return Ok(());
@@ -284,6 +283,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
                     e
                 )
             })?;
+            // parts 和 earliest 在 parsed 阶段设置, output 在上边设置
             target.copy_with_times()?;
             info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place with new parsed finish");
             return Ok(());
@@ -300,19 +300,20 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
             }
             // 更新数据库
             update_finfo(&conn, &finfo)?;
+            // parts 和 earliest 在 parsed 阶段设置, output 在上边设置
             target.copy_with_times()?;
             info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place (<history) update finish");
         }
         // 时间晚，则丢弃
         else {
             // 检查下原始文件是否存在，如果不存在，则需要复制过去
-            // 更新 output
-            target.output = history_file;
-            if !target.output.is_file() {
-                warn!(file=?target.output, "⚠️ history file not exists, restore it");
+            if !history_file.is_file() {
+                warn!(file=?history_file, "⚠️ history file not exists, restore it");
+                // 更新 output
+                target.output = history_file;
                 // 设置 earliest
                 target.set_earliest(Some(history.earliest as u64))?;
-                // 复制
+                //  earliest 和 output 在上边设置， parts 用不到(此时parts为当前处理的文件，而非history)
                 target.copy_with_times()?;
             }
             info!(from=?target.path, to=?target.output, "✅ [{count}/{total}] success place (>=history) finish");
@@ -355,7 +356,7 @@ mod tests {
         );
         assert!(target.get_attrtime().len() >= 2);
 
-        target.set_output(&output, false).unwrap();
+        target.set_output_parts(&output, false).unwrap();
         let copy_path = target.output.clone();
         println!("copy_path: {:?}", copy_path);
         assert_eq!(copy_path, output.join("2002/11/simple_01.jpg"));
@@ -379,7 +380,7 @@ mod tests {
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
 
-        target.set_output(&output, false).unwrap();
+        target.set_output_parts(&output, false).unwrap();
         let copy_path = target.output.clone();
         println!("copy_path: {:?}", copy_path);
         assert_eq!(copy_path, output.join("2002/11/simple_02.jpg"));
@@ -388,7 +389,7 @@ mod tests {
             vec!["2002", "11", "simple_02.jpg"]
         );
 
-        target.set_output(&output, true).unwrap();
+        target.set_output_parts(&output, true).unwrap();
         let copy_path = target.output.clone();
         assert_eq!(copy_path, output.join("2002/11/2002-11-16.jpg"));
 

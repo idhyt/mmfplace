@@ -9,7 +9,7 @@ use tracing::{debug, error, info, warn};
 use utils::crypto::get_file_md5;
 
 // output generation
-pub static OUTPUT_GEN: Lazy<fn(&Path, &Vec<String>) -> PathBuf> = Lazy::new(|| {
+pub static OUTPUT_GEN: Lazy<fn(&Path, &[String]) -> PathBuf> = Lazy::new(|| {
     |o, p| {
         p.iter().fold(o.to_owned(), |mut path, p| {
             path.push(p);
@@ -226,10 +226,13 @@ impl Target {
         Ok(self.tinfo.earliest.unwrap())
     }
 
-    pub fn set_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
+    // 尝试最大 1000 次设置 output 字段，并更新 parts 字段
+    // 如果历史处理过 (dealt = true)，使用的历史 parts 直接生成 output
+    pub fn set_output_parts(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
         // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
+        // TODO bugfix: 如果之前没有设置 `rename_with_ymd` 现在设置了，则是否需要将原来的路径删掉使用新路径？
         if self.dealt {
-            self.output = OUTPUT_GEN(dir, self.parts.as_ref().unwrap());
+            self.output = OUTPUT_GEN(dir, self.get_parts()?);
             return Ok(());
         }
 
@@ -262,7 +265,7 @@ impl Target {
             if !check.is_file() {
                 self.output = check;
                 // 更新 parts
-                self.parts = Some(parts);
+                self.set_parts(Some(parts));
                 return Ok(());
             }
             debug!(
@@ -280,6 +283,7 @@ impl Target {
         ))
     }
 
+    // 每次执行这个函数，都需要确保 `parts`, `earlist` 和 `output` 都被更新过
     pub fn copy_with_times(&self) -> Result<()> {
         let output = &self.output;
         // 判断是否需要拷贝
