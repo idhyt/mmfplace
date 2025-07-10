@@ -3,7 +3,7 @@ use chrono::prelude::*;
 use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 use std::path::{Path, PathBuf};
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tracing::{debug, error, info, warn};
 
 use utils::crypto::get_file_md5;
@@ -18,7 +18,7 @@ pub static OUTPUT_GEN: Lazy<fn(&Path, &Vec<String>) -> PathBuf> = Lazy::new(|| {
     }
 });
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct TimeInfo {
     // parsed datetime from metadata
     // all datetime parsed as to utc
@@ -27,19 +27,19 @@ pub struct TimeInfo {
     // [accessed, modified, created]
     pub attrtimes: Vec<Option<SystemTime>>,
     // the earliest datetime, minimum of parsedtimes and attrtimes
-    // set it to system local time
-    pub earliest: DateTime<Local>,
+    // set it to private `Option` system local time ensure every process should set it.
+    earliest: Option<DateTime<Local>>,
 }
 
-impl Default for TimeInfo {
-    fn default() -> Self {
-        TimeInfo {
-            parsedtimes: Vec::new(),
-            attrtimes: Vec::new(),
-            earliest: DateTime::<Local>::from(SystemTime::now()),
-        }
-    }
-}
+// impl Default for TimeInfo {
+//     fn default() -> Self {
+//         TimeInfo {
+//             parsedtimes: Vec::new(),
+//             attrtimes: Vec::new(),
+//             earliest: Some(DateTime::<Local>::from(SystemTime::now())),
+//         }
+//     }
+// }
 
 #[derive(Debug, Clone, Default)]
 pub struct Target {
@@ -132,7 +132,21 @@ impl Target {
         Ok(())
     }
 
-    pub fn set_earliest(&mut self) -> Result<()> {
+    pub fn set_earliest(&mut self, timestamp: Option<u64>) -> Result<()> {
+        if let Some(ts) = timestamp {
+            self.set_earliest_from_timestamp(ts);
+        } else {
+            self.update_earliest()?;
+        }
+        Ok(())
+    }
+
+    fn set_earliest_from_timestamp(&mut self, timestamp: u64) {
+        let systime: SystemTime = UNIX_EPOCH + Duration::from_secs(timestamp);
+        self.tinfo.earliest = Some(systime.into());
+    }
+
+    fn update_earliest(&mut self) -> Result<()> {
         // 最少包含 mtime 和 atime
         let attr_min = DateTime::<Local>::from(
             *self
@@ -147,7 +161,7 @@ impl Target {
         if self.tinfo.parsedtimes.is_empty() {
             // should panic?
             // warn!(file=?self.path, "💡 datetime not found by dateparser");
-            self.tinfo.earliest = attr_min;
+            self.tinfo.earliest = Some(attr_min);
             warn!(file=?self.path, "💡 time not found by dateparser, use the attrtimes as earliest time");
         } else {
             // self.tinfo.earliest = self
@@ -162,32 +176,34 @@ impl Target {
                 .min()
                 .ok_or(anyhow::anyhow!("min time not found in parsedtimes"))?
                 .with_timezone(&Local);
-            self.tinfo.earliest = parsed_min.min(attr_min);
+            self.tinfo.earliest = Some(parsed_min.min(attr_min));
             debug!(file=?self.path, "use the minimum time of attrtimes and dateparser");
         }
         info!(file=?self.path, earliest = ?self.tinfo.earliest, "🎉 success set earliest datetime");
         Ok(())
     }
 
-    pub fn set_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
-        // let generation = |o: &Path, p: &Vec<String>| {
-        //     p.iter().fold(o.to_owned(), |mut path, p| {
-        //         path.push(p);
-        //         path
-        //     })
-        // };
+    pub fn get_earliest(&self) -> Result<DateTime<Local>> {
+        // 强制验证 earliest 是否设置过，否则说明逻辑处理存在缺陷
+        self.tinfo
+            .earliest
+            .ok_or(anyhow::anyhow!("earliest time not set"))?;
+        Ok(self.tinfo.earliest.unwrap())
+    }
 
+    pub fn set_output(&mut self, dir: &Path, rename_with_ymd: bool) -> Result<()> {
         // parse阶段标记：之前处理过了，会设置parts字段，直接返回路径
         if self.dealt {
             self.output = OUTPUT_GEN(dir, self.parts.as_ref().unwrap());
             return Ok(());
         }
 
+        let earliest = self.get_earliest()?;
         // parse阶段没有标记，说明之前没处理过，生成新路径，并设置新的parts
         let mut parts: Vec<String> = vec![
-            self.tinfo.earliest.year().to_string(),
+            earliest.year().to_string(),
             // self.tinfo.earliest.month().to_string(),
-            format!("{:02}", self.tinfo.earliest.month()),
+            format!("{:02}", earliest.month()),
             "".to_string(),
         ];
         // 保留文件名格式
@@ -195,9 +211,9 @@ impl Target {
             if rename_with_ymd {
                 Some(format!(
                     "{}-{:02}-{:02}",
-                    self.tinfo.earliest.year(),
-                    self.tinfo.earliest.month(),
-                    self.tinfo.earliest.day()
+                    earliest.year(),
+                    earliest.month(),
+                    earliest.day()
                 ))
             } else {
                 None
@@ -258,6 +274,8 @@ impl Target {
             return Ok(());
         }
 
+        let earliest = self.get_earliest()?;
+
         // 创建文件夹并赋值
         let dir = output.parent().ok_or(anyhow::anyhow!(
             "the output parent directory not found {:?}",
@@ -269,7 +287,7 @@ impl Target {
         std::fs::copy(&self.path, output)?;
 
         // 设置拷贝文件的属性到最早时间
-        let st: SystemTime = self.tinfo.earliest.into();
+        let st: SystemTime = earliest.into();
         #[cfg(target_os = "windows")]
         {
             use std::os::windows::fs::FileTimesExt;

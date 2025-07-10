@@ -5,7 +5,6 @@ use std::borrow::Cow;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tokio::sync::mpsc;
 use tokio::sync::Semaphore;
 use tracing::{debug, debug_span, error, info, warn};
@@ -169,20 +168,17 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
     if temp_get().test {
         debug!(file=?target.path, "💡 test mode, skip exists check");
     } else {
-        target.parts = {
-            let conn = get_connection().lock().unwrap();
-            // let finfo = query_finfo(&conn, &target.hash)?;
-            if let Some(fi) = query_finfo(&conn, &target.hash)? {
-                Some(fi.parts.into())
-            } else {
-                None
-            }
+        let conn = get_connection().lock().unwrap();
+        if let Some(history) = query_finfo(&conn, &target.hash)? {
+            target.dealt = true;
+            target.parts = Some(history.parts.into());
+            // 更新 earliest，后边需要设置文件属性时间
+            target.set_earliest(Some(history.earliest as u64))?;
         }
     }
 
     // 如果查到，说明之前已处理过了，则不再进行元数据解析
-    if target.parts.is_some() {
-        target.dealt = true;
+    if target.dealt {
         debug!(file = ?target.path, "file is already dealt before");
         return Ok(target);
     }
@@ -237,7 +233,7 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
             }
         }
     }
-    target.set_earliest()?;
+    target.set_earliest(None)?;
 
     Ok(target)
 }
@@ -270,7 +266,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
         let finfo = FileInfo {
             parts: Cow::Borrowed(parts),
             hash: Cow::Borrowed(&target.hash),
-            earliest: target.tinfo.earliest.timestamp(),
+            earliest: target.get_earliest()?.timestamp(),
         };
         let conn = get_connection().lock().unwrap();
         // 先查是否存在
@@ -311,9 +307,8 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
             target.output = history_file;
             if !target.output.is_file() {
                 warn!(file=?target.output, "⚠️ history file not exists, restore it");
-                let systime: SystemTime = UNIX_EPOCH + Duration::from_secs(history.earliest as u64);
-                // 更新 earliest
-                target.tinfo.earliest = systime.into();
+                // 设置 earliest
+                target.set_earliest(Some(history.earliest as u64))?;
                 // 复制
                 target.copy_with_times()?;
             }
@@ -352,7 +347,7 @@ mod tests {
         assert_eq!(target.tinfo.parsedtimes.len(), 3);
         assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
         assert_eq!(
-            target.tinfo.earliest,
+            target.get_earliest().unwrap(),
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
         assert!(target.tinfo.attrtimes.len() >= 2);
@@ -374,7 +369,7 @@ mod tests {
         assert_eq!("jpg", target.extension);
         assert_eq!(Some("jpg".to_string()), target.ftype);
         assert_eq!(
-            target.tinfo.earliest,
+            target.get_earliest().unwrap(),
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
 
