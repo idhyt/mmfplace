@@ -26,7 +26,7 @@ fn get_version() -> String {
 
 fn main() {
     // if cross compiling, unsupport get version because of no git
-    if std::env::var("CROSS_SYSROOT").is_ok() {
+    if std::env::var("CROSS_RUNNER").is_ok() {
         println!("warning: cross compiling, unsupport get version");
         return;
     }

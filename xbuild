@@ -39,7 +39,8 @@ EOF
     dist=mmfplace.$platform
     output=./dist/$dist
     [ -d "$output" ] || mkdir -p $output
-
+    # build testing
+    cd builder && cargo build && cd ..
     cd builder && cross build --release --target $platform -vv && cd ..
     cp builder/target/$platform/release/$name $output/$name
     cd ./dist && tar -czvf $dist.tar.gz $dist && rm -rf $dist && cd ..
