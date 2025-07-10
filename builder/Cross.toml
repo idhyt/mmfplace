@@ -17,4 +17,4 @@ image = "idhyt/cross-rs-x86_64-apple-darwin:0.0.1"
 image = "idhyt/cross-rs-aarch64-apple-darwin:0.0.1"
 
 [target.x86_64-pc-windows-gnu]
-image = "yosyshq/cross-windows-x64:2.2"
+image = "idhyt/cross-rs-x86_64-pc-windows-gnu:1.88.0"
