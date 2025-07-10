@@ -171,7 +171,7 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
         let conn = get_connection().lock().unwrap();
         if let Some(history) = query_finfo(&conn, &target.hash)? {
             target.dealt = true;
-            target.parts = Some(history.parts.into());
+            target.set_parts(Some(history.parts.into()));
             // 更新 earliest，后边需要设置文件属性时间
             target.set_earliest(Some(history.earliest as u64))?;
         }
@@ -229,7 +229,7 @@ async fn do_parse(path: PathBuf) -> Result<Target> {
                 warn!(file=?target.path, datetime=%dt, "💡 skip the datetime < 1975");
             } else {
                 info!(text = text, datetime = %dt, "🎉 success parse datetime from text");
-                target.tinfo.parsedtimes.push(dt);
+                target.add_parsedtime(dt);
             }
         }
     }
@@ -242,6 +242,9 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
     let count = processed_count.fetch_add(1, Ordering::SeqCst) + 1;
     let total = temp_get().total;
     debug!(file=?target.path, "🚀 begin place {} file", count);
+
+    // 尝试最大 1000 次设置 output 字段，并更新 parts 字段
+    // 如果历史处理过 (dealt = true)，使用的历史 parts 直接生成 output
     target.set_output(&temp_get().output, temp_get().rename)?;
 
     if temp_get().test {
@@ -262,7 +265,7 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
 
     // 处理并发中可能存在同 hash
     {
-        let parts = target.parts.as_ref().unwrap();
+        let parts = target.get_parts()?;
         let finfo = FileInfo {
             parts: Cow::Borrowed(parts),
             hash: Cow::Borrowed(&target.hash),
@@ -344,19 +347,22 @@ mod tests {
         assert_eq!("simple", target.name);
         assert_eq!("png", target.extension);
         assert_eq!(Some("jpg".to_string()), target.ftype);
-        assert_eq!(target.tinfo.parsedtimes.len(), 3);
+        assert_eq!(target.get_parsedtime().len(), 3);
         assert_eq!(target.hash, "a18932e314dbb4c81c6fd0e282d81d16");
         assert_eq!(
             target.get_earliest().unwrap(),
             Utc.with_ymd_and_hms(2002, 11, 16, 0, 0, 0).unwrap()
         );
-        assert!(target.tinfo.attrtimes.len() >= 2);
+        assert!(target.get_attrtime().len() >= 2);
 
         target.set_output(&output, false).unwrap();
         let copy_path = target.output.clone();
         println!("copy_path: {:?}", copy_path);
         assert_eq!(copy_path, output.join("2002/11/simple_01.jpg"));
-        assert_eq!(target.parts.unwrap(), vec!["2002", "11", "simple_01.jpg"]);
+        assert_eq!(
+            target.get_parts().unwrap(),
+            vec!["2002", "11", "simple_01.jpg"]
+        );
 
         // now we copy to a new file
         let dup_file = input.with_file_name("simple_01.jpg");
@@ -378,7 +384,7 @@ mod tests {
         println!("copy_path: {:?}", copy_path);
         assert_eq!(copy_path, output.join("2002/11/simple_02.jpg"));
         assert_eq!(
-            *target.parts.as_ref().unwrap(),
+            *target.get_parts().unwrap(),
             vec!["2002", "11", "simple_02.jpg"]
         );
 

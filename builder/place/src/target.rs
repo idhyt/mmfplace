@@ -22,10 +22,10 @@ pub static OUTPUT_GEN: Lazy<fn(&Path, &Vec<String>) -> PathBuf> = Lazy::new(|| {
 pub struct TimeInfo {
     // parsed datetime from metadata
     // all datetime parsed as to utc
-    pub parsedtimes: Vec<DateTime<Utc>>,
+    parsedtimes: Vec<DateTime<Utc>>,
     // datetime from file attributes
     // [accessed, modified, created]
-    pub attrtimes: Vec<Option<SystemTime>>,
+    attrtimes: Vec<Option<SystemTime>>,
     // the earliest datetime, minimum of parsedtimes and attrtimes
     // set it to private `Option` system local time ensure every process should set it.
     earliest: Option<DateTime<Local>>,
@@ -46,7 +46,7 @@ pub struct Target {
     // target file path
     pub path: PathBuf,
     // the path parts of the target placed
-    pub parts: Option<Vec<String>>,
+    parts: Option<Vec<String>>,
     // // parsed datetime from metadata
     // pub datetimes: Vec<DateTime<Utc>>,
     // hash with md5
@@ -85,6 +85,27 @@ impl Target {
         };
         target.set_attrtimes()?;
         Ok(target)
+    }
+
+    pub fn set_parts(&mut self, parts: Option<Vec<String>>) {
+        if let Some(old) = &self.parts {
+            if let Some(new) = &parts {
+                warn!(file=?self.path, from = ?old, to = ?new, "⚠️ the parts will be overwrited");
+            } else {
+                warn!(file=?self.path, from = ?old, to = "None", "⚠️ the parts will be overwrited to empty");
+            }
+        } else {
+            // debug!(file=?self.path, "set parts");
+        }
+
+        self.parts = parts;
+    }
+
+    pub fn get_parts(&self) -> Result<&[String]> {
+        if self.parts.is_none() {
+            return Err(anyhow::anyhow!("parts not set"));
+        }
+        Ok(&self.parts.as_ref().unwrap())
     }
 
     // 重名文件添加序号，是/否重命名文件
@@ -130,6 +151,20 @@ impl Target {
             self.tinfo.attrtimes.push(None);
         }
         Ok(())
+    }
+
+    #[allow(dead_code)]
+    pub fn get_attrtime(&self) -> &[Option<SystemTime>] {
+        &self.tinfo.attrtimes
+    }
+
+    pub fn add_parsedtime(&mut self, dt: DateTime<Utc>) {
+        self.tinfo.parsedtimes.push(dt);
+    }
+
+    #[allow(dead_code)]
+    pub fn get_parsedtime(&self) -> &[DateTime<Utc>] {
+        &self.tinfo.parsedtimes
     }
 
     pub fn set_earliest(&mut self, timestamp: Option<u64>) -> Result<()> {
