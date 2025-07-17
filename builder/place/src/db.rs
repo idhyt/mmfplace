@@ -4,7 +4,7 @@ use serde_json::json;
 use std::borrow::Cow;
 use std::path::Path;
 use std::sync::{Mutex, OnceLock};
-use tracing::info;
+use tracing::{info, warn};
 
 // pub struct FileInfo<'a, 'b, T: AsRef<str> + 'a> {
 //     pub parts: &'a [T],
@@ -32,7 +32,11 @@ pub fn get_connection() -> &'static Mutex<Connection> {
 }
 
 pub fn db_init(p: &Path) -> Result<Connection> {
-    info!(path = ?p, "Loading database once");
+    if p.is_file() {
+        info!(file=?p, "Loading Database exists and using it");
+    } else {
+        warn!(file=?p, "Loading Database not found, creating a new one");
+    }
     let conn = Connection::open(p)?;
     // 创建表（如果不存在）
     conn.execute(
@@ -172,10 +176,11 @@ mod tests {
                 let r = insert(&conn, &parts, &hash, *timestamp as i64);
                 println!("insert: {:#?}", r);
                 assert!(r.is_err());
-                assert!(r
-                    .unwrap_err()
-                    .to_string()
-                    .contains("UNIQUE constraint failed: data.hash"));
+                assert!(
+                    r.unwrap_err()
+                        .to_string()
+                        .contains("UNIQUE constraint failed: data.hash")
+                );
             }
         }
         std::fs::remove_file(p).unwrap();
@@ -211,10 +216,11 @@ mod tests {
                 let r = insert_finfo(&conn, &test);
                 println!("insert: {:#?}", r);
                 assert!(r.is_err());
-                assert!(r
-                    .unwrap_err()
-                    .to_string()
-                    .contains("UNIQUE constraint failed: data.hash"));
+                assert!(
+                    r.unwrap_err()
+                        .to_string()
+                        .contains("UNIQUE constraint failed: data.hash")
+                );
             }
         }
 

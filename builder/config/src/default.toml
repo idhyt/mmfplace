@@ -91,6 +91,9 @@ ignore = [
     # unsupported chinese date format in windows_cn
     # but we can get this data from file attributes
     "[File] File Modified Date",
+    # ignore If you don't expect to get the time from the file name
+    # delete If the file name has a time stamp like: 1998-02-09-xxx.png
+    "[File] File Name",
 ]
 
 [typeregex]

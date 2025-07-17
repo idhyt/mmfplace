@@ -88,7 +88,7 @@ tests
 
 默认情况下文件会复制到 `%Y/%m/xxx` 并会保留原始文件名， 如 `simple.jpg` -> `2002/11/simple.jpg`
 
-可以通过参数 `--rename-with-ymd` 将文件重命名，如 `simple.jpg` -> `2002/11/2025-11-16.jpg`
+可以通过参数 `--rename-with-ymd` 将文件重命名，如 `simple.jpg` -> `2025/11/2025-11-16.jpg`
 
 ```bash
 ❯ tree tests_output
@@ -174,4 +174,9 @@ dist
 └── tools                       # 依赖工具包
     ├── metadata-extractor-2.19.0.jar
     └── xmpcore-6.1.11.jar
-````
+```
+
+可配置的几个环境变量：
+
+`MMFPLACE_DATABASE`: 数据库路径
+`MMFPLACE_JAVA`: java路径

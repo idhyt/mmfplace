@@ -11,6 +11,7 @@ pub(crate) static METADATA: Lazy<MetadataReader> = Lazy::new(|| MetadataReader::
 
 #[derive(Debug)]
 pub struct MetadataReader {
+    java: String,
     extractor: PathBuf,
     xmpcore: PathBuf,
 }
@@ -40,11 +41,16 @@ impl MetadataReader {
             std::fs::write(&xmpcore, XMPCORE).expect("Failed to write xmpcore.jar");
         }
 
+        let java = std::env::var("MMFPLACE_JAVA").unwrap_or_else(|_| "java".to_string());
         // check java runtime
-        let output = std::process::Command::new("java").arg("-version").output();
-        assert!(output.is_ok(), "java runtime not found");
+        let output = std::process::Command::new(&java).arg("-version").output();
+        assert!(output.is_ok(), "java runtime not found at {}", java);
 
-        MetadataReader { extractor, xmpcore }
+        MetadataReader {
+            java,
+            extractor,
+            xmpcore,
+        }
     }
 
     // #[tracing::instrument]
@@ -65,7 +71,7 @@ impl MetadataReader {
         ];
         debug!(command=?args, "running metadata extractor.");
 
-        let mut child = tokio::process::Command::new("java")
+        let mut child = tokio::process::Command::new(&self.java)
             // .current_dir(file_path.as_ref())
             .args(args)
             // .stdin(std::process::Stdio::null())
