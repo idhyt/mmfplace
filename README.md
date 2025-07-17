@@ -175,8 +175,3 @@ dist
     ├── metadata-extractor-2.19.0.jar
     └── xmpcore-6.1.11.jar
 ```
-
-可配置的几个环境变量：
-
-`MMFPLACE_DATABASE`: 数据库路径
-`MMFPLACE_JAVA`: java路径
