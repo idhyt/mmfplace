@@ -26,10 +26,8 @@ static DATABASE: OnceLock<Mutex<Connection>> = OnceLock::new();
 
 pub fn get_connection() -> &'static Mutex<Connection> {
     DATABASE.get_or_init(|| {
-        let mut work_dir = std::env::current_exe().unwrap();
-        work_dir.pop();
-        let path = work_dir.join("place.db");
-        Mutex::new(db_init(&path).unwrap())
+        let path = config::CONFIG.database.as_ref().unwrap();
+        Mutex::new(db_init(path).unwrap())
     })
 }
 

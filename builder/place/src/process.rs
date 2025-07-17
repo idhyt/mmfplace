@@ -65,7 +65,7 @@ pub async fn do_process(
     info!(input=?input, total=total, output=?output, test=test, "start process");
 
     // MPSC mode
-    let concurrency: usize = CONFIG.batch_size;
+    let concurrency: usize = CONFIG.batch.unwrap() as usize;
     let channel_size: usize = 100;
     let (tx, mut rx) = mpsc::channel::<Target>(channel_size);
     let processed_count = Arc::new(AtomicUsize::new(0));

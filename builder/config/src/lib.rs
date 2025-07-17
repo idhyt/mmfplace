@@ -1,7 +1,7 @@
 use once_cell::sync::Lazy;
 use regex::{Error, Regex};
 use serde::{Deserialize, Serialize};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| Config::new());
 const CONFIG_DEFAULT: &str = include_str!("default.toml");
@@ -55,21 +55,30 @@ fn capture_index() -> Option<u8> {
 
 #[derive(Debug, Default, Clone, Deserialize)]
 pub struct Config {
-    pub batch_size: usize,
+    // the number of files to process in a batch
+    pub batch: Option<u8>,
+    // the java executable path, default is java an ensure exist in $PATH
+    pub java: Option<String>,
+    // the database path, default is current executable directory named place.db
+    pub database: Option<PathBuf>,
     pub dateparse: DateParse,
     pub dateregex: DateRegex,
     pub typeregex: TypeRegex,
 }
 
+static CURRENT_FILE: Lazy<fn(&str) -> PathBuf> = Lazy::new(|| {
+    |n| {
+        let mut work_dir =
+            std::env::current_exe().expect("failed to get current execute directory");
+        work_dir.pop();
+        work_dir.join(n)
+    }
+});
+
 impl Config {
     /// load config.toml
     pub fn new() -> Self {
-        let config = {
-            let mut work_dir =
-                std::env::current_exe().expect("failed to get current execute directory");
-            work_dir.pop();
-            work_dir.join("config.toml")
-        };
+        let config = CURRENT_FILE("config.toml");
         if !config.is_file() {
             std::fs::write(&config, CONFIG_DEFAULT).expect("Failed to write config.toml");
             log::warn!(
@@ -83,7 +92,10 @@ impl Config {
     pub fn load_from_file(f: &Path) -> Self {
         log::debug!("Loading config from: {}", f.display());
         let content = std::fs::read_to_string(f).expect("Failed to read config.toml");
-        let cfg: Config = toml::from_str(&content).expect("Failed to parse config.toml");
+        let mut cfg: Config = toml::from_str(&content).expect("Failed to parse config.toml");
+        cfg.batch = Some(cfg.batch.unwrap_or(10));
+        cfg.java = Some(cfg.java.unwrap_or("java".to_string()));
+        cfg.database = Some(cfg.database.unwrap_or(CURRENT_FILE("place.db")));
         cfg
     }
 }
@@ -114,7 +126,8 @@ mod tests {
 
     #[test]
     fn test_config() {
-        assert!(CONFIG.batch_size > 0);
+        println!("config: {:#?}", *CONFIG);
+        assert_eq!(CONFIG.batch, Some(10));
         assert!(!CONFIG.dateparse.list.is_empty());
         assert!(!CONFIG.dateregex.list.is_empty());
         assert!(CONFIG.dateregex.ignore.is_some());

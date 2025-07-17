@@ -1,5 +1,9 @@
 # batch concurrency size
-batch_size = 10
+# batch = 10
+# the java executable path, default is java and ensure it in your environment path
+# java = "java11"
+# the database to used, default is place.db which in the execute current directory
+# database = "/home/idhyt/place.db"
 
 # https://stackoverflow.com/questions/61179070/rust-chrono-parse-date-string-parseerrornotenough-and-parseerrortooshort/61179071#61179071
 # "2020-04-12" => Date = NaiveDate
