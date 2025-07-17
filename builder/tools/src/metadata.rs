@@ -44,8 +44,10 @@ impl MetadataReader {
         let java = std::env::var("MMFPLACE_JAVA").unwrap_or_else(|_| "java".to_string());
         // check java runtime
         let output = std::process::Command::new(&java).arg("-version").output();
-        assert!(output.is_ok(), "java runtime not found at {}", java);
-
+        if let Err(e) = output {
+            error!(java, error=?e, "💥 check java runtime failed");
+            std::process::exit(1);
+        }
         MetadataReader {
             java,
             extractor,

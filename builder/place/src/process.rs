@@ -3,16 +3,16 @@ use chrono::Datelike;
 use once_cell::sync::OnceCell;
 use std::borrow::Cow;
 use std::path::PathBuf;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use tokio::sync::mpsc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::Semaphore;
+use tokio::sync::mpsc;
 use tracing::{debug, debug_span, error, info, warn};
 use tracing_futures::Instrument;
 use walkdir::WalkDir;
 
-use super::db::{get_connection, insert_finfo, query_finfo, update_finfo, FileInfo};
-use super::target::{Target, OUTPUT_GEN};
+use super::db::{FileInfo, get_connection, insert_finfo, query_finfo, update_finfo};
+use super::target::{OUTPUT_GEN, Target};
 
 use config::CONFIG;
 use tools::metadata_extractor;
@@ -61,6 +61,13 @@ pub async fn do_process(
         .filter(|e| e.file_type().is_file())
         .count();
     temp_init(input, output, test, rename_with_ymd, total);
+    // add MMFPLACE_JAVA to env used by tools
+    if let Some(java) = config::CONFIG.java.as_ref() {
+        debug!(java, "set java environment variable");
+        unsafe {
+            std::env::set_var("MMFPLACE_JAVA", java);
+        }
+    }
     let (input, output, test) = (&temp_get().input, &temp_get().output, temp_get().test);
     info!(input=?input, total=total, output=?output, test=test, "start process");
 
@@ -331,8 +338,8 @@ async fn do_place(mut target: Target, processed_count: &Arc<AtomicUsize>) -> Res
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::prelude::*;
     use chrono::Utc;
+    use chrono::prelude::*;
 
     fn get_root() -> PathBuf {
         PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())

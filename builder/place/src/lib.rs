@@ -20,6 +20,5 @@ pub async fn process(
         std::fs::create_dir_all(&output)?;
     }
     let (input, output) = (input.canonicalize()?, output.canonicalize()?);
-    // init temp data
     process::do_process(input, output, test, rename_with_ymd).await
 }
