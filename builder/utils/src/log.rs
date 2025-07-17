@@ -13,7 +13,10 @@ pub fn setup_tracing(
     } else {
         Targets::default().with_default(Level::INFO)
     };
-    let stdout_log = tracing_subscriber::fmt::layer().with_writer(std::io::stderr);
+    let stdout_log = tracing_subscriber::fmt::layer()
+        .with_writer(std::io::stderr)
+        .with_target(verbose)
+        .with_line_number(verbose);
     let file_log = match logfile {
         Some(path) => {
             let file = std::fs::File::create(&path).expect("Failed to open logfile");
